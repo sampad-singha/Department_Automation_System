@@ -14,6 +14,19 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('image');
+            $table->integer('university_id')->unique();
+            $table->foreignId('department_id')->constrained();
+            $table->year('session')->nullable();
+            $table->integer('year')->nullable();
+            $table->integer('semester')->nullable();
+            $table->date('dob');
+            $table->string('phone');
+            $table->text('address');
+            $table->string('city');
+            $table->string('designation');
+            $table->integer('publication_count')->default(0);
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
