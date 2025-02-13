@@ -1,145 +1,79 @@
-import { useState, useContext } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { toast, ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import { AuthContext } from "../../../Layout/AuthProvider/AuthProvider"
+import { Tooltip } from 'react-tooltip';
+import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { getAuth } from "firebase/auth";
+import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
+import app from "../../../../firebase.config";
+import { AuthContext } from "../../../Layout/AuthProvider/AuthProvider";
+import { Helmet } from "react-helmet";
+import { motion } from "framer-motion";
 
-const SignUp = () => {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [role, setRole] = useState("user")
-  const [image, setImage] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
-  const authContext = useContext(AuthContext)
+const Login = () => {
+    const { signIn } = useContext(AuthContext);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const auth = getAuth(app);
+    const captchaRef = useRef(null);
+    const [disable, setDisable] = useState(true);
 
-  if (!authContext) {
-    throw new Error("SignUp must be used within an AuthProvider")
-  }
+    useEffect(() => {
+        loadCaptchaEnginge(3);
+    }, []);
 
-  const { createUser, updateUserProfile } = authContext
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const form = new FormData(e.currentTarget);
+        const email = form.get('email');
+        const password = form.get('password');
 
-  // Function to handle sign up form submission
-  const handleSignUp = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+        signIn(email, password)
+            .then(() => {
+                toast.success("Successfully Logged In");
+                navigate(location?.state || '/');
+            })
+            .catch(() => {
+                toast.error("Invalid email or password");
+            });
+    };
 
-    try {
-      // Create user with email and password
-      const user = await createUser(email, password, name)
+    const handleValidateCaptcha = (e) => {
+        const user_captcha_value = e.target.value;
+        setDisable(!validateCaptcha(user_captcha_value));
+    };
 
-      // If an image is selected, upload it
-      if (image) {
-        const formData = new FormData()
-        formData.append("image", image)
-        const response = await fetch("/api/upload-image", {
-          method: "POST",
-          body: formData,
-        })
-        if (response.ok) {
-          const { imageUrl } = await response.json()
-          // Update user profile with name, image URL, and role
-          await updateUserProfile(name, imageUrl, role)
-        }
-      } else {
-        // Update user profile with name and role (no image)
-        await updateUserProfile(name, undefined, role)
-      }
-
-      toast.success("Successfully signed up")
-      // Redirect to login page after successful sign up
-      navigate("/login")
-    } catch (error) {
-      toast.error("Failed to sign up")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-        <form onSubmit={handleSignUp}>
-          {/* Name input field */}
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          {/* Email input field */}
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          {/* Password input field */}
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          
-          {/* Image upload field */}
-          <div className="mb-6">
-            <label htmlFor="image" className="block text-gray-700 text-sm font-bold mb-2">
-              Profile Image
-            </label>
-            <input
-              type="file"
-              id="image"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
-              accept="image/*"
-            />
-          </div>
-          {/* Submit button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            disabled={loading}
-          >
-            {loading ? "Signing up..." : "Sign Up"}
-          </button>
-        </form>
-        {/* Link to login page */}
-        <p className="mt-4 text-center">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
-            Login
-          </Link>
-        </p>
-      </div>
-      {/* Toast notifications container */}
-      <ToastContainer />
-    </div>
-  )
-}
-
-export default SignUp
-
+    return (
+        <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+            <Helmet>
+                <title>Login</title>
+            </Helmet>
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="p-8 bg-white shadow-2xl rounded-xl w-full max-w-md">
+                <h2 className="text-center text-4xl font-extrabold text-indigo-600">Login</h2>
+                <form onSubmit={handleLogin} className="space-y-4 mt-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" name="email" className="mt-1 p-2 w-full border rounded-md" required />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" name="password" className="mt-1 p-2 w-full border rounded-md" required />
+                        <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">Forgot password?</Link>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700"><LoadCanvasTemplate /></label>
+                        <input ref={captchaRef} onBlur={handleValidateCaptcha} type="text" name="recaptcha" className="mt-1 p-2 w-full border rounded-md" required />
+                    </div>
+                    <button disabled={disable} className={`w-full py-2 rounded-md text-white font-bold ${disable ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>Login</button>
+                </form>
+                <p className="text-center mt-4">Don't have an account? <Link to="/signUp" className="text-indigo-500 font-semibold hover:underline">Sign Up</Link></p>
+                <ToastContainer position="top-center" autoClose={5000} hideProgressBar pauseOnHover theme="light" />
+            </motion.div>
+        </div>
+    );
+};
+export default Login;
