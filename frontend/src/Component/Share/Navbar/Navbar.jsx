@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../../../Layout/AuthProvider/AuthProvider';
 import { NavLink } from 'react-router-dom';
 import { IoIosLogIn, IoIosLogOut } from 'react-icons/io';
-import { FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
+import { FiMenu, FiX } from 'react-icons/fi';
 
 const Navbar = () => {
     const { user, logOut } = useContext(AuthContext);
@@ -29,9 +29,16 @@ const Navbar = () => {
                 {/* Center Menu Items */}
                 <div className="hidden md:flex gap-6 items-center mx-auto">
                     <NavLink to="/" className="hover:text-primary">Home</NavLink>
-                    <NavLink to="/about" className="hover:text-primary">About</NavLink>
-                    <NavLink to="/services" className="hover:text-primary">Services</NavLink>
-                    <NavLink to="/contact" className="hover:text-primary">Contact</NavLink>
+                    <NavLink to="/courses" className="hover:text-primary">Courses</NavLink>
+                    <NavLink to="/timetable" className="hover:text-primary">Timetable</NavLink>
+                    <NavLink to="/attendance" className="hover:text-primary">Attendance</NavLink>
+                    <NavLink to="/grades" className="hover:text-primary">Grades</NavLink>
+                    <NavLink to="/fees" className="hover:text-primary">Fees</NavLink>
+                    <NavLink to="/messages" className="hover:text-primary">Messages</NavLink>
+                    <NavLink to="/library" className="hover:text-primary">Library</NavLink>
+                    <NavLink to="/internships" className="hover:text-primary">Internships</NavLink>
+                    <NavLink to="/requests" className="hover:text-primary">Requests</NavLink>
+                    <NavLink to="/profile" className="hover:text-primary">Profile</NavLink>
                 </div>
 
                 {/* Right Side Profile & Login */}
@@ -51,7 +58,6 @@ const Navbar = () => {
                             {profileOpen && (
                                 <div className="absolute right-0 mt-2 w-48 bg-gray-900 text-white shadow-lg rounded-md p-2">
                                     <NavLink to="/profile" className="block px-4 py-2 hover:bg-gray-700 rounded">My Profile</NavLink>
-                                    <NavLink to="/settings" className="block px-4 py-2 hover:bg-gray-700 rounded">Settings</NavLink>
                                     <button 
                                         onClick={handleSignOut} 
                                         className="block w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 rounded"
@@ -73,37 +79,26 @@ const Navbar = () => {
             {menuOpen && (
                 <div className="md:hidden bg-gray-900 p-4 mt-2 rounded-lg flex flex-col items-center">
                     <NavLink to="/" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Home</NavLink>
-                    <NavLink to="/about" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>About</NavLink>
-                    <NavLink to="/services" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Services</NavLink>
-                    <NavLink to="/contact" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Contact</NavLink>
+                    <NavLink to="/courses" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Courses</NavLink>
+                    <NavLink to="/timetable" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Timetable</NavLink>
+                    <NavLink to="/attendance" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Attendance</NavLink>
+                    <NavLink to="/grades" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Grades</NavLink>
+                    <NavLink to="/fees" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Fees</NavLink>
+                    <NavLink to="/messages" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Messages</NavLink>
+                    <NavLink to="/library" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Library</NavLink>
+                    <NavLink to="/internships" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Internships</NavLink>
+                    <NavLink to="/requests" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Requests</NavLink>
+                    <NavLink to="/profile" className="py-2 w-full text-center" onClick={() => setMenuOpen(false)}>Profile</NavLink>
                     {user ? (
-                        <>
-                            <button 
-                                onClick={() => setProfileOpen(!profileOpen)} 
-                                className="w-16 h-16 rounded-full overflow-hidden border-2 border-white my-4"
-                            >
-                                <img 
-                                    src={user.photoURL || 'https://i.ibb.co/qW320MT/images.jpg'}
-                                    alt="User Avatar"
-                                    className="w-full h-full object-cover"
-                                />
-                            </button>
-                            {profileOpen && (
-                                <div className="bg-gray-800 text-white rounded-md p-2 w-full text-center">
-                                    <NavLink to="/profile" className="block py-2" onClick={() => setMenuOpen(false)}>My Profile</NavLink>
-                                    <NavLink to="/settings" className="block py-2" onClick={() => setMenuOpen(false)}>Settings</NavLink>
-                                    <button 
-                                        onClick={() => {
-                                            handleSignOut();
-                                            setMenuOpen(false);
-                                        }} 
-                                        className="block py-2 text-red-400"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            )}
-                        </>
+                        <button 
+                            onClick={() => {
+                                handleSignOut();
+                                setMenuOpen(false);
+                            }} 
+                            className="block py-2 text-red-400"
+                        >
+                            Logout
+                        </button>
                     ) : (
                         <NavLink to="/login" className="py-2 flex items-center gap-1 w-full justify-center" onClick={() => setMenuOpen(false)}>
                             Login <IoIosLogIn className="text-xl" />

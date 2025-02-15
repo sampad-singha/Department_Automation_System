@@ -6,6 +6,7 @@ import Root from "./Root";
 import Home from "../Pages/AllUser/HomePage/Home";
 import Register from "../Pages/AllUser/Register/Register";
 import Login from "../Pages/AllUser/Login/Login";
+import StudentDashboard from "../Pages/Student/StudentDashBoard/StudentDashboard";
 
 const Router = createBrowserRouter([
     {
@@ -24,6 +25,10 @@ const Router = createBrowserRouter([
             {
                 path: "/login",
                 element: <Login/>,
+            },
+            {
+                path: "/profile",
+                element: <StudentDashboard />,
             }
         ],
     },
