@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('department_id')->constrained();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->timestamp('published_at')->nullable();
             $table->timestamp('archived_at')->nullable();
             $table->string('file')->nullable();

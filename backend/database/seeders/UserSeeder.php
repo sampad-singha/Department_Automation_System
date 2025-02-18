@@ -14,28 +14,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Admin User',
-            'image' => fake()->imageUrl(),
-            'email' => 'admin@example.com',
-            'designation' => 'staff',
-            'password' => Hash::make('password'),
-            'status' => 'active',
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'address' => 'Noorjahan Road, Mohammadpur',
-            'city' => 'Dhaka',
-            'department_id' => 1,
-            'dob' => '1995-01-01',
-            'phone' => '01712345678',
-            'session' => '2015',
-            'year' => 4,
-            'semester' => 2,
-            'university_id' => 123456,
-            'publication_count' => 4,
-        ]);
+        //add student role to all users when seeding
+        User::factory(10)->create()->each(function ($user) {
+            $user->assignRole('student');
+        });
     }
 }

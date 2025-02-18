@@ -11,6 +11,8 @@ class Department extends Model
     /** @use HasFactory<\Database\Factories\DepartmentFactory> */
     use HasFactory;
 
+    protected $fillable = ['name', 'code', 'faculty', 'short_name'];
+
     // Each department can have many users
     public function users(): HasMany
     {

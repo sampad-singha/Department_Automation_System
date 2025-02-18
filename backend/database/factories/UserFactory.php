@@ -24,11 +24,18 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $departmentID = Department::query()->inRandomOrder()->first()->id ?? Department::factory();
+        $departmentCode = Department::query()->find($departmentID)->code;
+        //year from 1950 to 2050
+        $session = $this->faker->numberBetween(1950, 2050);
+        //university id is 6-digit number, last 2 digit session year, 2 digit department id, 2 digit random number
+        $universityId = sprintf('%02d%02d%02d', $session % 100, $departmentCode % 100, $this->faker->numberBetween(0, 99));
+
         return [
             'name' => $this->faker->name(),
             'image' => $this->faker->imageUrl(),
-            'university_id' => $this->faker->unique()->randomNumber(),
-            'session' => $this->faker->year(),
+            'university_id' => $universityId,
+            'session' => $session,
             'dob' => $this->faker->date(),
             'phone' => $this->faker->numerify('01########'), // BD phone format
             'address' => $this->faker->address,
@@ -37,7 +44,7 @@ class UserFactory extends Factory
             'designation' => $this->faker->randomElement(['student', 'teacher', 'staff']),
             'status' => $this->faker->randomElement(['active', 'inactive']),
             'city' => $this->faker->randomElement(['Dhaka', 'Chittagong', 'Rajshahi', 'Khulna', 'Sylhet']),
-            'department_id' => Department::query()->inRandomOrder()->first()->id ?? Department::factory(),
+            'department_id' => $departmentID,
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => Hash::make('password'),

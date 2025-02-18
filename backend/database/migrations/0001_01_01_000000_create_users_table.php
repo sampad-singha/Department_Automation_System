@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('image');
-            $table->integer('university_id')->unique();
-            $table->foreignId('department_id')->constrained();
+            $table->string('university_id')->unique();
+            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->year('session')->nullable();
             $table->integer('year')->nullable();
             $table->integer('semester')->nullable();
