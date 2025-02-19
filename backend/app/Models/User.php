@@ -85,6 +85,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->HasMany(Notice::class);
     }
 
+    // Define the one-to-many relationship with the Role model
+//    public function role(): BelongsToMany
+//    {
+//        return $this->belongsToMany(Role::class);
+//    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return  $this->hasRole('admin');

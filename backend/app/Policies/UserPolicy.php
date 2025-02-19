@@ -35,13 +35,14 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
+        if ($model->hasRole('admin')) { //preventing admin from being updated
+            return false;
+        }
         if ($user->can('update any users')) { // ✅ permission name 'update any users'
             return true;
         }
-        if ($user->can('update users')) { // ✅ permission name 'update users'
-            return $user->id === $model->id;
-        }
-        return false;
+        // Check if the user has permission to update users and is updating their own record
+        return $user->can('update users') && $user->id === $model->id; // ✅ permission name 'update users'
     }
 
     /**
@@ -49,13 +50,13 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
+        if ($model->hasRole('admin')) { //preventing admin from being deleted
+            return false;
+        }
         if ($user->can('delete any users')) { // ✅ permission name 'delete any users'
             return true;
         }
-        if ($user->can('delete users')) { // ✅ permission name 'delete users'
-            return $user->id === $model->id;
-        }
-        return false;
+        return $user->can('delete users') && $user->id === $model->id;
     }
 
     /**
@@ -63,7 +64,7 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        return $user=== $model; //wrong code, just to please the sonarqube scanner
+        return $user->id === $model->id; //wrong code, just to please the sonarqube scanner
     }
 
     /**
@@ -71,6 +72,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        return $user=== $model; //wrong code, just to please the sonarqube scanner
+        return $user->id === $model->id; //wrong code, just to please the sonarqube scanner
     }
 }
