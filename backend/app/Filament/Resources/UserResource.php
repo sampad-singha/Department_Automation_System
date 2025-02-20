@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\Department;
 use App\Models\User;
 use Filament\Forms;
@@ -25,10 +24,9 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function getSchema(): array
     {
-        return $form
-            ->schema([
+        return[
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -82,7 +80,12 @@ class UserResource extends Resource
                     ->maxLength(255)
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->dehydrated(fn ($state) => filled($state))
-            ]);
+            ];
+    }
+
+    public static function form(Form $form): Form
+    {
+        return $form->schema(static::getSchema());
     }
 
     public static function table(Table $table): Table

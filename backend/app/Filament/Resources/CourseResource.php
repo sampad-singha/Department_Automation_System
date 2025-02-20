@@ -16,32 +16,37 @@ class CourseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getSchema():array
+    {
+        return [
+            Forms\Components\TextInput::make('code')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('name')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('description')
+                ->maxLength(255)
+                ->default(null),
+            Forms\Components\TextInput::make('credit')
+                ->required()
+                ->numeric(),
+            Forms\Components\TextInput::make('year')
+                ->required()
+                ->numeric(),
+            Forms\Components\TextInput::make('semester')
+                ->required()
+                ->numeric(),
+            Forms\Components\Select::make('department_id')
+                ->label('Department')
+                ->required()
+                ->options(\App\Models\Department::pluck('name', 'id')->toArray()),
+        ];
+    }
+
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('code')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('description')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('credit')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('year')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('semester')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('department_id')
-                    ->required()
-                    ->numeric(),
-            ]);
+        return $form->schema(static::getSchema());
     }
 
     public static function table(Table $table): Table

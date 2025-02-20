@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleResource extends Resource
 {
@@ -34,9 +35,20 @@ class RoleResource extends Resource
                     ->default('web'),
                 Forms\Components\CheckboxList::make('permissions')
                     ->label('Permissions')
-                    ->relationship('permissions', 'name') // ✅ Fetches permissions correctly
-                    ->columns() // ✅ Displays in two columns for better UI
-                    ->bulkToggleable(), // ✅ Allows selecting/deselecting all
+                    ->relationship('permissions', 'name')
+//                    ->options(function () {
+//                        return \Spatie\Permission\Models\Permission::query()
+//                            ->orderBy('category')
+//                            ->orderBy('name')
+//                            ->get()
+//                            ->groupBy('category')
+//                            ->mapWithKeys(fn ($permissions, $category) => [
+//                                $category => $permissions->mapWithKeys(fn ($p) => [$p->id => $p->name])
+//                            ]);
+//                    })
+                    ->columns(3)
+                    ->columnSpanFull()
+                    ->bulkToggleable(),
 
         ]);
     }
@@ -53,6 +65,15 @@ class RoleResource extends Resource
                 Tables\Columns\TextColumn::make('guard_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('permissions.name')
+                    ->formatStateUsing(function ($state, $record) {
+                        $permissions = $record->permissions->pluck('name')->toArray();
+
+                        if (count($permissions) > 2) {
+                            return implode(', ', array_slice($permissions, 0, 2)) . ' and ' . (count($permissions) - 2) . ' more';
+                        }
+
+                        return implode(', ', $permissions);
+                    })
                     ->searchable(),
             ])
             ->filters([

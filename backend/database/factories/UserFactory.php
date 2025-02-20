@@ -25,11 +25,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $departmentID = Department::query()->inRandomOrder()->first()->id ?? Department::factory();
-        $departmentCode = Department::query()->find($departmentID)->code;
+//        $departmentCode = Department::query()->find($departmentID)->code;
         //year from 1950 to 2050
         $session = $this->faker->numberBetween(1950, 2050);
         //university id is 6-digit number, last 2 digit session year, 2 digit department id, 2 digit random number
-        $universityId = sprintf('%02d%02d%02d', $session % 100, $departmentCode % 100, $this->faker->numberBetween(0, 99));
+        $universityId = sprintf('%02d%02d%02d', $session % 100, $departmentID % 100, $this->faker->numberBetween(0, 99));
 
         return [
             'name' => $this->faker->name(),

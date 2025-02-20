@@ -11,6 +11,16 @@ class Course extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'code',
+        'name',
+        'description',
+        'credit',
+        'year',
+        'semester',
+        'department_id',
+    ];
+
     // Define the many-to-many relationship with the User model
     public function users(): BelongsToMany
     {

@@ -35,7 +35,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        if ($model->hasRole('admin')) { //preventing admin from being updated
+        if ($model->hasRole(['admin','super-admin'])) { //preventing admin and super-admin from being updated
             return false;
         }
         if ($user->can('update any users')) { // ✅ permission name 'update any users'
@@ -50,7 +50,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        if ($model->hasRole('admin')) { //preventing admin from being deleted
+        if ($model->hasRole(['admin','super-admin'])) { //preventing admin and super-admin from being deleted
             return false;
         }
         if ($user->can('delete any users')) { // ✅ permission name 'delete any users'

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DepartmentResource\Pages;
 use App\Filament\Resources\DepartmentResource\RelationManagers\CoursesRelationManager;
+use App\Filament\Resources\DepartmentResource\RelationManagers\UsersRelationManager;
 use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -24,32 +25,27 @@ class DepartmentResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('code')
-                    ->required()
-                    ->numeric()
-                    ->rule(['min:1', 'max:99'])
-                    ->unique(static::getModel(), 'code'),
-                Forms\Components\TextInput::make('faculty')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('faculty')
+                    ->options(Department::distinct('faculty')->pluck('faculty')->mapWithKeys(fn($faculty) => [$faculty => $faculty])),
                 Forms\Components\TextInput::make('short_name')
                     ->required()
                     ->maxLength(255),
             ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+
                 Tables\Columns\TextColumn::make('id')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('code')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('faculty')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('short_name')
@@ -64,10 +60,12 @@ class DepartmentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                //filter by distinct faculty in the table
+                Tables\Filters\SelectFilter::make('faculty')
+                ->options($table->getModel()::distinct('faculty')->pluck('faculty')->mapWithKeys(fn($faculty) => [$faculty => $faculty]))
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+//                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -80,6 +78,7 @@ class DepartmentResource extends Resource
     {
         return [
             CoursesRelationManager::class,
+            UsersRelationManager::class,
         ];
     }
 
@@ -89,6 +88,7 @@ class DepartmentResource extends Resource
             'index' => Pages\ListDepartments::route('/'),
             'create' => Pages\CreateDepartment::route('/create'),
             'edit' => Pages\EditDepartment::route('/{record}/edit'),
+            'view' => Pages\ViewDepartment::route('/{record}'),
         ];
     }
 }
