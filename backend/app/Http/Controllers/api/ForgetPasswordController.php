@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
+
 class ForgetPasswordController extends Controller
 {
     public function resetPassword(Request $request)

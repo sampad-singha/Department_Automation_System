@@ -27,8 +27,8 @@ class UserAuthController extends Controller
 
         $tokenName = 'auth_token';
         $token = isset($validated['remember_me']) && $validated['remember_me']
-            ? $user->createToken($tokenName, ['*'], now()->addWeeks(2))->plainTextToken 
-            : $user->createToken($tokenName)->plainTextToken; 
+            ? $user->createToken($tokenName, ['*'], now()->addWeeks(2))->plainTextToken
+            : $user->createToken($tokenName)->plainTextToken;
 
         Log::info('User logged in successfully.');
 

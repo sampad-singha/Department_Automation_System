@@ -14,11 +14,11 @@ class LogoutController extends Controller
         try {
             Log::info('Starting user logout.');
     
-            $user = Auth::user(); 
+            $user = Auth::user();
             if (!$user) {
                 return response()->json(['message' => 'User not authenticated'], 401);
             }
-            // Delete only current token
+            
             $request->user()->currentAccessToken()->delete();
     
             Log::info('User logged out successfully.');
