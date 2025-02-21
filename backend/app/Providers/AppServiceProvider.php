@@ -26,7 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiterFacade::for('userLogin', function (Request $request) {
-            // return Limit::perMinute(5)->by(optional($request->user())->id ?: $request->ip());
             return $request->user() ?
                 Limit::perMinute(10)->by($request->ip()) :
                 Limit::perMinute(5)->by($request->ip());

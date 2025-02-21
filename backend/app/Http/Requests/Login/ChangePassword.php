@@ -11,7 +11,8 @@ class ChangePassword extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        // return true;
+        return auth()->check();
     }
 
     /**

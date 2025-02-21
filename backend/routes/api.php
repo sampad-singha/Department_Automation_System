@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\PasswordResetController;
 
-Route::group(['prefix' => 'authUser'], function () {
+Route::group(['prefix' => 'auth'], function () {
 
     Route::post('/forget-password',[ForgetPasswordController::class, 'resetPassword']);
     Route::post('/reset-password',[PasswordResetController::class, 'resetPassword'])->name('password.reset');
