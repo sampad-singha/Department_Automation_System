@@ -18,7 +18,8 @@ class LogoutController extends Controller
             if (!$user) {
                 return response()->json(['message' => 'User not authenticated'], 401);
             }
-            $user->tokens()->delete();  
+            // Delete only current token
+            $request->user()->currentAccessToken()->delete();
     
             Log::info('User logged out successfully.');
     
