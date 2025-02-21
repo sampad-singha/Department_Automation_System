@@ -20,6 +20,25 @@ class RoleResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $schema = [];
+        $categories = Permission::select('category')
+            ->distinct()
+            ->pluck('category');
+            foreach ($categories as $category) {
+                $permissions = Permission::where('category', $category)
+                    ->pluck('name', 'id')
+                    ->toArray();
+                $schema[] = Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\CheckboxList::make('permissions')
+                            ->label($category)
+                            ->relationship('permissions', 'name') // Use relationship for many-to-many
+                            ->options($permissions)
+                            ->columns(3) // Optional: Show in 2 columns
+                            ->required()
+                            ->bulkToggleable(),
+                    ]);
+            }
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
@@ -33,24 +52,9 @@ class RoleResource extends Resource
                         'api' => 'API',
                     ])
                     ->default('web'),
-                Forms\Components\CheckboxList::make('permissions')
-                    ->label('Permissions')
-                    ->relationship('permissions', 'name')
-//                    ->options(function () {
-//                        return \Spatie\Permission\Models\Permission::query()
-//                            ->orderBy('category')
-//                            ->orderBy('name')
-//                            ->get()
-//                            ->groupBy('category')
-//                            ->mapWithKeys(fn ($permissions, $category) => [
-//                                $category => $permissions->mapWithKeys(fn ($p) => [$p->id => $p->name])
-//                            ]);
-//                    })
-                    ->columns(3)
-                    ->columnSpanFull()
-                    ->bulkToggleable(),
-
-        ]);
+            Forms\Components\Section::make('Permissions')
+                ->schema($schema),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -65,7 +69,7 @@ class RoleResource extends Resource
                 Tables\Columns\TextColumn::make('guard_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('permissions.name')
-                    ->formatStateUsing(function ($state, $record) {
+                    ->formatStateUsing(function ( $record) {
                         $permissions = $record->permissions->pluck('name')->toArray();
 
                         if (count($permissions) > 2) {

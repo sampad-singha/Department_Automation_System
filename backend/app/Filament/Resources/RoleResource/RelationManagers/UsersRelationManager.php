@@ -26,7 +26,9 @@ class UsersRelationManager extends RelationManager
                 Forms\Components\Select::make('role_id')
                     ->label('Role')
                     ->relationship('roles', 'name')
-                    ->required(),
+                    ->required()
+                    //disable 'super-admin' role
+                    ->options(fn () => \App\Models\Role::where('name', '!=', 'super-admin')->pluck('name', 'id'))
             ]);
     }
 
@@ -35,7 +37,10 @@ class UsersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
+                Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('university_id'),
+                Tables\Columns\TextColumn::make('email'),
             ])
             ->filters([
                 //
