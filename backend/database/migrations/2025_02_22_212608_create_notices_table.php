@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
-            $table->timestamp('published_at')->nullable();
-            $table->timestamp('archived_at')->nullable();
+            $table->foreignId('published_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null');
+            $table->dateTime('published_at')->nullable();
+            $table->dateTime('archived_at')->nullable();
             $table->string('file')->nullable();
             $table->timestamps();
         });

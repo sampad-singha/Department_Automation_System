@@ -67,10 +67,10 @@ class User extends Authenticatable implements FilamentUser
     }
 
     // Define the many-to-many relationship with the Course model
-    public function courses(): BelongsToMany
-    {
-        return $this->belongsToMany(Course::class);
-    }
+//    public function courses(): BelongsToMany
+//    {
+//        return $this->belongsToMany(Course::class);
+//    }
 
     // Define the many-to-many relationship with the Department model
     public function department(): BelongsTo
