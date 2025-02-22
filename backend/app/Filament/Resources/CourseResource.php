@@ -4,11 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CourseResource\Pages;
 use App\Models\Course;
+use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class CourseResource extends Resource
 {
@@ -25,22 +27,25 @@ class CourseResource extends Resource
             Forms\Components\TextInput::make('name')
                 ->required()
                 ->maxLength(255),
-            Forms\Components\TextInput::make('description')
+            Forms\Components\Textarea::make('description')
                 ->maxLength(255)
                 ->default(null),
             Forms\Components\TextInput::make('credit')
                 ->required()
                 ->numeric(),
-            Forms\Components\TextInput::make('year')
+            //show year option 1 2 3 4 select
+            Forms\Components\Select::make('year')
+                ->label('Year')
                 ->required()
-                ->numeric(),
-            Forms\Components\TextInput::make('semester')
+                ->options([1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5']),
+            Forms\Components\Select::make('semester')
+                ->label('Semester')
                 ->required()
-                ->numeric(),
+                ->options([1 => '1', 2 => '2']),
             Forms\Components\Select::make('department_id')
                 ->label('Department')
                 ->required()
-                ->options(\App\Models\Department::pluck('name', 'id')->toArray()),
+                ->options(Department::pluck('name', 'id')->toArray()),
         ];
     }
 
@@ -62,15 +67,18 @@ class CourseResource extends Resource
                 Tables\Columns\TextColumn::make('credit')
                     ->numeric()
                     ->sortable(),
+                //show year option 1 2 3 4 select
                 Tables\Columns\TextColumn::make('year')
                     ->numeric()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('semester')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('department_id')
-                    ->numeric()
-                    ->sortable(),
+                //showing department name based on department_id
+                Tables\Columns\TextColumn::make('department.name')
+                    ->searchable()
+                    ->label('Department'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -84,7 +92,7 @@ class CourseResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+//                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -106,6 +114,7 @@ class CourseResource extends Resource
             'index' => Pages\ListCourses::route('/'),
             'create' => Pages\CreateCourse::route('/create'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
+            'view' => Pages\ViewCourse::route('/{record}'),
         ];
     }
 }

@@ -26,7 +26,7 @@ class Course extends Model
     {
         return $this->belongsToMany(User::class);
     }
-    public function departments(): BelongsTo
+    public function department(): BelongsTo
     {
         return $this->BelongsTo(Department::class);
     }
