@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -33,10 +33,6 @@ class UserAuthController extends Controller
         Log::info('User logged in successfully.');
 
         return response()->json([
-            'user' => [
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
             'token' => $token,
             'user' =>$user,
         ], 200);
@@ -48,9 +44,9 @@ class UserAuthController extends Controller
 
 
 
-    
-    
 
 
-   
+
+
+
 }

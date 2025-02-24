@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,16 +13,16 @@ class LogoutController extends Controller
     {
         try {
             Log::info('Starting user logout.');
-    
+
             $user = Auth::user();
             if (!$user) {
                 return response()->json(['message' => 'User not authenticated'], 401);
             }
-            
+
             $request->user()->currentAccessToken()->delete();
-    
+
             Log::info('User logged out successfully.');
-    
+
             return response()->json(['message' => 'User logged out successfully'], 200);
         } catch (\Throwable $e) {
             Log::error('Logout error.', ['error' => $e->getMessage(), 'stack' => $e->getTraceAsString()]);
