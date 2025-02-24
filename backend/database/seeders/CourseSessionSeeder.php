@@ -17,17 +17,17 @@ class CourseSessionSeeder extends Seeder
     public function run(): void
     {
         $courses = Course::all();
-        //where hasRole teacher
         $teachers = User::role('teacher')->get();
 
         $courses->each(function ($course) use ($teachers) {
-            $teachers->each(function ($teacher) use ($course) {
-                CourseSession::factory()->create([
-                    'course_id' => $course->id,
-                    'teacher_id' => $teacher->id,
-                    'session' => fake()->year(),
-                ]);
-            });
+            $teacher = $teachers->random(); // Pick one random teacher for this course
+
+            CourseSession::factory()->create([
+                'course_id' => $course->id,
+                'teacher_id' => $teacher->id,
+                'session' => fake()->year(),
+            ]);
         });
+
     }
 }
