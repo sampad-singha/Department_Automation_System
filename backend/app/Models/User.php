@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Models\Course;
 use App\Models\Department;
 use Laravel\Sanctum\HasApiTokens;
@@ -17,11 +15,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements CanResetPasswordContract
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable,CanResetPassword;
+    use HasApiTokens, HasFactory, Notifiable,CanResetPassword, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +33,19 @@ class User extends Authenticatable implements CanResetPasswordContract
         'name',
         'email',
         'password',
+        'university_id',
+        'department_id',
+        'session',
+        'year',
+        'semester',
+        'dob',
+        'phone',
+        'address',
+        'city',
+        'designation',
+        'publication_count',
+        'image',
+        'status',
     ];
 
     /**
@@ -58,15 +72,15 @@ class User extends Authenticatable implements CanResetPasswordContract
     }
 
     // Define the many-to-many relationship with the Course model
-    public function courses(): BelongsToMany
-    {
-        return $this->belongsToMany(Course::class);
-    }
+//    public function courses(): BelongsToMany
+//    {
+//        return $this->belongsToMany(Course::class);
+//    }
 
     // Define the many-to-many relationship with the Department model
-    public function departments(): BelongsTo
+    public function department(): BelongsTo
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     // Define the one-to-many relationship with the Notice model
@@ -74,9 +88,12 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         return $this->HasMany(Notice::class);
     }
-
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return  $this->hasRole(['admin', 'super-admin']);
     }
 }
