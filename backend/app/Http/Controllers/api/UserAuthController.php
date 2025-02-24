@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Login\UserLoginRequest;
-use App\Models\Role;
+
 
 class UserAuthController extends Controller
 {
