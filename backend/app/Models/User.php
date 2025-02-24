@@ -21,7 +21,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 class User extends Authenticatable implements CanResetPasswordContract
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable,CanResetPassword;
+    use HasApiTokens, HasFactory, Notifiable, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
@@ -79,4 +79,5 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
 }
