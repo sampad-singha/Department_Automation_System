@@ -92,6 +92,7 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+    
     public function canAccessPanel(Panel $panel): bool
     {
         return  $this->hasRole(['admin', 'super-admin']);
