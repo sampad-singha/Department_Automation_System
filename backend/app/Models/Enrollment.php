@@ -12,14 +12,14 @@ class Enrollment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'course_session_id',
+        'courseSession_id',
         'student_id',
         'status',
     ];
 
     public function courseSession(): BelongsTo
     {
-        return $this->belongsTo(CourseSession::class);
+        return $this->belongsTo(CourseSession::class, 'courseSession_id');
     }
 
     public function student(): BelongsTo
