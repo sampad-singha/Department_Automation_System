@@ -88,6 +88,13 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         return $this->HasMany(Notice::class);
     }
+
+    public function approvedNotices(): belongsToMany
+    {
+        return $this->belongsToMany(Notice::class, 'notice_user', 'user_id', 'notice_id')
+                    ->withPivot('is_approved')
+                    ->withTimestamps();
+    }
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));
