@@ -16,6 +16,8 @@ class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
 
+    protected static ?string $navigationGroup = 'Course Management';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function getSchema():array
@@ -62,8 +64,6 @@ class CourseResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('credit')
                     ->numeric()
                     ->sortable(),
@@ -92,7 +92,9 @@ class CourseResource extends Resource
                 //
             ])
             ->actions([
-//                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

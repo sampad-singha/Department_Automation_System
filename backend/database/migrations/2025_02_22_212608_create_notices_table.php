@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('notices', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('content');
+            $table->text('content')->nullable();
             $table->foreignId('published_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null');
-            $table->dateTime('published_at')->nullable();
-            $table->dateTime('archived_at')->nullable();
+            $table->date('published_on')->nullable();
+            $table->date('archived_on')->nullable();
             $table->string('file')->nullable();
             $table->timestamps();
         });
