@@ -22,21 +22,22 @@ const Login = () => {
         loadCaptchaEnginge(3);
     }, []);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         const form = new FormData(e.currentTarget);
         const email = form.get('email');
         const password = form.get('password');
-
-        signIn(email, password)
-            .then(() => {
-                toast.success("Successfully Logged In");
-                navigate(location?.state || '/');
-            })
-            .catch(() => {
-                toast.error("Invalid email or password");
-            });
+    
+        const result = await signIn(email, password);
+    
+        if (result.success) {
+            toast.success("Successfully Logged In");
+            navigate(location?.state || '/');
+        } else {
+            toast.error(result.message);
+        }
     };
+    
 
     const handleValidateCaptcha = (e) => {
         const user_captcha_value = e.target.value;

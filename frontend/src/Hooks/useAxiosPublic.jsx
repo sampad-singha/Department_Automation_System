@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosPublic = axios.create({
-    baseURL:'https://medicine-world-server.vercel.app'
+    baseURL:'http://127.0.0.1:8000'
 })
 const useAxiosPublic = () => {
     return axiosPublic;
