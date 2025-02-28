@@ -39,4 +39,6 @@ class Notice extends Model
             ->withPivot('is_approved')
             ->withTimestamps();
     }
+
+  
 }

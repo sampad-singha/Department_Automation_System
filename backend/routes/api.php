@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\api\NoticeController;
 use App\Http\Controllers\Api\UserAuthController;
+use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\ChangePasswordController;
 use App\Http\Controllers\Api\ForgetPasswordController;
-use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\Api\ShowNoticeController;
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -18,3 +20,6 @@ Route::group(['prefix' => 'auth'], function () {
     
     
 });
+
+Route::get('show-notice',[ShowNoticeController::class,'show']);
+
