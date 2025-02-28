@@ -11,6 +11,6 @@ class NoticeController extends Controller
 {
     public function sendNoticeForApproval($record)
     {
-        return true;
+        //
     }
 }

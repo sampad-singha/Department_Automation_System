@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             UserSeeder::class,
             CourseSeeder::class,
-            CourseSessionSeeder::class,
-            EnrollmentSeeder::class,
+//            CourseSessionSeeder::class,
+//            EnrollmentSeeder::class,
             NoticeSeeder::class,
 
         ]);
