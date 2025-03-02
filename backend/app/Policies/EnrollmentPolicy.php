@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Enrollment;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class EnrollmentPolicy
 {
@@ -15,10 +16,11 @@ class EnrollmentPolicy
         return $user->can('view any enrollments');
     }
 
-    public function view(User $user): bool
-    {
-        return $user->can('view enrollments');
-    }
+//    public function view(Enrollment $enrollment): bool
+//    {
+//        $id = $enrollment->student_id;
+//        return $id === Auth::user()->id;
+//    }
 
     public function create(User $user): bool
     {
