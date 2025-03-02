@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,11 @@ class EnrollmentController extends Controller
 {
     public function store($courseSession): void
     {
+        $this->authorize('create', Enrollment::class);
         $course = $courseSession->course;
 
         // Fetch students matching the course's year and semester
-        $students = User::role('teacher')
+        $students = User::role('student')
             ->where('year', $course->year)
             ->where('semester', $course->semester)
             ->get();
@@ -34,6 +36,7 @@ class EnrollmentController extends Controller
 
     public function update(Request $request, Enrollment $enrollment)
     {
+        $this->authorize('update', $enrollment);
         try {
             // Validate the incoming request data
             $validatedData = $request->validate([
@@ -68,35 +71,65 @@ class EnrollmentController extends Controller
         }
     }
 
-    public function show(Enrollment $enrollment)
+    public function showForTeacher($courseSessionId, Request $request)
     {
-        return response()->json([
-            'status' => 'success',
-            'data' => $enrollment,
-        ], Response::HTTP_OK);
-    }
-    public function showAll(Request $request)
-    {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'year' => 'required|integer',
-            'semester' => 'required|integer',
-            'session' => 'required|string',
-        ]);
+        // Retrieve the authenticated teacher's ID
+        $teacherId = Auth::id();
 
-        // Retrieve the filtered enrollments
-        $enrollments = Enrollment::whereHas('courseSession', function ($query) use ($validatedData) {
-            $query->where('session', $validatedData['session'])
-                ->whereHas('course', function ($query) use ($validatedData) {
-                    $query->where('year', $validatedData['year'])
-                        ->where('semester', $validatedData['semester']);
-                });
+        // Fetch enrollments associated with the specified course_session_id
+        // and ensure the course session belongs to the authenticated teacher
+        $enrollments = Enrollment::whereHas('courseSession', function ($query) use ($courseSessionId, $teacherId) {
+            $query->where('id', $courseSessionId)
+                ->where('teacher_id', $teacherId);
         })->get();
+
+        if ($enrollments->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'There is no enrollment data or you are not authorized to view it.',
+            ], Response::HTTP_NOT_FOUND);
+        }
 
         return response()->json([
             'status' => 'success',
             'data' => $enrollments,
-        ], Response::HTTP_OK);
+        ]);
+    }
+
+    public function showForStudent(Request $request)
+    {
+        $studentId = Auth::id();
+
+        // Start building the query
+        $query = Enrollment::where('student_id', $studentId);
+
+        // Apply optional filters if they are present in the request
+        if ($request->filled('year')) {
+            $query->where('year', $request->input('year'));
+        }
+
+        if ($request->filled('semester')) {
+            $query->where('semester', $request->input('semester'));
+        }
+
+        if ($request->filled('session')) {
+            $query->where('session', $request->input('session'));
+        }
+
+        // Execute the query to get the filtered enrollments
+        $enrollments = $query->get()->makeHidden('final_term_marks');
+
+        if ($enrollments->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'There is no enrollment data or you are not authorized to view it.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $enrollments,
+        ]);
     }
 
 }

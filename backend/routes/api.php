@@ -13,8 +13,13 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/reset-password',[PasswordResetController::class, 'resetPassword'])->name('password.reset');
 
     Route::post('/login',[UserAuthController::class, 'login'])->middleware('throttle:userLogin');
-    Route::post('/logout',[LogoutController::class, 'logout'])->middleware('auth:sanctum');
+    Route::post('/logout',[LogoutController::class, 'logout'])->middleware('auth: sanctum');
+});
 
-    Route::post('/enrollment/{enrollment}',[EnrollmentController::class, 'update'])->middleware('auth:sanctum');
+// Enrollments
+Route::group(['prefix' => 'course'], function (){
+    Route::post('/enrollments/{enrollment}',[EnrollmentController::class, 'update'])->middleware('auth: sanctum');
+    Route::get('/enrollments',[EnrollmentController::class, 'showForStudent'])->middleware('auth:sanctum');
+    Route::get('/{course_session_id}',[EnrollmentController::class, 'showForTeacher'])->middleware('auth:sanctum');
 
 });
