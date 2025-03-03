@@ -13,7 +13,7 @@ use App\Notifications\NoticeNotification;
 
 class NoticeController extends Controller
 {
-    public function sendNoticeForApproval($record, $designation = 'teacher')
+    public function sendNoticeForApproval($record)
     {
         try {
 
@@ -42,7 +42,7 @@ class NoticeController extends Controller
     }
 
 
-    public function approveNotice(Request $request, $noticeId)
+    public function approveNotice($noticeId)
     {
 
         $notice = Notice::find($noticeId);

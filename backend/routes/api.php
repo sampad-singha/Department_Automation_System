@@ -21,5 +21,6 @@ Route::group(['prefix' => 'auth'], function () {
     
 });
 
-Route::get('show-notice',[ShowNoticeController::class,'show']);
+Route::get('show-notice',[ShowNoticeController::class,'showAll']);
+Route::get('show-notice/{id}',[ShowNoticeController::class,'show']);
 
