@@ -18,7 +18,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/logout',[LogoutController::class, 'logout'])->middleware('auth:sanctum');
 });
 
-// Enrollments
+// Courses routes
 Route::group(['prefix' => 'courses', 'middleware' => 'auth:sanctum'], function () {
     Route::get('/', [CourseController::class, 'showAll']);
     Route::get('/active', [CourseSessionController::class, 'show']);

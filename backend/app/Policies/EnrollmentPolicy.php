@@ -16,12 +16,6 @@ class EnrollmentPolicy
         return $user->can('view any enrollments');
     }
 
-//    public function view(Enrollment $enrollment): bool
-//    {
-//        $id = $enrollment->student_id;
-//        return $id === Auth::user()->id;
-//    }
-
     public function create(User $user): bool
     {
         return $user->can('create enrollments');
@@ -29,6 +23,9 @@ class EnrollmentPolicy
 
     public function update(User $user, Enrollment $enrollment): bool
     {
+        if ($user->hasRole('super-admin')) {
+            return true;
+        }
         // Retrieve the associated CourseSession
         $courseSession = $enrollment->courseSession;
         return ($user->id === $courseSession->teacher_id) && ($user->can('update enrollments'));
