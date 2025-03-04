@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\api\CourseController;
+use App\Http\Controllers\api\CourseSessionController;
 use App\Http\Controllers\api\EnrollmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserAuthController;
@@ -17,9 +19,12 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 // Enrollments
-Route::group(['prefix' => 'course'], function (){
-    Route::post('/enrollments/{enrollment}',[EnrollmentController::class, 'update'])->middleware('auth:sanctum');
-    Route::get('/enrollments',[EnrollmentController::class, 'showForStudent'])->middleware('auth:sanctum');
-    Route::get('/{course_session_id}',[EnrollmentController::class, 'showForTeacher'])->middleware('auth:sanctum');
-
+Route::group(['prefix' => 'courses', 'middleware' => 'auth:sanctum'], function () {
+    Route::get('/', [CourseController::class, 'showAll']);
+    Route::get('/active', [CourseSessionController::class, 'show']);
+    Route::get('/{course_id}', [CourseController::class, 'show']);
+    Route::get('/active/enrollments', [EnrollmentController::class, 'showForStudent']);
+    Route::get('/active/{course_session_id}', [EnrollmentController::class, 'showForTeacher']);
+    Route::post('/active/enrollments/{enrollment}', [EnrollmentController::class, 'update']);
 });
+
