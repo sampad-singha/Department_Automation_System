@@ -9,8 +9,5 @@ use Illuminate\Support\Facades\DB;
 
 class NoticeController extends Controller
 {
-    public function sendNoticeForApproval($record)
-    {
-        //
-    }
+
 }

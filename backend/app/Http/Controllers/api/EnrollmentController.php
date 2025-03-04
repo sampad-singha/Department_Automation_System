@@ -71,7 +71,7 @@ class EnrollmentController extends Controller
         }
     }
 
-    public function showForTeacher($courseSessionId, Request $request)
+    public function showForTeacher($courseSessionId)
     {
         // Retrieve the authenticated teacher's ID
         $teacherId = Auth::id();
