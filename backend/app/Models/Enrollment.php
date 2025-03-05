@@ -14,7 +14,9 @@ class Enrollment extends Model
     protected $fillable = [
         'courseSession_id',
         'student_id',
-        'status',
+        'is_enrolled',
+        'class_assessment_marks',
+        'final_term_marks',
     ];
 
     public function courseSession(): BelongsTo

@@ -53,6 +53,15 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view any users',
                 'view users',
             ],
+            'Enrollments' => [
+                'create enrollments',
+                'delete enrollments',
+                'force delete enrollments',
+                'restore enrollments',
+                'update enrollments',
+                'view any enrollments',
+                'view enrollments',
+            ],
         ];
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
