@@ -43,7 +43,7 @@ class ResetPasswordNotification extends Notification
                     // ->action('Reset Password ', url($url))
                     // ->line('Thank you for using our application!');
                     // F:\artisan-forces\backend\resources\views\mails\resetPasswordMail.blade.php
-                    ->view('mails.resetPasswordMail',[
+                    ->view('emails.resetPasswordMail',[
                          'url' =>$url
                     ]);
     }
