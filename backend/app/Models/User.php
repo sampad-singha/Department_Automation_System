@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Mail\WelcomeUserMail;
 use App\Models\Course;
 use App\Models\Department;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Laravel\Sanctum\HasApiTokens;
 use Database\Factories\UserFactory;
 use Illuminate\Notifications\Notifiable;
@@ -71,11 +75,18 @@ class User extends Authenticatable implements CanResetPasswordContract
         ];
     }
 
-    // Define the many-to-many relationship with the Course model
-//    public function courses(): BelongsToMany
-//    {
-//        return $this->belongsToMany(Course::class);
-//    }
+    //Send welcome email to the user after creation (only for students, send password reset link)
+    protected static function booted() : void
+    {
+        parent::booted();
+        // Work needed in admin panel create user.(assign role)
+        static::created(function ($user) {
+            if ($user->hasRole(['student', 'teacher']) || $user->designation === 'student') {
+                $token = Password::getRepository()->create($user);
+                Mail::to($user->email)->send(new WelcomeUserMail($user, $token));
+            }
+        });
+    }
 
     // Define the many-to-many relationship with the Department model
     public function department(): BelongsTo
@@ -99,7 +110,7 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         $this->notify(new ResetPasswordNotification($token));
     }
-    
+
     public function canAccessPanel(Panel $panel): bool
     {
         return  $this->hasRole(['admin', 'super-admin']);
