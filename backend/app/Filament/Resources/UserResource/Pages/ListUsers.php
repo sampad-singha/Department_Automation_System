@@ -3,10 +3,16 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
+use App\Imports\UsersImport;
 use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Notification;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 class ListUsers extends ListRecords
 {
@@ -16,6 +22,26 @@ class ListUsers extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            Action::make('ImportStudents ')
+                ->label('Import Students')
+                ->color('danger')
+                ->icon('heroicon-s-document-arrow-up')
+            ->form([
+                FileUpload::make('attachment')
+                    ->label('Attachment')
+                    ->rules('required', 'mimes:csv,xlsx'),
+            ])
+            ->action(function (array $data) {
+                $file = public_path('storage/' . $data['attachment']);
+
+                try {
+                    Excel::import(new UsersImport, $file);
+                }
+                catch (\Exception $e) {
+                    dd($e);
+                    return redirect()->back()->with('error', 'Error importing file');
+                }
+            }),
 
         ];
     }

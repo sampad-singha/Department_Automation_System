@@ -81,10 +81,8 @@ class User extends Authenticatable implements CanResetPasswordContract
         parent::booted();
         // Work needed in admin panel create user.(assign role)
         static::created(function ($user) {
-            if ($user->hasRole(['student', 'teacher']) || $user->designation === 'student') {
-                $token = Password::getRepository()->create($user);
-                Mail::to($user->email)->send(new WelcomeUserMail($user, $token));
-            }
+            $token = Password::getRepository()->create($user);
+            Mail::to($user->email)->send(new WelcomeUserMail($user, $token));
         });
     }
 
