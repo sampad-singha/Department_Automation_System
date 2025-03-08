@@ -10,9 +10,12 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class ListUsers extends ListRecords
 {
@@ -38,10 +41,65 @@ class ListUsers extends ListRecords
                     Excel::import(new UsersImport, $file);
                 }
                 catch (\Exception $e) {
-                    dd($e);
+                    // Log the error
+                    Log::error($e->getMessage());
                     return redirect()->back()->with('error', 'Error importing file');
                 }
+                return redirect()->back()->with('success', 'File imported successfully');
             }),
+            Action::make('DownloadSample')
+                ->label('Download Sample')
+                ->color('primary')
+                ->icon('heroicon-s-arrow-down')
+                ->action(function () {
+                    // Create a new Spreadsheet object
+                    $spreadsheet = new Spreadsheet();
+                    $sheet = $spreadsheet->getActiveSheet();
+
+                    // Set header row
+                    $headers = [
+                        'A1' => 'name',
+                        'B1' => 'image',
+                        'C1' => 'email',
+                        'D1' => 'department_code',
+                        'E1' => 'university_id',
+                        'F1' => 'session',
+                        'G1' => 'dob',
+                        'H1' => 'phone',
+                        'I1' => 'address',
+                        'J1' => 'city',
+                    ];
+
+                    foreach ($headers as $cell => $header) {
+                        $sheet->setCellValue($cell, $header);
+                    }
+
+                    // Set sample data row
+                    $sampleData = [
+                        'A2' => 'John Doe',
+                        'B2' => 'images/image_path.jpg',
+                        'C2' => 'john.doe@example.com',
+                        'D2' => 'CSE',
+                        'E2' => '210136',
+                        'F2' => '2021',
+                        'G2' => '1999-01-15',
+                        'H2' => '01812345678',
+                        'I2' => '123 Main St',
+                        'J2' => 'Pabna',
+                    ];
+
+                    foreach ($sampleData as $cell => $data) {
+                        $sheet->setCellValue($cell, $data);
+                    }
+
+                    // Write the spreadsheet to a temporary file
+                    $writer = new Xlsx($spreadsheet);
+                    $tempFilePath = tempnam(sys_get_temp_dir(), 'sample') . '.xlsx';
+                    $writer->save($tempFilePath);
+
+                    // Return the file as a download response
+                    return Response::download($tempFilePath, 'sample.xlsx')->deleteFileAfterSend(true);
+                }),
 
         ];
     }

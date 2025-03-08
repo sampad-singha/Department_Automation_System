@@ -92,7 +92,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithEvents
     public function registerEvents(): array
     {
         return [
-            AfterImport::class => function (AfterImport $event) {
+            AfterImport::class => function () {
                 // Actions to perform after the import
                 foreach ($this->importedUsers as $user) {
                     $student = User::where('email', $user->email)->first();
@@ -103,4 +103,5 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithEvents
             },
         ];
     }
+
 }
