@@ -4,6 +4,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
 use App\Imports\UsersImport;
+use Exception;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
@@ -11,11 +12,12 @@ use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Illuminate\Validation\ValidationException;
 
 class ListUsers extends ListRecords
 {
@@ -39,10 +41,37 @@ class ListUsers extends ListRecords
 
                 try {
                     Excel::import(new UsersImport, $file);
+                    Notification::make()
+                        ->title('User Imported successfully')
+                        ->success()
+                        ->send();
                 }
-                catch (\Exception $e) {
-                    // Log the error
-                    Log::error($e->getMessage());
+                catch (ValidationException $e) {
+                    // Retrieve all error messages
+                    $errors = $e->validator->errors()->all();
+
+                    // Format errors as an unordered list
+                    $errorList = '<ul>';
+                    foreach ($errors as $error) {
+                        $errorList .= "<li>{$error}</li>";
+                    }
+                    $errorList .= '</ul>';
+
+                    // Send a Filament notification with the formatted error messages
+                    Notification::make()
+                        ->title('Error Importing File')
+                        ->body($errorList)
+                        ->danger()
+                        ->persistent()
+                        ->send();
+                }
+                catch (Exception $e) {
+                    Notification::make()
+                        ->title('Error importing file')
+                        ->body($e->getMessage())
+                        ->duration(10000)
+                        ->danger()
+                        ->send();
                     return redirect()->back()->with('error', 'Error importing file');
                 }
                 return redirect()->back()->with('success', 'File imported successfully');
