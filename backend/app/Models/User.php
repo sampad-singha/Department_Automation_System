@@ -75,17 +75,6 @@ class User extends Authenticatable implements CanResetPasswordContract
         ];
     }
 
-    //Send welcome email to the user after creation (only for students, send password reset link)
-    protected static function booted() : void
-    {
-        parent::booted();
-        // Work needed in admin panel create user.(assign role)
-        static::created(function ($user) {
-            $token = Password::getRepository()->create($user);
-            Mail::to($user->email)->send(new WelcomeUserMail($user, $token));
-        });
-    }
-
     // Define the many-to-many relationship with the Department model
     public function department(): BelongsTo
     {
