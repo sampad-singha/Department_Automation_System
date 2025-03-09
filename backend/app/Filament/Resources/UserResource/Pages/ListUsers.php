@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -33,14 +34,21 @@ class ListUsers extends ListRecords
                 ->icon('heroicon-s-document-arrow-up')
             ->form([
                 FileUpload::make('attachment')
+                    ->disk('local')
+                    ->directory('user_imports')
+                    ->visibility('private')
                     ->label('Attachment')
                     ->rules('required', 'mimes:csv,xlsx'),
             ])
             ->action(function (array $data) {
-                $file = public_path('storage/' . $data['attachment']);
+                $file = Storage::disk('local')->path($data['attachment']);
 
                 try {
                     Excel::import(new UsersImport, $file);
+
+                    // Delete the file after successful import
+                    Storage::disk('local')->delete( $data['attachment']);
+
                     Notification::make()
                         ->title('User Imported successfully')
                         ->success()
