@@ -1,0 +1,78 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  analyze:
+    name: Analyze Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensures full history is fetched
+
+      # Set up PHP for Laravel
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer, phpunit
+          coverage: xdebug
+
+      - name: Install PHP Dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+        working-directory: ./backend
+
+      - name: Set up Laravel Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+        working-directory: ./backend
+
+      - name: Run PHPUnit Tests with Coverage
+        run: php artisan test --coverage-clover=coverage.xml
+        working-directory: ./backend
+
+      # Set up Node.js for React
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Node.js Dependencies
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Run React Tests with Coverage
+        run: npm test -- --coverage --coverageReporters=lcov
+        working-directory: ./frontend
+
+      # SonarCloud Analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+            -Dsonar.projectKey=your_project_key
+            -Dsonar.sources=backend,frontend
+            -Dsonar.php.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
+            -Dsonar.php.version=8.2
+
+      # Clean up
+      - name: Clean up
+        run: |
+          rm -f backend/coverage.xml
+          rm -rf frontend/coverage
