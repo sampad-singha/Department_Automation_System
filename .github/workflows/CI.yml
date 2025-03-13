@@ -33,7 +33,7 @@ jobs:
           ./vendor/bin/phpunit --coverage-clover=coverage.xml
 
       - name: Upload PHP coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: php-coverage-report
           path: backend/coverage.xml
@@ -60,7 +60,7 @@ jobs:
           npm test -- --coverage
 
       - name: Upload JS coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: js-coverage-report
           path: frontend/coverage/lcov.info
@@ -75,9 +75,10 @@ jobs:
           fetch-depth: 0
 
       - name: Download coverage reports
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          path: coverage-reports
+          pattern: '*-coverage-report'
+          merge-multiple: true
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -92,9 +93,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         with:
           args: >
-            -Dsonar.organization=learnathon-by-geeky-solutions
+            -Dsonar.organization=Learnathon-By-Geeky-Solutions
             -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_artisan-forces
-            -Dsonar.sources=.
-            -Dsonar.php.coverage.reportPaths=coverage-reports/php-coverage-report/coverage.xml
-            -Dsonar.javascript.lcov.reportPaths=coverage-reports/js-coverage-report/lcov.info
+            -Dsonar.php.coverage.reportPaths=php-coverage-report/coverage.xml
+            -Dsonar.javascript.lcov.reportPaths=js-coverage-report/lcov.info
             -Dsonar.coverage.exclusions=**/tests/**,**/node_modules/**,**/vendor/**
