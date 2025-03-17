@@ -26,10 +26,10 @@ class NoticeFactory extends Factory
         return [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->paragraph(),
-            'user_id' => $user->id,           // Assigning the random user ID
+            'published_by' => $user->id,           // ID of user who published the notice
             'department_id' => $department->id, // Assigning the random department ID
-            'published_at' => $this->faker->dateTimeThisYear(), // Optional: set published time
-            'archived_at' => $this->faker->optional()->dateTimeThisYear(), // Optional: set archived time
+            'published_on' => $this->faker->date(), // Optional: set published time
+            'archived_on' => $this->faker->optional()->date(), // Optional: set archived time
             'file' => $this->faker->optional()->url(), // Optional: set file name (random)
             'created_at' => now(),
             'updated_at' => now(),
