@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\api;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Login\UserLoginRequest;
 
 
@@ -26,7 +24,7 @@ class UserAuthController extends Controller
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
 
-            
+
             if ($user->hasRole(['admin', 'super-admin'])) {
                 Log::warning('Admin or Super Admin cannot log in.', ['email' => $validated['email']]);
                 return response()->json(['message' => 'Admins cannot log in here'], 403);

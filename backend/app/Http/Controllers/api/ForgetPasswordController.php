@@ -32,7 +32,6 @@ class ForgetPasswordController extends Controller
            catch (ValidationException $e) {
             return response()->json(['message' => 'Invalid email', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            DB::rollBack();
             return response()->json(['message' => 'Something went wrong', 'error' => $e->getMessage()], 500);
         }
     }
