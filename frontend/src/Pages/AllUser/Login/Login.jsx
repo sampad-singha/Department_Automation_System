@@ -1,4 +1,3 @@
-import { Tooltip } from 'react-tooltip';
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,7 +13,7 @@ const Login = () => {
     const { signIn } = useContext(AuthContext);
     const location = useLocation();
     const navigate = useNavigate();
-    const auth = getAuth(app);
+    getAuth(app);
     const captchaRef = useRef(null);
     const [disable, setDisable] = useState(true);
 
@@ -65,7 +64,7 @@ const Login = () => {
                         <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">Forgot password?</Link>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700"><LoadCanvasTemplate /></label>
+                        <label htmlFor="recaptcha" className="block text-sm font-medium text-gray-700"><LoadCanvasTemplate /></label>
                         <input ref={captchaRef} onBlur={handleValidateCaptcha} type="text" name="recaptcha" className="mt-1 p-2 w-full border rounded-md" required />
                     </div>
                     <button disabled={disable} className={`w-full py-2 rounded-md text-white font-bold ${disable ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>Login</button>

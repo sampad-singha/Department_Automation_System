@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../../Layout/AuthProvider/AuthProvider';
 import { NavLink } from 'react-router-dom';
-import { IoIosLogIn, IoIosLogOut } from 'react-icons/io';
+import { IoIosLogIn } from 'react-icons/io';
 import { FiMenu, FiX } from 'react-icons/fi';
 
 const Navbar = () => {

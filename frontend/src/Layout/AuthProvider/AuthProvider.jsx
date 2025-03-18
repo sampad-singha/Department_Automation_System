@@ -1,4 +1,3 @@
-// import React from 'react';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
 import PropTypes from 'prop-types';
 import { createContext, useEffect, useState } from "react";
@@ -16,7 +15,7 @@ const AuthProvider = ({ children }) => {
     const axiosPublic = useAxiosPublic();
 
 
-    const ssignInWithPopup = (auth, githubProvider) => {
+    const signInWithPopup = (auth, githubProvider) => {
         setLoading(true);
         return signInWithPopup(auth, githubProvider);
     }
@@ -60,14 +59,12 @@ const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, currentUser => {
-            // console.log('user auth state change ', currentUser);
             setUser(currentUser);
 
 
 
 
             if (currentUser) {
-                // const userEmail = currentUser?.email || user?.email;
                 const loggedUser = { email: currentUser?.email }
 
                 axiosPublic.post('/jwt', loggedUser)
@@ -82,7 +79,6 @@ const AuthProvider = ({ children }) => {
                 localStorage.removeItem('access-token');
                 setLoading(false);
             }
-            // setLoading(false)
             
 
         });
@@ -90,14 +86,13 @@ const AuthProvider = ({ children }) => {
             unSubscribe();
         }
     }, [axiosPublic])
-// }, [axiosPublic])
 
 
 
     const authInfo = {
         user,
 
-        ssignInWithPopup,
+        signInWithPopup,
         setUser,
         loading,
         createUser,

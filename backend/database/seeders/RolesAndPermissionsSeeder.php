@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -13,6 +12,15 @@ class RolesAndPermissionsSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    private const DELETE_USERS_PERMISSION = 'delete users';
+    //'view any departments'
+    private const VIEW_ANY_DEPARTMENTS_PERMISSION = 'view any departments';
+    private const VIEW_USERS_PERMISSION = 'view users';
+    private const VIEW_ANY_USERS_PERMISSION = 'view any users';
+    private const UPDATE_USERS_PERMISSION = 'update users';
+    private const VIEW_DEPARTMENTS_PERMISSION = 'view departments';
+
+
     public function run(): void
     {
 
@@ -23,8 +31,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'force delete departments',
                 'restore departments',
                 'update departments',
-                'view any departments',
-                'view departments',
+                self::VIEW_ANY_DEPARTMENTS_PERMISSION,
+                self::VIEW_DEPARTMENTS_PERMISSION,
             ],
             'Permissions' => [
                 'create permissions',
@@ -47,11 +55,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'Users' => [
                 'create users',
                 'delete any users',
-                'delete users',
+                self::DELETE_USERS_PERMISSION,
                 'update any users',
-                'update users',
-                'view any users',
-                'view users',
+                self::UPDATE_USERS_PERMISSION,
+                self::VIEW_ANY_USERS_PERMISSION,
+                self::VIEW_USERS_PERMISSION,
             ],
             'Enrollments' => [
                 'create enrollments',
@@ -80,35 +88,35 @@ class RolesAndPermissionsSeeder extends Seeder
 
         //Assign Permissions to Roles
         Role::findByName('student')->givePermissionTo([
-            'view users',
-            'view departments',
+            self::VIEW_USERS_PERMISSION,
+            self::VIEW_DEPARTMENTS_PERMISSION,
             'view any departments',
-            'update users',
+            self::UPDATE_USERS_PERMISSION,
             'delete users',
         ]);
         Role::findByName('teacher')->givePermissionTo([
-            'view users',
+            self::VIEW_USERS_PERMISSION,
             'view any users',
-            'update users',
-            'delete users',
+            self::UPDATE_USERS_PERMISSION,
+            self::DELETE_USERS_PERMISSION,
             'view departments',
-            'view any departments',
+            self::VIEW_ANY_DEPARTMENTS_PERMISSION,
         ]);
         Role::findByName('admin')->givePermissionTo([
             'create users',
             'delete any users',
-            'delete users',
+            self::DELETE_USERS_PERMISSION,
             'update any users',
-            'update users',
-            'view any users',
-            'view users',
+            self::VIEW_USERS_PERMISSION,
+            self::UPDATE_USERS_PERMISSION,
+            self::VIEW_ANY_USERS_PERMISSION,
             'create departments',
             'delete departments',
             'force delete departments',
             'restore departments',
             'update departments',
-            'view any departments',
-            'view departments',
+            self::VIEW_ANY_DEPARTMENTS_PERMISSION,
+            self::VIEW_DEPARTMENTS_PERMISSION,
             //temporarily added
             'create permissions',
             'delete permissions',
