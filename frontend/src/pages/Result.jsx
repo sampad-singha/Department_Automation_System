@@ -37,8 +37,9 @@ const Result = () => {
         {/* Input Form */}
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Year</label>
+            <label htmlFor={year} className="block text-sm font-medium text-gray-700">Year</label>
             <input
+                id={year}
               type="number"
               value={year}
               onChange={(e) => setYear(e.target.value)}
@@ -47,8 +48,9 @@ const Result = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Semester</label>
+            <label htmlFor={semester} className="block text-sm font-medium text-gray-700">Semester</label>
             <input
+                id={semester}
               type="number"
               value={semester}
               onChange={(e) => setSemester(e.target.value)}
@@ -81,15 +83,15 @@ const Result = () => {
 
         {/* Display Results */}
         {!loading && !error && results.length > 0 && (
-          <div className="space-y-6">
-            {results.map((result, index) => (
-              <div key={index} className="p-6 transition-shadow duration-300 ease-in-out bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg">
-                <h2 className="text-2xl font-medium text-gray-800">{result.subject_name}</h2>
-                <p className="mt-1 text-sm text-gray-500">Code: {result.subject_code}</p>
-                <p className="mt-3 text-gray-600">Grade: {result.grade}</p>
-              </div>
-            ))}
-          </div>
+            <div className="space-y-6">
+              {results.map((result) => (
+                  <div key={result.id} className="p-6 transition-shadow duration-300 ease-in-out bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg">
+                    <h2 className="text-2xl font-medium text-gray-800">{result.subject_name}</h2>
+                    <p className="mt-1 text-sm text-gray-500">Code: {result.subject_code}</p>
+                    <p className="mt-3 text-gray-600">Grade: {result.grade}</p>
+                  </div>
+              ))}
+            </div>
         )}
 
         {/* No results found message */}

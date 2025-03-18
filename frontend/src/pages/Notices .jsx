@@ -49,8 +49,9 @@ const Notices = () => {
         {/* Filter Controls */}
         <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Department</label>
+            <label htmlFor={department} className="block text-sm font-medium text-gray-700">Department</label>
             <input
+                id={department}
               type="text"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
@@ -59,8 +60,9 @@ const Notices = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Days</label>
+            <label htmlFor={days} className="block text-sm font-medium text-gray-700">Days</label>
             <input
+                id={days}
               type="number"
               value={days}
               onChange={(e) => setDays(e.target.value)}
@@ -88,14 +90,15 @@ const Notices = () => {
           <div className="space-y-6">
             {notices.length > 0 ? (
               notices.map((notice) => (
-                <div
-                  key={notice.id}
-                  onClick={() => handleNoticeClick(notice.id)} // Click handler
-                  className="p-6 transition-shadow duration-300 ease-in-out bg-white border border-gray-200 rounded-lg shadow-md cursor-pointer hover:shadow-lg"
-                >
-                  <h2 className="text-2xl font-medium text-gray-800">{notice.title}</h2>
-                  <p className="mt-1 text-sm text-gray-500">Posted on: {notice.published_on}</p>
-                </div>
+                  <button
+                      key={notice.id}
+                      onClick={() => handleNoticeClick(notice.id)}
+                      className="w-full text-left p-6 transition-shadow duration-300 ease-in-out bg-white border border-gray-200 rounded-lg shadow-md cursor-pointer hover:shadow-lg"
+                  >
+                    <h2 className="text-2xl font-medium text-gray-800">{notice.title}</h2>
+                    <p className="mt-1 text-sm text-gray-500">Posted on: {notice.published_on}</p>
+                  </button>
+
               ))
             ) : (
               <div className="text-lg text-center text-gray-500">No notices found for the specified filter.</div>
