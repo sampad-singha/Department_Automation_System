@@ -7,13 +7,12 @@ import {
     PhoneIcon,
     AcademicCapIcon,
     BuildingLibraryIcon,
-    MapPinIcon,
     IdentificationIcon,
     BuildingOfficeIcon,
     ArrowRightStartOnRectangleIcon
 } from "@heroicons/react/24/outline";
 
-export default function StudentDashboard() {
+export default function TeacherDashboard() {
     const { user, logout } = useAuth();
 
     return (
@@ -45,14 +44,6 @@ export default function StudentDashboard() {
                     <DetailItem icon={CalendarIcon} label="Date of Birth" value={user?.dob} />
                     <DetailItem icon={PhoneIcon} label="Phone" value={user?.phone} />
                     <DetailItem icon={IdentificationIcon} label="University ID" value={user?.university_id} />
-                    <DetailItem icon={BuildingLibraryIcon} label="Session" value={user?.session} />
-                    <DetailItem icon={MapPinIcon} label="City" value={user?.city} />
-                    <DetailItem icon={MapPinIcon} label="Address" value={user?.address} />
-                    <DetailItem
-                        icon={AcademicCapIcon}
-                        label="Semester"
-                        value={`Year ${user?.year}, Semester ${user?.semester}`}
-                    />
 
                     {/* Department Section */}
                     <div className="mt-6 border-t border-gray-700 pt-4">
