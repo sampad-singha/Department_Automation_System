@@ -60,6 +60,7 @@ export default function TeacherDashboard() {
                 {/* Logout Button */}
                 <div className="mt-6 flex justify-center">
                     <button
+                        type="button"
                         onClick={logout}
                         className="px-5 py-2 flex items-center gap-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition"
                     >
