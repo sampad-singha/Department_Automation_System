@@ -40,7 +40,7 @@ const Sidebar = ({ onLogout }) => {
                 )}
             </nav>
 
-            <button onClick={onLogout} className="flex items-center mt-auto text-red-400 hover:text-red-500">
+            <button type="button" onClick={onLogout} className="flex items-center mt-auto text-red-400 hover:text-red-500">
                 <ArrowRightStartOnRectangleIcon className="h-5 w-5 mr-2" />
                 Logout
             </button>
