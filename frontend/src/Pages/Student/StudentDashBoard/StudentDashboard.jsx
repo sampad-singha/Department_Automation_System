@@ -15,7 +15,6 @@ import {
 
 export default function StudentDashboard() {
     const { user, logout } = useAuth();
-    console.log(user);
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white px-4">
