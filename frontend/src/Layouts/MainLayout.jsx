@@ -12,9 +12,9 @@ export default function MainLayout() {
     };
 
     return (
-        <div className="flex">
-            <Sidebar onLogout={handleLogout} />
-            <div className="flex-1 ml-64 p-6">
+        <div className="flex flex-col md:flex-row">
+            <Sidebar onLogout={handleLogout} className="w-full md:w-64" />
+            <div className="flex-1 p-6 md:ml-64">
                 <Outlet />
             </div>
         </div>
