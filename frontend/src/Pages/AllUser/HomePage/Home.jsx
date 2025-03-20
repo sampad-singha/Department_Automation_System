@@ -1,11 +1,11 @@
-import Hero  from "./HeroSection/Hero";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Home = () => {
+export default function Home() {
     return (
         <div>
-            <Hero></Hero>
+            <h1>Welcome to Our App</h1>
+            <Link to="/login">Login</Link>
         </div>
     );
-};
-
-export default Home;
+}

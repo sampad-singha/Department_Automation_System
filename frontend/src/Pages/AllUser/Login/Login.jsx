@@ -1,78 +1,158 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { getAuth } from "firebase/auth";
-import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
-import app from "../../../../firebase.config";
-import { AuthContext } from "../../../Layout/AuthProvider/AuthProvider";
-import { Helmet } from "react-helmet";
-import { motion } from "framer-motion";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../../api.jsx';
+import { useAuth } from '../../../Contexts/AuthContext.jsx';
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
-const Login = () => {
-    const { signIn } = useContext(AuthContext);
-    const location = useLocation();
+export default function Login() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const { login } = useAuth();
     const navigate = useNavigate();
-    getAuth(app);
-    const captchaRef = useRef(null);
-    const [disable, setDisable] = useState(true);
 
-    useEffect(() => {
-        loadCaptchaEnginge(3);
-    }, []);
-
-    const handleLogin = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const form = new FormData(e.currentTarget);
-        const email = form.get('email');
-        const password = form.get('password');
+        setError('');
+        setIsLoading(true);
 
-        signIn(email, password)
-            .then(() => {
-                toast.success("Successfully Logged In");
-                navigate(location?.state || '/');
-            })
-            .catch(() => {
-                toast.error("Invalid email or password");
+        try {
+            const response = await api.post('/auth/login', {
+                email,
+                password,
+                remember_me: rememberMe
+            }, {
+                _skipAuthRedirect: true
             });
-    };
 
-    const handleValidateCaptcha = (e) => {
-        const user_captcha_value = e.target.value;
-        setDisable(!validateCaptcha(user_captcha_value));
+            login(response.data.token, response.data.user, rememberMe);
+            const mainRole = response.data.user.roles[0]?.name.toLowerCase();
+
+            if (mainRole === 'student') {
+                navigate('/student-dashboard');
+            } else if (mainRole === 'teacher') {
+                navigate('/teacher-dashboard');
+            } else {
+                console.warn('Unexpected or missing user role:', mainRole);
+                navigate('/login');
+            }
+        } catch (err) {
+            if (err.config.url.includes('/auth/login')) {
+                if (err.response?.status === 401) {
+                    setError('Invalid email or password');
+                } else {
+                    setError('Login failed. Please try again.');
+                }
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
-        <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-            <Helmet>
-                <title>Login</title>
-            </Helmet>
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="p-8 bg-white shadow-2xl rounded-xl w-full max-w-md">
-                <h2 className="text-center text-4xl font-extrabold text-indigo-600">Login</h2>
-                <form onSubmit={handleLogin} className="space-y-4 mt-6">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 px-4">
+            <div className="w-full max-w-md bg-white/90 backdrop-blur-lg shadow-xl rounded-2xl p-8">
+                <h2 className="text-center text-3xl font-bold text-gray-900">Sign in to your account</h2>
+                <p className="text-center text-sm text-gray-500 mt-2">
+                    Welcome back! Please enter your details.
+                </p>
+
+                <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+                    {/* Email Input - Preserved */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" name="email" className="mt-1 p-2 w-full border rounded-md" required />
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            Email Address
+                        </label>
+                        <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="mt-1 w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Password</label>
-                        <input type="password" name="password" className="mt-1 p-2 w-full border rounded-md" required />
-                        <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">Forgot password?</Link>
+
+                    {/* Password Input - Preserved */}
+                    <div className="relative">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="mt-1 w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pr-10"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-3 flex items-center mt-7"
+                        >
+                            {showPassword ? (
+                                <EyeSlashIcon className="h-5 w-5 text-gray-500 hover:text-gray-700 transition duration-200" />
+                            ) : (
+                                <EyeIcon className="h-5 w-5 text-gray-500 hover:text-gray-700 transition duration-200" />
+                            )}
+                        </button>
                     </div>
-                    <div>
-                        <label htmlFor="recaptcha" className="block text-sm font-medium text-gray-700"><LoadCanvasTemplate /></label>
-                        <input ref={captchaRef} onBlur={handleValidateCaptcha} type="text" name="recaptcha" className="mt-1 p-2 w-full border rounded-md" required />
+
+                    {/* Remember Me & Forgot Password - Preserved */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <input
+                                id="remember-me"
+                                type="checkbox"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                                className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                            />
+                            <label htmlFor="remember-me" className="ml-2 text-sm text-gray-600">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" className="text-sm text-indigo-600 hover:underline">
+                            Forgot password?
+                        </a>
                     </div>
-                    <button disabled={disable} className={`w-full py-2 rounded-md text-white font-bold ${disable ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>Login</button>
+
+                    {/* Error Message - Preserved */}
+                    {error && (
+                        <div className="bg-red-100 text-red-700 p-3 rounded-lg">
+                            {error}
+                        </div>
+                    )}
+
+                    {/* Submit Button with Loading State */}
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full bg-indigo-600 text-white py-3 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                        {isLoading ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                Signing In...
+                            </>
+                        ) : (
+                            'Sign in'
+                        )}
+                    </button>
                 </form>
-                <p className="text-center mt-4">Don't have an account? <Link to="/signUp" className="text-indigo-500 font-semibold hover:underline">Sign Up</Link></p>
-                <ToastContainer position="top-center" autoClose={5000} hideProgressBar pauseOnHover theme="light" />
-            </motion.div>
+
+                {/* Sign Up Link - Preserved */}
+                <p className="text-center text-sm text-gray-500 mt-5">
+                    Don't have an account?{" "}
+                    <a href="#" className="text-indigo-600 hover:underline">
+                        Sign up
+                    </a>
+                </p>
+            </div>
         </div>
     );
-};
-export default Login;
+}

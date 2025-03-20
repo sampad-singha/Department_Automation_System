@@ -1,90 +1,29 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import './App.css';
-import Header from './Components/Header';
-import Home from './pages/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import ProtectedRoute from './layouts/ProtectedRoute';
-import Notices from "./pages/Notices ";
-import Result from "./pages/Result";
-import NoticeDetail from "./pages/NoticeDetail ";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from '../src/Pages/AllUser/HomePage/Home.jsx';
+import Login from '../src/Pages/AllUser/Login/Login.jsx';
+import StudentDashboard from '../src/Pages/Student/StudentDashBoard/StudentDashboard.jsx';
+import TeacherDashboard from '../src/Pages/Teacher/TeacherDashBoard/TeacherDashboard.jsx';
+import PrivateRoute from '../src/Component/PrivateRoute.jsx';
+import { AuthProvider } from './Contexts/AuthContext.jsx';
+import MainLayout from './layouts/MainLayout.jsx';
 
 function App() {
-  return (
-    <Router>
-      
-      <Routes>
-       
-        <Route path="/login" element={<Login />} />
+    return (
+        <Router>
+            <AuthProvider>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
 
-       
-        <Route element={<ProtectedRoute />}>
-          <Route
-            path="/dashboard"
-            element={
-              <>
-                <Header />
-                <Dashboard />
-              </>
-            }
-          />
-        </Route>
-
-       
-        <Route
-          path="/"
-          element={
-            <>
-              <Header />
-              <Home />
-            </>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <>
-              <Header />
-              <About />
-            </>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <>
-              <Header />
-              <Contact />
-            </>
-          }
-        />
-        <Route
-          path="/notice"
-          element={
-            <>
-              <Header />
-              <Notices />
-            </>
-          }
-        >
-          {/* Nested Route for Notice Detail */}
-          <Route path=":id" element={<NoticeDetail />} />
-        </Route>
-
-        <Route
-          path="/result"
-          element={
-            <>
-              <Header />
-              <Result />
-            </>
-          }
-        />
-      </Routes>
-    </Router>
-  );
+                    {/* Routes with Sidebar */}
+                    <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
+                        <Route path="/student/dashboard" element={<StudentDashboard />} />
+                        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+                    </Route>
+                </Routes>
+            </AuthProvider>
+        </Router>
+    );
 }
 
 export default App;
