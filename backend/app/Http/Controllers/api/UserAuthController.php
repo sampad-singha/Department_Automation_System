@@ -18,8 +18,7 @@ class UserAuthController extends Controller
             Log::info('Starting user login.');
 
             $validated = $request->validated();
-            $userId = User::where('email', $validated['email'])->first()->id;
-            $user = User::with(['roles', 'department'])->find($userId);
+            $user = User::with(['roles', 'department'])->where('email', $validated['email'])->first();
 
 
             if (!$user || !Hash::check($validated['password'], $user->password)) {
