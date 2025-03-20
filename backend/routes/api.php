@@ -16,7 +16,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/reset-password',[PasswordResetController::class, 'resetPassword'])->name('password.reset');
 
     Route::post('/login',[UserAuthController::class, 'login']);
-//        ->middleware('throttle:userLogin');
+        ->middleware('throttle:userLogin');
     Route::post('/logout',[LogoutController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/user',[UserAuthController::class, 'authUser'])->middleware('auth:sanctum');
 
