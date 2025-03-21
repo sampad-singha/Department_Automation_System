@@ -47,7 +47,7 @@ class ShowNoticeController extends Controller
 
         
         $notices = $query->select(['id', 'title', 'content', 'department_id', 'created_at'])
-            ->get()
+            ->paginate(10)
             ->map(function ($notice) {
                 return [
                     'id' => $notice->id,

@@ -42,5 +42,5 @@ Route::get('show-notice/{id}',[ShowNoticeController::class,'show']);
 
 Route::prefix('result')->group(function () {
     Route::get('show/{courseId}', [ResultController::class, 'showResult']);
-    Route::get('show-full/{year}/{semester}', [ResultController::class, 'showFullResult']);
+    Route::get('show-full-result/{year}/{semester}', [ResultController::class, 'showFullResult']);
 });
