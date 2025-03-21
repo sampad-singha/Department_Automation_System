@@ -1,14 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\CourseController;
 use App\Http\Controllers\api\CourseSessionController;
 use App\Http\Controllers\api\EnrollmentController;
 use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\api\NoticeController;
 use App\Http\Controllers\Api\UserAuthController;
+use App\Http\Controllers\api\EnrollmentController;
+use App\Http\Controllers\Api\ShowNoticeController;
+use App\Http\Controllers\api\CourseSessionController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ForgetPasswordController;
-use App\Http\Controllers\Api\ShowNoticeController;
+use App\Http\Controllers\Api\ResultController;
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -36,3 +39,11 @@ Route::group(['prefix' => 'courses', 'middleware' => 'auth:sanctum'], function (
 Route::get('show-notice',[ShowNoticeController::class,'showAll']);
 Route::get('show-notice/{id}',[ShowNoticeController::class,'show']);
 
+
+
+
+
+Route::prefix('result')->group(function () {
+    Route::get('show/{courseId}', [ResultController::class, 'showResult']);
+    Route::get('show-full-result/{year}/{semester}', [ResultController::class, 'showFullResult']);
+});
