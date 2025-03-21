@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="623fb4af-feb7-4fc1-9c13-b5fb9cb8ad59" name="Changes" comment="Initial Commit">
-      <change afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/api/CourseController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/Policies/EnrollmentPolicy.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseResource.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseSessionResource/Pages/CreateCourseSession.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseSessionResource/Pages/CreateCourseSession.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/Controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/Controller.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/api/CourseSessionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/api/CourseSessionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/api/CourseStudentController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/api/EnrollmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/api/EnrollmentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Models/Enrollment.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Models/Enrollment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/config/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config/auth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/seeders/DatabaseSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database/seeders/RolesAndPermissionsSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/seeders/RolesAndPermissionsSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/api.php" afterDir="false" />
-    </list>
+    <list default="true" id="623fb4af-feb7-4fc1-9c13-b5fb9cb8ad59" name="Changes" comment="Initial Commit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,18 +18,18 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="SWAP_SIDES_IN_COMPARE_BRANCHES" value="true" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "sampad-singha"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;sampad-singha&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Learnathon-By-Geeky-Solutions/artisan-forces.git",
-    "accountId": "306d1b03-503a-4ead-ab78-a6a8a2fd3f7d"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Learnathon-By-Geeky-Solutions/artisan-forces.git&quot;,
+    &quot;accountId&quot;: &quot;306d1b03-503a-4ead-ab78-a6a8a2fd3f7d&quot;
   }
-}]]></component>
+}</component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="D:\xampp\php\php.exe">
     <include_path>
       <path value="$PROJECT_DIR$/backend/vendor/doctrine/lexer" />
@@ -210,14 +199,17 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging conflict/pr29",
+    "git-widget-placeholder": "feat/26/frontend-login-notice",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "F:/api-starter-laravel-11",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "actions.on.save",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -225,9 +217,6 @@
     <configuration name="Main" type="PestRunConfigurationType">
       <option name="pestRunnerSettings">
         <PestRunner configuration_file="$PROJECT_DIR$/backend/phpunit.xml" scope="ConfigurationFile" use_alternative_configuration_file="true" />
-      </option>
-      <option name="runnerSettings">
-        <PhpTestRunnerSettings configuration_file="$PROJECT_DIR$/backend/phpunit.xml" scope="ConfigurationFile" use_alternative_configuration_file="true" />
       </option>
       <method v="2" />
     </configuration>
@@ -255,6 +244,7 @@
       <workItem from="1738505919330" duration="143000" />
       <workItem from="1738577582720" duration="43000" />
       <workItem from="1741199916199" duration="350000" />
+      <workItem from="1742281192284" duration="1513000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
