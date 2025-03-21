@@ -32,9 +32,9 @@ export default function Login() {
             const mainRole = response.data.user.roles[0]?.name.toLowerCase();
 
             if (mainRole === 'student') {
-                navigate('/student-dashboard');
+                navigate('/student/dashboard');
             } else if (mainRole === 'teacher') {
-                navigate('/teacher-dashboard');
+                navigate('/teacher/dashboard');
             } else {
                 console.warn('Unexpected or missing user role:', mainRole);
                 navigate('/login');
