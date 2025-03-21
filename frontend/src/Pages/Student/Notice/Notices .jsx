@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import api from "../../../api.jsx";
 
 const Notices = () => {
     const [notices, setNotices] = useState([]);
@@ -9,7 +10,7 @@ const Notices = () => {
     const [selectedDepartment, setSelectedDepartment] = useState("");
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/show-notice")
+        api.get("/show-notice")
             .then(response => {
                 setNotices(response.data.notices);
                 setFilteredNotices(response.data.notices);

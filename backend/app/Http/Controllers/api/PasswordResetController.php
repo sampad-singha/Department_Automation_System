@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,14 +18,14 @@ class PasswordResetController extends Controller
             $request->validate([
                 'token' => 'required',
                 'email' => 'required|email',
-                'password' => 'required|min:6|confirmed',
+                'password' => 'alpha_num|required|min:8|confirmed',
             ]);
 
             $status = Password::reset(
                 $request->only('email', 'password', 'password_confirmation', 'token'),
                 function (User $user, string $password) {
                     $user->forceFill([
-                        'password' => bcrypt($password),
+                        'password' => Hash::make($password),
                         'remember_token' => Str::random(60),
                     ])->save();
                 }
