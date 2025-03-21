@@ -1,23 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Enrollment;
-
 use App\Helpers\GradeHelper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class ResultController extends Controller
 {
-
-
-
     public function showResult($courseId)
     {
 
         $user = auth()->user();
+
         if (!$user) {
             return response()->json(['message' => 'User not authenticated'], 401);
         }
@@ -58,7 +54,7 @@ class ResultController extends Controller
             return response()->json(['message' => 'User not authenticated'], 401);
         }
 
-        $maxResults = Enrollment::where('student_id', $user->id)
+        $maxResults = Enrollment::where('student_id',  $user->id)
             ->whereHas('courseSession.course', function ($query) use ($year, $semester) {
                 $query->where('year', $year);
 
