@@ -6,6 +6,8 @@ import TeacherDashboard from '../src/Pages/Teacher/TeacherDashBoard/TeacherDashb
 import PrivateRoute from '../src/Component/PrivateRoute.jsx';
 import { AuthProvider } from './Contexts/AuthContext.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
+import ForgotPassword from "./Pages/AllUser/Login/ForgotPassword.jsx";
+import ResetPassword from "./Pages/AllUser/Login/ResetPassword.jsx";
 
 function App() {
     return (
@@ -14,6 +16,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
 
                     {/* Routes with Sidebar */}
                     <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>

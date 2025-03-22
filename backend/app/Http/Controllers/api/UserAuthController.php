@@ -16,24 +16,21 @@ class UserAuthController extends Controller
     {
         try {
             Log::info('Starting user login.');
+            $user = User::with(['roles', 'department'])->where('email', $request['email'])->first();
 
-            $validated = $request->validated();
-            $user = User::with(['roles', 'department'])->where('email', $validated['email'])->first();
-
-
-            if (!$user || !Hash::check($validated['password'], $user->password)) {
-                Log::warning('Invalid login attempt.', ['email' => $validated['email']]);
+            if (!$user || !Hash::check($request['password'], $user->password)) {
+                Log::warning('Invalid login attempt.', ['email' => $request['email']]);
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
 
 
             if ($user->hasRole(['admin', 'super-admin'])) {
-                Log::warning('Admin or Super Admin cannot log in.', ['email' => $validated['email']]);
+                Log::warning('Admin or Super Admin cannot log in.', ['email' => $request['email']]);
                 return response()->json(['message' => 'Admins cannot log in here'], 403);
             }
 
             $tokenName = 'auth_token';
-            $token = isset($validated['remember_me']) && $validated['remember_me']
+            $token = isset($request['remember_me']) && $request['remember_me']
                 ? $user->createToken($tokenName, ['*'], now()->addWeeks(2))->plainTextToken
                 : $user->createToken($tokenName)->plainTextToken;
 
