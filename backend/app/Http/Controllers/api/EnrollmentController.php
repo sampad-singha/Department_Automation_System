@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Models\CourseSession;
 use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnrollmentController extends Controller
 {
-    public function store($courseSession): void
+    public function store_all($courseSession): void
     {
         $this->authorize('create', Enrollment::class);
         $course = $courseSession->course;
@@ -29,9 +30,116 @@ class EnrollmentController extends Controller
             Enrollment::create([
                 'courseSession_id' => $courseSession->id,
                 'student_id' => $student->id,
-                'is_enrolled' => true, // Assuming enrollment is active upon creation
+                'is_enrolled' => false, // True when payment is done
             ]);
         }
+    }
+
+    public function store(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'courseSession_id' => 'required|exists:course_sessions,id',
+        ]);
+
+        $user = Auth::user();
+
+        // Check if the user is a student
+        if (!$user->hasRole('student')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Only students can enroll in courses.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        // Check if the student can enroll in the course session
+        if (!$this->canRetake($user->id, $validatedData['courseSession_id'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You are not eligible to retake this course.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        try {
+            // Create a new enrollment record
+            $enrollment = Enrollment::create([
+                'courseSession_id' => $validatedData['courseSession_id'],
+                'student_id' => $user->id,
+                'is_enrolled' => false, // True when payment is done
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Enrollment created successfully.',
+                'data' => $enrollment,
+            ], Response::HTTP_CREATED);
+        } catch (ValidationException $e) {
+            // Handle validation exceptions
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed.',
+                'errors' => $e->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        catch (\Exception $e) {
+            // Log the exception
+            Log::error('Enrollment creation failed: ' . $e->getMessage());
+
+            // Handle other exceptions
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred.',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public function canRetake($studentId, $courseSessionId): bool
+    {
+        // Retrieve the student with their department and enrollments
+        $student = User::with('department', 'enrollments.courseSession.course')->find($studentId);
+
+        // Retrieve the course session with its department
+        $courseSession = CourseSession::with('course.department')->find($courseSessionId);
+
+        // Initialize the eligibility flag
+        $canRetake = true;
+        // Check if the student and course session belong to the same department
+        if (($student->department_id !== $courseSession->course->department_id) ||
+            ($student->enrollments->contains('courseSession_id', $courseSessionId))) {
+            return false;
+        }
+        // Filter enrollments for the specific course and sort by session in descending order
+        $enrollments = $student->enrollments
+            ->filter(function ($enrollment) use ($courseSession) {
+                return $enrollment->courseSession->course_id === $courseSession->course_id;
+            })
+            ->sortByDesc('courseSession.session');
+
+
+        if ($enrollments->isEmpty()) {
+            return true;
+        }
+
+
+        // Check if the student has passed any previous session
+        foreach ($enrollments as $enrollment) {
+            if (($enrollment->class_assessment_marks + $enrollment->final_term_marks) >= 40) {
+                $canRetake = false;
+                break;
+            }
+        }
+
+        // Check if the latest enrollment is in the immediate next session and marks are less than 60
+        $latestEnrollment = $enrollments->first();
+        if ($latestEnrollment &&
+            ($latestEnrollment->courseSession->session === $student->session) &&
+            (($latestEnrollment->class_assessment_marks + $latestEnrollment->final_term_marks) < 60)) {
+            $canImprove = true;
+        } else {
+            $canImprove = false;
+        }
+        return $canRetake || $canImprove;
     }
 
     public function update(Request $request, Enrollment $enrollment)
@@ -61,7 +169,7 @@ class EnrollmentController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (\Exception $e) {
             // Log the exception
-            Log::error('Enrollment update failed: '.$e->getMessage());
+            Log::error('Enrollment update failed: ' . $e->getMessage());
 
             // Handle other exceptions
             return response()->json([

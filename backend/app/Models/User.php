@@ -87,6 +87,12 @@ class User extends Authenticatable implements CanResetPasswordContract
         return $this->HasMany(Notice::class);
     }
 
+    // Define one-to-many relationship with the Enrollment model
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class, 'student_id');
+    }
+
     public function approvedNotices(): belongsToMany
     {
         return $this->belongsToMany(Notice::class, 'notice_user', 'user_id', 'notice_id')

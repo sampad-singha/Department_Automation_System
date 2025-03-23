@@ -31,6 +31,7 @@ Route::group(['prefix' => 'courses', 'middleware' => 'auth:sanctum'], function (
     Route::get('/active/enrollments', [EnrollmentController::class, 'showForStudent']);
     Route::get('/active/{course_session_id}', [EnrollmentController::class, 'showForTeacher']);
     Route::post('/active/enrollments/{enrollment}', [EnrollmentController::class, 'update']);
+    Route::post('/active/enroll/{course_session_id}', [EnrollmentController::class, 'store']);
 });
 
 

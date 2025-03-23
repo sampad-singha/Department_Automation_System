@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CourseSession;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +29,7 @@ class CourseSessionController extends Controller
                 'data' => $courseSessions,
             ], Response::HTTP_OK);
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to fetch course sessions.',
