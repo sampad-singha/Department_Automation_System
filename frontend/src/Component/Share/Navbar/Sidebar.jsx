@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import {
     HomeIcon,
+    BellIcon,
     BookOpenIcon,
     ChartBarIcon,
     CreditCardIcon,
@@ -16,8 +17,8 @@ const Sidebar = ({ onLogout }) => {
     const location = useLocation(); // Get current route
 
     return (
-        <div className="h-screen w-64 bg-gray-900 text-white fixed top-0 left-0 flex flex-col p-5">
-            <h2 className="text-2xl font-bold mb-6">Portal</h2>
+        <div className="fixed top-0 left-0 flex flex-col w-64 h-screen p-5 text-white bg-gray-900">
+            <h2 className="mb-6 text-2xl font-bold">Portal</h2>
 
             <nav className="flex-1 space-y-3">
                 {/* Student Menu */}
@@ -27,6 +28,7 @@ const Sidebar = ({ onLogout }) => {
                         <SidebarLink to="/student/courses" icon={BookOpenIcon} text="Courses" active={location.pathname.startsWith("/student/courses")} />
                         <SidebarLink to="/student/results" icon={ChartBarIcon} text="Results" active={location.pathname.startsWith("/student/results")} />
                         <SidebarLink to="/student/payments" icon={CreditCardIcon} text="Payments" active={location.pathname.startsWith("/student/payments")} />
+                        <SidebarLink to="/student/notices" icon={BellIcon} text="Notices" active={location.pathname.startsWith("/student/notices")} />
                     </>
                 )}
 
@@ -41,7 +43,7 @@ const Sidebar = ({ onLogout }) => {
             </nav>
 
             <button type="button" onClick={onLogout} className="flex items-center mt-auto text-red-400 hover:text-red-500">
-                <ArrowRightStartOnRectangleIcon className="h-5 w-5 mr-2" />
+                <ArrowRightStartOnRectangleIcon className="w-5 h-5 mr-2" />
                 Logout
             </button>
         </div>
@@ -57,7 +59,7 @@ const SidebarLink = ({ to, icon: Icon, text, active }) => {
                 active ? "bg-gray-300 text-gray-800 font-semibold" : "text-gray-300 hover:bg-gray-800"
             }`}
         >
-            <Icon className="h-5 w-5" />
+            <Icon className="w-5 h-5" />
             <span>{text}</span>
         </Link>
     );

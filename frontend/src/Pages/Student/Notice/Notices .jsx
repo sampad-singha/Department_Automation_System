@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import api from "../../../api.jsx";
+import api from "../../../api";
 
 const Notices = () => {
     const [notices, setNotices] = useState([]);
