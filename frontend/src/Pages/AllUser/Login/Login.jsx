@@ -40,6 +40,7 @@ export default function Login() {
                 navigate('/login');
             }
         } catch (err) {
+            console.error("Login error:", err.response?.data);
             if (err.config.url.includes('/auth/login')) {
                 if (err.response?.status === 401) {
                     setError('Invalid email or password');
@@ -53,17 +54,17 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 px-4">
-            <div className="w-full max-w-md bg-white/90 backdrop-blur-lg shadow-xl rounded-2xl p-8">
-                <h2 className="text-center text-3xl font-bold text-gray-900">Sign in to your account</h2>
-                <p className="text-center text-sm text-gray-500 mt-2">
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
+            <div className="w-full max-w-md bg-gray-800 backdrop-blur-lg shadow-xl rounded-2xl p-8">
+                <h2 className="text-center text-3xl font-bold text-gray-200">Sign in to your account</h2>
+                <p className="text-center text-sm text-gray-400 mt-2">
                     Welcome back! Please enter your details.
                 </p>
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-                    {/* Email Input - Preserved */}
+                    {/* Email Input */}
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-300">
                             Email Address
                         </label>
                         <input
@@ -72,13 +73,13 @@ export default function Login() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="mt-1 w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="mt-1 w-full px-4 py-3 border border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         />
                     </div>
 
-                    {/* Password Input - Preserved */}
+                    {/* Password Input */}
                     <div className="relative">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-300">
                             Password
                         </label>
                         <input
@@ -87,7 +88,7 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="mt-1 w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pr-10"
+                            className="mt-1 w-full px-4 py-3 border border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pr-10"
                         />
                         <button
                             type="button"
@@ -102,7 +103,7 @@ export default function Login() {
                         </button>
                     </div>
 
-                    {/* Remember Me & Forgot Password - Preserved */}
+                    {/* Remember Me & Forgot Password */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <input
@@ -112,16 +113,16 @@ export default function Login() {
                                 onChange={(e) => setRememberMe(e.target.checked)}
                                 className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                             />
-                            <label htmlFor="remember-me" className="ml-2 text-sm text-gray-600">
+                            <label htmlFor="remember-me" className="ml-2 text-sm text-gray-300">
                                 Remember me
                             </label>
                         </div>
-                        <a href="#" className="text-sm text-indigo-600 hover:underline">
+                        <a href={"/forgot-password"} className="text-sm text-indigo-600 hover:underline">
                             Forgot password?
                         </a>
                     </div>
 
-                    {/* Error Message - Preserved */}
+                    {/* Error Message */}
                     {error && (
                         <div className="bg-red-100 text-red-700 p-3 rounded-lg">
                             {error}
@@ -145,8 +146,8 @@ export default function Login() {
                     </button>
                 </form>
 
-                {/* Sign Up Link - Preserved */}
-                <p className="text-center text-sm text-gray-500 mt-5">
+                {/* Sign Up Link */}
+                <p className="text-center text-sm text-gray-400 mt-5">
                     Don't have an account?{" "}
                     <a href="#" className="text-indigo-600 hover:underline">
                         Sign up

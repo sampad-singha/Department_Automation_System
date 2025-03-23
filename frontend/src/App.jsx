@@ -9,6 +9,8 @@ import MainLayout from './layouts/MainLayout.jsx';
 import Notices from './Pages/Student/Notice/Notices .jsx';
 import NoticeDetails from './Pages/Student/Notice/NoticeDetails.jsx';
 import CourseResults from './Pages/Student/Result/CourseResults.jsx';
+import ForgotPassword from "./Pages/AllUser/Login/ForgotPassword.jsx";
+import ResetPassword from "./Pages/AllUser/Login/ResetPassword.jsx";
 
 function App() {
     return (
@@ -17,6 +19,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
 
                     {/* Routes with Sidebar */}
                     <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>

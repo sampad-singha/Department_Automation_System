@@ -5,7 +5,6 @@ use App\Http\Controllers\api\CourseController;
 use App\Http\Controllers\api\CourseSessionController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\UserAuthController;
-use App\Http\Controllers\api\EnrollmentController;
 use App\Http\Controllers\Api\ShowNoticeController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ForgetPasswordController;
