@@ -13,7 +13,45 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
-        Course::factory(20)->create();
+        Course::factory(8)->create([
+            'year' => 1,
+            'semester' => 1,
+        ]);
+
+        Course::factory(8)->create([
+            'year' => 1,
+            'semester' => 2,
+        ]);
+
+        Course::factory(8)->create([
+            'year' => 2,
+            'semester' => 1,
+        ]);
+
+        Course::factory(8)->create([
+            'year' => 2,
+            'semester' => 2,
+        ]);
+
+        Course::factory(8)->create([
+            'year' => 3,
+            'semester' => 1,
+        ]);
+
+        Course::factory(8)->create([
+            'year' => 3,
+            'semester' => 2,
+        ]);
+
+        Course::factory(8)->create([
+            'year' => 4,
+            'semester' => 1,
+        ]);
+
+        Course::factory(8)->create([
+            'year' => 4,
+            'semester' => 2,
+        ]);
 
         Course::factory()->create([
             'code' => 'CSE1101',

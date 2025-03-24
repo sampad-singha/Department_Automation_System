@@ -18,9 +18,10 @@ class EnrollmentController extends Controller
     {
         $this->authorize('create', Enrollment::class);
         $course = $courseSession->course;
-
         // Fetch students matching the course's year and semester
         $students = User::role('student')
+            ->where('department_id', $course->department_id)
+            ->where('session', $courseSession->session)
             ->where('year', $course->year)
             ->where('semester', $course->semester)
             ->get();
@@ -39,10 +40,13 @@ class EnrollmentController extends Controller
     {
         // Validate the incoming request data
         $validatedData = $request->validate([
-            'courseSession_id' => 'required|exists:course_sessions,id',
+            'course_id' => 'required|exists:courses,id',
         ]);
 
         $user = Auth::user();
+        $courseSessionId = CourseSession::where('course_id', $validatedData['course_id'])
+            ->max('id');
+
 
         // Check if the user is a student
         if (!$user->hasRole('student')) {
@@ -53,7 +57,7 @@ class EnrollmentController extends Controller
         }
 
         // Check if the student can enroll in the course session
-        if (!$this->canRetake($user->id, $validatedData['courseSession_id'])) {
+        if (!$this->canRetake($user->id, $courseSessionId)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'You are not eligible to retake this course.',
@@ -62,8 +66,8 @@ class EnrollmentController extends Controller
 
         try {
             // Create a new enrollment record
-            $enrollment = Enrollment::create([
-                'courseSession_id' => $validatedData['courseSession_id'],
+            Enrollment::create([
+                'courseSession_id' => $courseSessionId,
                 'student_id' => $user->id,
                 'is_enrolled' => false, // True when payment is done
             ]);
@@ -71,7 +75,6 @@ class EnrollmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Enrollment created successfully.',
-                'data' => $enrollment,
             ], Response::HTTP_CREATED);
         } catch (ValidationException $e) {
             // Handle validation exceptions
@@ -118,28 +121,28 @@ class EnrollmentController extends Controller
 
 
         if ($enrollments->isEmpty()) {
-            return true;
+            return false;
         }
-
-
-        // Check if the student has passed any previous session
-        foreach ($enrollments as $enrollment) {
-            if (($enrollment->class_assessment_marks + $enrollment->final_term_marks) >= 40) {
-                $canRetake = false;
-                break;
+        else {
+            // Check if the student has passed any previous session
+            foreach ($enrollments as $enrollment) {
+                if (($enrollment->class_assessment_marks + $enrollment->final_term_marks) >= 40) {
+                    $canRetake = false;
+                    break;
+                }
             }
-        }
 
-        // Check if the latest enrollment is in the immediate next session and marks are less than 60
-        $latestEnrollment = $enrollments->first();
-        if ($latestEnrollment &&
-            ($latestEnrollment->courseSession->session === $student->session) &&
-            (($latestEnrollment->class_assessment_marks + $latestEnrollment->final_term_marks) < 60)) {
-            $canImprove = true;
-        } else {
-            $canImprove = false;
+            // Check if the latest enrollment is in the immediate next session and marks are less than 60
+            $latestEnrollment = $enrollments->first();
+            if ($latestEnrollment &&
+                ($latestEnrollment->courseSession->session === $student->session) &&
+                (($latestEnrollment->class_assessment_marks + $latestEnrollment->final_term_marks) < 60)) {
+                $canImprove = true;
+            } else {
+                $canImprove = false;
+            }
+            return $canRetake || $canImprove;
         }
-        return $canRetake || $canImprove;
     }
 
     public function update(Request $request, Enrollment $enrollment)
@@ -182,7 +185,15 @@ class EnrollmentController extends Controller
     public function showForTeacher($courseSessionId)
     {
         // Retrieve the authenticated teacher's ID
-        $teacherId = Auth::id();
+        $teacher = Auth::user();
+        $teacherId = $teacher->id;
+
+        if(!$teacher->hasRole('teacher')){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Only teachers can view enrollments.',
+            ], Response::HTTP_FORBIDDEN);
+        }
 
         // Fetch enrollments associated with the specified course_session_id
         // and ensure the course session belongs to the authenticated teacher
@@ -206,26 +217,46 @@ class EnrollmentController extends Controller
 
     public function showForStudent(Request $request)
     {
-        $studentId = Auth::id();
+        $student = Auth::user();
+        $studentId = $student->id;
+
+        if (!$student->hasRole('student')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Only students can view enrollments.',
+            ], Response::HTTP_FORBIDDEN);
+        }
 
         // Start building the query
         $query = Enrollment::where('student_id', $studentId);
 
-        // Apply optional filters if they are present in the request
+        // Apply optional filters
         if ($request->filled('year')) {
-            $query->where('year', $request->input('year'));
+            $query->whereHas('courseSession.course', function ($q) use ($request) {
+                $q->where('year', $request->input('year'));
+            });
         }
 
         if ($request->filled('semester')) {
-            $query->where('semester', $request->input('semester'));
+            $query->whereHas('courseSession.course', function ($q) use ($request) {
+                $q->where('semester', $request->input('semester'));
+            });
         }
 
         if ($request->filled('session')) {
-            $query->where('session', $request->input('session'));
+            $query->whereHas('courseSession', function ($q) use ($request) {
+                $q->where('session', $request->input('session'));
+            });
         }
 
-        // Execute the query to get the filtered enrollments
-        $enrollments = $query->get()->makeHidden('final_term_marks');
+        // Get enrollments with highest (class_assessment_marks + final_term_marks) per course
+        $enrollments = Enrollment::with(['courseSession.course'])
+            ->selectRaw('*, (class_assessment_marks + final_term_marks) as total_marks')
+            ->where('student_id', $studentId)
+            ->orderByDesc('total_marks')
+            ->get()
+            ->unique('course_session_id') // Ensure only one per course_session
+            ->makeHidden('final_term_marks');
 
         if ($enrollments->isEmpty()) {
             return response()->json([
@@ -233,11 +264,21 @@ class EnrollmentController extends Controller
                 'message' => 'There is no enrollment data or you are not authorized to view it.',
             ], Response::HTTP_NOT_FOUND);
         }
+        // Add canReEnroll property by calling canRetake for each enrollment
+        $enrollments->transform(function ($enrollment) use ($studentId) {
+            $courseId = $enrollment->courseSession->course->id;
+            $courseSessionId = CourseSession::where('course_id', $courseId)
+                ->max('id');
+            $enrollment->canReEnroll = $this->canRetake($studentId, $courseSessionId);
+            return $enrollment;
+        });
 
         return response()->json([
             'status' => 'success',
             'data' => $enrollments,
         ]);
     }
+
+
 
 }

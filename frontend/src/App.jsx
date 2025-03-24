@@ -8,6 +8,9 @@ import { AuthProvider } from './Contexts/AuthContext.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 import ForgotPassword from "./Pages/AllUser/Login/ForgotPassword.jsx";
 import ResetPassword from "./Pages/AllUser/Login/ResetPassword.jsx";
+import EnrolledCourses from './Pages/Student/Course/EnrolledCourses.jsx';
+import CoursesList from "./Pages/AllUser/Course/CourseList.jsx";
+import TeacherCourses from "./Pages/Teacher/Course/TeacherCourses.jsx";
 
 function App() {
     return (
@@ -22,7 +25,10 @@ function App() {
                     {/* Routes with Sidebar */}
                     <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
                         <Route path="/student/dashboard" element={<StudentDashboard />} />
+                        <Route path="/student/courses/all" element={<CoursesList />} />
+                        <Route path="/student/courses/enrolled" element={<EnrolledCourses />} />
                         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+                        <Route path="/teacher/courses/my-courses" element={<TeacherCourses />} />
                     </Route>
                 </Routes>
             </AuthProvider>

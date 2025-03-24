@@ -14,7 +14,13 @@ class CourseSessionController extends Controller
     {
         try {
             $teacher_id = Auth::id();
-            $courseSessions = CourseSession::where('teacher_id', $teacher_id)->get();
+            // Fetch the latest session for each course the teacher teaches
+            $courseSessions = CourseSession::with('course')
+                ->where('teacher_id', $teacher_id)
+                ->orderBy('session', 'desc') // Sort by latest session
+                ->get()
+                ->unique('course_id') // Keep only one session per course
+                ->values(); // Re-index the collection
 
             if ($courseSessions->isEmpty()) {
                 return response()->json([
