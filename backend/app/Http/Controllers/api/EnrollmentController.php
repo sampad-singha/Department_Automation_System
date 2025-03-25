@@ -182,6 +182,58 @@ class EnrollmentController extends Controller
         }
     }
 
+    public function updateMarks(Request $request)
+    {
+        $user = Auth::user();
+
+        try {
+            // Validate the request
+            $validatedData = $request->validate([
+                'courseSession_id' => 'required|integer|exists:course_sessions,id',
+                'enrollments' => 'required|array',
+                'enrollments.*.id' => 'required|integer|exists:enrollments,id',
+                'enrollments.*.class_assessment_marks' => 'required|integer|min:0|max:30',
+                'enrollments.*.final_term_marks' => 'required|integer|min:0|max:70',
+            ]);
+
+            foreach ($validatedData['enrollments'] as $data) {
+                $enrollment = Enrollment::findOrFail($data['id']);
+
+                // Check if the user is authorized to update this enrollment
+                if (!$user->can('update', $enrollment)) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You do not have permission to update some enrollments.',
+                    ], 403);
+                }
+
+                // Update the enrollment
+                $enrollment->update([
+                    'class_assessment_marks' => $data['class_assessment_marks'],
+                    'final_term_marks' => $data['final_term_marks'],
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Enrollments updated successfully.',
+            ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed.',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Enrollment update failed: ' . $e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update enrollments.',
+            ], 500);
+        }
+    }
+
     public function showForTeacher($courseSessionId)
     {
         // Retrieve the authenticated teacher's ID
@@ -197,7 +249,8 @@ class EnrollmentController extends Controller
 
         // Fetch enrollments associated with the specified course_session_id
         // and ensure the course session belongs to the authenticated teacher
-        $enrollments = Enrollment::whereHas('courseSession', function ($query) use ($courseSessionId, $teacherId) {
+        $enrollments = Enrollment::with('student')  // Eager load the student data
+        ->whereHas('courseSession', function ($query) use ($courseSessionId, $teacherId) {
             $query->where('id', $courseSessionId)
                 ->where('teacher_id', $teacherId);
         })->get();

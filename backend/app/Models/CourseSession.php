@@ -25,7 +25,7 @@ class CourseSession extends Model
 
     public function enrollments(): hasMany
     {
-        return $this->hasMany(Enrollment::class);
+        return $this->hasMany(Enrollment::class, 'courseSession_id');
     }
 
     public function teacher(): BelongsTo

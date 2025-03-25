@@ -25,14 +25,23 @@ Route::group(['prefix' => 'auth'], function () {
 
 // Courses routes
 Route::group(['prefix' => 'courses', 'middleware' => 'auth:sanctum'], function () {
+    Route::get('/active/enrollments', [EnrollmentController::class, 'showForStudent']);
+    // More specific route should come first
+    Route::get('/active/{course_id}/past-sessions', [CourseSessionController::class, 'showPastSessions']);
+    Route::get('/active/{courseSession_id}', [CourseSessionController::class, 'showOne']);
+
     Route::get('/', [CourseController::class, 'showAll']);
     Route::get('/active', [CourseSessionController::class, 'show']);
     Route::get('/{course_id}', [CourseController::class, 'show']);
-    Route::get('/active/enrollments', [EnrollmentController::class, 'showForStudent']);
-    Route::get('/active/{course_session_id}', [EnrollmentController::class, 'showForTeacher']);
+    Route::get('/active/enrollments/{courseSession_id}', [EnrollmentController::class, 'showForTeacher']);
+
+    // POST routes
+    Route::post('/active/enrollments/updateMarks', [EnrollmentController::class, 'updateMarks']);
     Route::post('/active/enrollments/{enrollment}', [EnrollmentController::class, 'update']);
     Route::post('/active/enroll', [EnrollmentController::class, 'store']);
 });
+
+
 
 
 Route::get('show-notice',[ShowNoticeController::class,'showAll']);

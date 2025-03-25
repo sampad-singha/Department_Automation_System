@@ -11,6 +11,8 @@ import ResetPassword from "./Pages/AllUser/Login/ResetPassword.jsx";
 import EnrolledCourses from './Pages/Student/Course/EnrolledCourses.jsx';
 import CoursesList from "./Pages/AllUser/Course/CourseList.jsx";
 import TeacherCourses from "./Pages/Teacher/Course/TeacherCourses.jsx";
+import TeacherCourseDetails from "./Pages/Teacher/Course/TeacherCourseDetails.jsx";
+import GradeAssignments from "./Pages/Teacher/Course/GradeAssignments.jsx";
 
 function App() {
     return (
@@ -29,7 +31,10 @@ function App() {
                         <Route path="/student/courses/enrolled" element={<EnrolledCourses />} />
                         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
                         <Route path="/teacher/courses/my-courses" element={<TeacherCourses />} />
+                        <Route path={`/teacher/courses/my-courses/:courseSessionId`} element={<TeacherCourseDetails />} />
+                        <Route path="/grade-assignments/:courseSessionId" element={<GradeAssignments />} />
                     </Route>
+
                 </Routes>
             </AuthProvider>
         </Router>

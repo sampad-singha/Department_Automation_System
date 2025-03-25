@@ -28,7 +28,7 @@ class EnrollmentPolicy
         }
         // Retrieve the associated CourseSession
         $courseSession = $enrollment->courseSession;
-        return ($user->id === $courseSession->teacher_id) && ($user->can('update enrollments'));
+        return ($user->id === $courseSession->teacher_id) || ($user->can('update enrollments'));
     }
 
     public function delete(User $user): bool

@@ -43,14 +43,22 @@ const TeacherCourses = () => {
             {!loading && !error && courses.length === 0 && <p className="text-gray-400">No courses found.</p>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {courses.map((course) => (
-                    <div key={course.id} className="bg-gray-800 p-4 rounded-lg shadow-md">
+                {courses.map((courseSession) => (
+                    <div key={courseSession.id} className="bg-gray-800 p-4 rounded-lg shadow-md">
                         <h3 className="text-lg font-semibold text-gray-200">
-                            {course.course.code} - {course.course.name}
+                            {courseSession.course.code} - {courseSession.course.name}
                         </h3>
-                        <p className="text-gray-400">Session: {course.session}</p>
+                        <p className="text-gray-400">Session: {courseSession.session}</p>
+
+                        {/* Show Department Name */}
+                        {courseSession.course.department && (
+                            <p className="text-gray-400">
+                                Department: {courseSession.course.department.name}
+                            </p>
+                        )}
+
                         <Link
-                            to={`/teacher/my-courses/${course.id}`}
+                            to={`/teacher/courses/my-courses/${courseSession.id}`}
                             className="mt-2 inline-block text-blue-400 hover:text-blue-500"
                         >
                             View Details →
