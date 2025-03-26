@@ -18,7 +18,7 @@ class CourseFactory extends Factory
     public function definition(): array
     {
         // Generate a random department
-        $departments = Department::all()->shuffle();
+        $departments = Department::all();
         $department = $departments->first();
 
         // Generate the year (1-4) and semester (1-2)

@@ -12,6 +12,10 @@ class CourseController extends Controller
     public function showAll()
     {
         try {
+//            $user = auth()->user();
+//
+//            $courses = Course::where('department_id', $user->department_id)
+//                ->get();
 
             $courses = Course::all();
 

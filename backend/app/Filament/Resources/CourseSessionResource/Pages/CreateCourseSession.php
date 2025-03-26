@@ -14,6 +14,6 @@ class CreateCourseSession extends CreateRecord
     public function afterCreate(): void
     {
         // Call your controller method
-        app(EnrollmentController::class)->store($this->record);
+        app(EnrollmentController::class)->store_all($this->record);
     }
 }

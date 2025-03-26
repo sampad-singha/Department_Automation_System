@@ -5,9 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EnrollmentResource\Pages;
 use App\Models\CourseSession;
 use App\Models\Enrollment;
-use Filament\Forms;
+use Exception;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -15,9 +14,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\HtmlString;
 
 class EnrollmentResource extends Resource
 {
@@ -71,6 +67,9 @@ class EnrollmentResource extends Resource
             ]);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function table(Table $table): Table
     {
         return $table
