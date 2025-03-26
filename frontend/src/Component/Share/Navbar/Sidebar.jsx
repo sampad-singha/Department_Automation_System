@@ -78,8 +78,8 @@ const Sidebar = ({ onLogout }) => {
 
                         {teacherCoursesOpen && (
                             <div className="ml-6 space-y-2">
+                                <SidebarLink to="/student/courses/all" text="All Courses" active={location.pathname === "/student/courses/all"} />
                                 <SidebarLink to="/teacher/courses/my-courses" text="My Courses" active={location.pathname === "/teacher/courses/my-courses"} />
-                                <SidebarLink to="/teacher/courses/grade-submissions" text="Grade Submissions" active={location.pathname === "/teacher/courses/grade-submissions"} />
                             </div>
                         )}
                     </>

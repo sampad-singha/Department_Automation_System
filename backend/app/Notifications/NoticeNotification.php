@@ -39,14 +39,24 @@ class NoticeNotification extends Notification
         $approveUrl = url("/notice/approve/{$this->recordId}");
         $imageUrl = url("storage/{$this->file}");
 
-        return (new MailMessage)
-            ->subject('New Notice for Approval')
-            ->view('emails.notice_approval', [
-                'title' => $this->title,
-                'content' => $this->content,
-                'imageUrl' => $imageUrl,
-                'approveUrl' => $approveUrl,
-            ]);
+        if ($this->file == null) {
+            return (new MailMessage)
+                ->subject('New Notice for Approval')
+                ->view('emails.notice_approval', [
+                    'title' => $this->title,
+                    'content' => $this->content,
+                    'approveUrl' => $approveUrl,
+                ]);
+        } else {
+            return (new MailMessage)
+                ->subject('New Notice for Approval')
+                ->view('emails.notice_approval', [
+                    'title' => $this->title,
+                    'content' => $this->content,
+                    'imageUrl' => $imageUrl,
+                    'approveUrl' => $approveUrl,
+                ]);
+        }
     }
 
     public function toArray(object $notifiable): array
