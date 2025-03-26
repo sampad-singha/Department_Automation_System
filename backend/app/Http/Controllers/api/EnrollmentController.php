@@ -80,7 +80,7 @@ class EnrollmentController extends Controller
             // Handle validation exceptions
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation failed.',
+                'message' => 'Validation failed. Check your data.',
                 'errors' => $e->errors(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }

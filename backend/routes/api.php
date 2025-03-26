@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\EnrollmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\CourseController;
 use App\Http\Controllers\api\CourseSessionController;

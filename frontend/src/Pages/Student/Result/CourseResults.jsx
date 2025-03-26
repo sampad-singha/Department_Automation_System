@@ -22,12 +22,7 @@ const CourseResults = () => {
         setError(null);
 
         try {
-            const response = await api.get(
-                `/result/show-full-result/${year}/${semester}`,
-                {
-                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-                }
-            );
+            const response = await api.get(`/result/show-full-result/${year}/${semester}`);
 
             if (response.data.courses && response.data.courses.length > 0) {
                 setCourses(response.data.courses);
