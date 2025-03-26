@@ -6,6 +6,9 @@ import TeacherDashboard from '../src/Pages/Teacher/TeacherDashBoard/TeacherDashb
 import PrivateRoute from '../src/Component/PrivateRoute.jsx';
 import { AuthProvider } from './Contexts/AuthContext.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
+import Notices from './Pages/Student/Notice/Notices .jsx';
+import NoticeDetails from './Pages/Student/Notice/NoticeDetails.jsx';
+import CourseResults from './Pages/Student/Result/CourseResults.jsx';
 import ForgotPassword from "./Pages/AllUser/Login/ForgotPassword.jsx";
 import ResetPassword from "./Pages/AllUser/Login/ResetPassword.jsx";
 import EnrolledCourses from './Pages/Student/Course/EnrolledCourses.jsx';
@@ -33,6 +36,9 @@ function App() {
                         <Route path="/teacher/courses/my-courses" element={<TeacherCourses />} />
                         <Route path={`/teacher/courses/my-courses/:courseSessionId`} element={<TeacherCourseDetails />} />
                         <Route path="/grade-assignments/:courseSessionId" element={<GradeAssignments />} />
+                        <Route path="/student/notices" element={<Notices />} />
+                        <Route path="/notices/:id" element={<NoticeDetails />} />
+                        <Route path="/student/results" element={<CourseResults />} />
                     </Route>
 
                 </Routes>
