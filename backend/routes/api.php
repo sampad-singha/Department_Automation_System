@@ -15,9 +15,9 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::post('/forget-password', [ForgetPasswordController::class, 'resetPassword']);
     Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.reset');
-
     Route::post('/login', [UserAuthController::class, 'login'])
         ->middleware('throttle:userLogin');
+
     Route::post('/logout', [LogoutController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/user', [UserAuthController::class, 'authUser'])->middleware('auth:sanctum');
 
@@ -45,8 +45,7 @@ Route::group(['prefix' => 'courses', 'middleware' => 'auth:sanctum'], function (
 Route::get('show-notice', [ShowNoticeController::class, 'showAll']);
 Route::get('show-notice/{id}', [ShowNoticeController::class, 'show']);
 
-
-Route::prefix('result')->middleware('auth:sanctum')->group(function () {
+Route::group(['prefix' => 'result', 'middleware' => ['auth:sanctum']], function () {
     Route::get('show/{courseId}', [ResultController::class, 'showResult']);
     Route::get('show-full-result/{year}/{semester}', [ResultController::class, 'showFullResult']);
 });
