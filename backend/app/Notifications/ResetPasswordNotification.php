@@ -36,14 +36,14 @@ class ResetPasswordNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('http://reactjs/reset-password?token='.$this->token.'&email='.$notifiable->getEmailForPasswordReset());
+        $url = config('app.frontend_url') . '/reset-password?token=' . $this->token . '&email=' . $notifiable->getEmailForPasswordReset();
 
         return (new MailMessage)
                     // ->line('The introduction to the notification.')
                     // ->action('Reset Password ', url($url))
                     // ->line('Thank you for using our application!');
                     // F:\artisan-forces\backend\resources\views\mails\resetPasswordMail.blade.php
-                    ->view('mails.resetPasswordMail',[
+                    ->view('emails.resetPasswordMail',[
                          'url' =>$url
                     ]);
     }

@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,13 +26,12 @@ class ForgetPasswordController extends Controller
             return $status === Password::RESET_LINK_SENT
                         ? response()->json(['message' => __($status)],201)
                         : response()->json(['message' => __($status)], 400);
-            
-              
+
+
            }
            catch (ValidationException $e) {
             return response()->json(['message' => 'Invalid email', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            DB::rollBack();
             return response()->json(['message' => 'Something went wrong', 'error' => $e->getMessage()], 500);
         }
     }

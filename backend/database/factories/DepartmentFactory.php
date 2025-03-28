@@ -50,7 +50,7 @@ class DepartmentFactory extends Factory
         $shortName = $departments[$name];
         return [
             'name' => $name,
-            'code' => array_search($name, $keys)+1, // Unique array index as key
+//            'code' => array_search($name, $keys)+1, // Unique array index as key
             'faculty' => $this->faker->name,
             'short_name' => $shortName,
         ];
