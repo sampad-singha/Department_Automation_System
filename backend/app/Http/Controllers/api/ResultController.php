@@ -4,10 +4,9 @@ namespace App\Http\Controllers\api;
 
 use App\Models\Enrollment;
 use App\Helpers\GradeHelper;
-use http\Env\Response;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class ResultController extends Controller
@@ -48,75 +47,92 @@ class ResultController extends Controller
     {
         $user = Auth::id();
 
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
         try {
-            // Fetch enrollments with the highest (CA + Final Term) per course session
-            $bestResults = Enrollment::where('student_id', $user)
+            // ✅ Step 1: Get all courses for the given semester
+            $allCourses = Course::where('year', $year)
+                ->where('semester', $semester)
+                ->get();
+
+            // ✅ Step 2: Get all enrollments of the student in this semester
+            $enrollments = Enrollment::where('student_id', $user)
                 ->whereHas('courseSession.course', function ($query) use ($year, $semester) {
-                    $query->where('year', $year);
-                    if (is_array($semester)) {
-                        $query->whereIn('semester', $semester);
-                    } else {
-                        $query->where('semester', $semester);
-                    }
+                    $query->where('year', $year)
+                        ->where('semester', $semester);
                 })
                 ->with(['courseSession.course'])
-                ->selectRaw('*, (class_assessment_marks + final_term_marks) as total_marks')
-                ->orderByDesc('total_marks') // Order by highest total marks
-                ->get()
-                ->unique('course_session_id'); // Keep only one per course session (best result)
+                ->get();
 
-            if ($bestResults->isEmpty()) {
-                return response()->json(['message' => 'No results found for this student in this semester and year'], 404);
-            }
-
-            // Fetch credit hours for all courses
-            $courseCredits = Course::pluck('credit', 'id')->toArray(); // Get credit hours as [course_id => credit]
+            // ✅ Step 3: Get the best enrollment for each course (if multiple attempts)
+            $bestResults = $enrollments
+                ->groupBy('courseSession.course.id') // Group by course ID
+                ->map(function ($enrollmentGroup) {
+                    // Select the enrollment with the highest (CA + Final) marks
+                    return $enrollmentGroup->sortByDesc(fn($e) => $e->class_assessment_marks + $e->final_term_marks)
+                        ->first();
+                });
 
             $totalWeightedGPA = 0;
             $totalCreditHours = 0;
+            $response = [];
 
-            // Map results and calculate CGPA
-            $response = $bestResults->map(function ($enrollment) use ($courseCredits, &$totalWeightedGPA, &$totalCreditHours) {
-                // Compute total marks (CA + Final)
-                $totalMarks = $enrollment->class_assessment_marks + $enrollment->final_term_marks;
+            // ✅ Step 4: Process each course in the semester
+            foreach ($allCourses as $course) {
+                // Check if the student has an enrollment for this course
+                $enrollment = $bestResults->get($course->id);
 
-                // Get grade based on total marks
-                $gradeDetails = GradeHelper::getGrade($totalMarks);
+                if ($enrollment) {
+                    // ✅ Student is enrolled: Calculate based on best attempt
+                    $totalMarks = $enrollment->class_assessment_marks + $enrollment->final_term_marks;
+                    $gradeDetails = GradeHelper::getGrade($totalMarks);
+                    $gpa = $gradeDetails['gpa'];
+                } else {
+                    // ❌ Student is NOT enrolled: GPA = 0
+                    $totalMarks = null;
+                    $gpa = 0;
+                    $gradeDetails = [
+                        'grade' => 'F',
+                        'gpa' => 0,
+                        'remark' => 'Not Enrolled'
+                    ];
+                }
 
-                $courseId = $enrollment->courseSession->course->id;
-                $creditHours = $courseCredits[$courseId] ?? 0; // Get credit hours for the course
+                // ✅ Compute weighted GPA = (GPA × Credit Hours)
+                $weightedGPA = $gpa * $course->credit;
 
-                // Calculate weighted GPA for this course
-                $weightedGPA = $gradeDetails['gpa'] * $creditHours;
-
-                // Update total weighted GPA and credit hours
+                // ✅ Update total weighted GPA and total credit hours
                 $totalWeightedGPA += $weightedGPA;
-                $totalCreditHours += $creditHours;
+                $totalCreditHours += $course->credit;
 
-                return [
-                    'course_id' => $courseId,
-                    'course_name' => $enrollment->courseSession->course->name,
-                    'year' => $enrollment->courseSession->course->year,
-                    'semester' => $enrollment->courseSession->course->semester,
-                    'total_marks' => $totalMarks, // Include total marks in response
-                    'class_assessment_marks' => $enrollment->class_assessment_marks,
-                    'final_term_marks' => $enrollment->final_term_marks,
+                // ✅ Append to response
+                $response[] = [
+                    'department' => $course->department->name,
+                    'session' => User::find($user)->session,
+                    'course_id' => $course->id,
+                    'course_name' => $course->name,
+                    'year' => $year,
+                    'semester' => $semester,
+                    'total_marks' => $totalMarks,
                     'grade' => $gradeDetails['grade'],
                     'gpa' => $gradeDetails['gpa'],
                     'remark' => $gradeDetails['remark'],
-                    'credit_hours' => $creditHours,
+                    'credit_hours' => $course->credit,
                 ];
-            });
+            }
 
-            // Calculate CGPA
+            // ✅ Step 5: Calculate CGPA including all courses
             $cgpa = $totalCreditHours > 0 ? $totalWeightedGPA / $totalCreditHours : 0;
 
             return response()->json([
                 'courses' => $response,
-                'total_cgpa' => round($cgpa, 2), // Round CGPA for better readability
-            ]);
+                'total_cgpa' => round($cgpa, 2),
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while fetching results'], 500);
         }
     }
+
 }
