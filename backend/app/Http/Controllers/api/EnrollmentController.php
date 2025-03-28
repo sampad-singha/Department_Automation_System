@@ -331,7 +331,4 @@ class EnrollmentController extends Controller
             'data' => $enrollments,
         ]);
     }
-
-
-
 }
