@@ -47,10 +47,6 @@ class ResultController extends Controller
     {
         $user = Auth::id();
 
-        if (!$user) {
-            return response()->json(['message' => 'User not authenticated'], 401);
-        }
-
         try {
             // ✅ Step 1: Get all courses for the given semester
             $allCourses = Course::where('year', $year)
