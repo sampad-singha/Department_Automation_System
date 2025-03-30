@@ -16,7 +16,7 @@ class CourseResourceController extends Controller
             'course_session_id' => 'required|exists:course_sessions,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'required|file|max:10240', // Max 10MB
+            'file' => 'required|file',
         ]);
 
         $user = Auth::user();
