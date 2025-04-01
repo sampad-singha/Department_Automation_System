@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Mpdf\Mpdf;
 
 class IdCardController extends Controller
 {
@@ -14,11 +12,19 @@ class IdCardController extends Controller
     {
         $user = Auth::user();
         $user->load('roles', 'department');
-        $pdf = Pdf::loadView('id-card.idcard', compact('user'));
 
-//        dd($pdf);
+        // Render the Blade view as a string
+        $html = view('id-card.idcard', compact('user'))->render();
 
-//        return view('id-card.idcard', compact('user'));
-        return $pdf->download('ID_Card_'.$user->id.'.pdf');
+        // Initialize mPDF
+        $mpdf = new Mpdf();
+
+        // Write HTML to mPDF
+        $mpdf->WriteHTML($html);
+
+        // Output the PDF as a download
+        $mpdf->Output("ID_Card_{$user->id}.pdf", "D"); // "D" forces download
+
+        exit; // Stop further Laravel processing
     }
 }
