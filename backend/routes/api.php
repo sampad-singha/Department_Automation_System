@@ -5,6 +5,7 @@ use App\Http\Controllers\api\CourseResourceController;
 use App\Http\Controllers\api\CourseSessionController;
 use App\Http\Controllers\api\EnrollmentController;
 use App\Http\Controllers\Api\ForgetPasswordController;
+use App\Http\Controllers\api\IdCardController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ResultController;
@@ -56,3 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/course-resources/download/{id}', [CourseResourceController::class, 'download'])->middleware('role:teacher|student');
     Route::get('/course-resources/{course_session_id}', [CourseResourceController::class, 'index']);
 });
+
+Route::get('/id-card', [IdCardController::class, 'generateIdCard'])->middleware('auth:sanctum');
+Route::get('/id-card/verify/{id}', [IdCardController::class, 'verify'])->name('verify');
+
