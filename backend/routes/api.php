@@ -59,4 +59,5 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/id-card', [IdCardController::class, 'generateIdCard'])->middleware('auth:sanctum');
+Route::get('/id-card/verify/{id}', [IdCardController::class, 'verify'])->name('verify');
 

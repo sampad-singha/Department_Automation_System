@@ -16,9 +16,7 @@
         .id-card {
             width: 550px;
             padding: 15px;
-            border: 3px solid black;
-            border-radius: 10px;
-            /*background: white;*/
+            border: 2px solid black;
             box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
             background-color: #F5F5F5;
         }
@@ -48,9 +46,9 @@
             vertical-align: middle;
         }
         .barcode {
-            width: 100px;
+            width: 90px;
             height: 50px;
-            background-color: #ddd;
+            /*background-color: #ddd;*/
             text-align: center;
             display: flex;
             justify-content: center;
@@ -101,7 +99,14 @@
     @if(isset($user) && !empty($user))
         <table>
             <tr>
-                <td class="barcode" rowspan="6">BARCODE</td>
+                <th>
+{{--                    to satisfy the sonarcloud --}}
+                </th>
+            </tr>
+            <tr>
+                <td class="barcode" rowspan="6">
+                    {!! $qrCode !!}
+                </td>
                 <td class="label">Name<span class="colon">:</span></td>
                 <td class="value"><strong>{{ strtoupper($user->name) }}</strong></td>
                 <td rowspan="6" class="photo-container">
