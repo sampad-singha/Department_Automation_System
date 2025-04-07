@@ -24,7 +24,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $departmentID = Department::query()->inRandomOrder()->first()?->id ?? Department::factory()->create()->id;
+        $departmentID = Department::query()->first()?->id ?? Department::factory()->create()->id;
 //        $departmentCode = Department::query()->find($departmentID)->code;
         //year from 1950 to 2050
         $session = $this->faker->numberBetween(1950, 2050);

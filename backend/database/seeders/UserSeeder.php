@@ -15,9 +15,51 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         //add student role to all users when seeding
-        User::factory(10)->create()->each(function ($user) {
+        User::factory(5)->create()->each(function ($user) {
             $user->assignRole('student');
+            $user->update([
+                'year' => 1,
+                'semester' => 1,
+                'session' => '2022',
+            ]);
         });
+
+        User::factory(5)->create()->each(function ($user) {
+            $user->assignRole('student');
+            $user->update([
+                'year' => 2,
+                'semester' => 1,
+                'session' => '2021',
+            ]);
+        });
+
+        User::factory(5)->create()->each(function ($user) {
+            $user->assignRole('student');
+            $user->update([
+                'year' => 2,
+                'semester' => 2,
+                'session' => '2020',
+            ]);
+        });
+
+        User::factory(5)->create()->each(function ($user) {
+            $user->assignRole('student');
+            $user->update([
+                'year' => 3,
+                'semester' => 2,
+                'session' => '2019',
+            ]);
+        });
+
+        User::factory(5)->create()->each(function ($user) {
+            $user->assignRole('student');
+            $user->update([
+                'year' => 4,
+                'semester' => 2,
+                'session' => '2018',
+            ]);
+        });
+
 
         User::factory(5)->create()->each(function ($user) {
             $user->assignRole('teacher');

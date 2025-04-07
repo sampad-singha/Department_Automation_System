@@ -34,6 +34,9 @@ class UserResource extends Resource
                     ->maxLength(255),
                 FileUpload::make('image')
                     ->image()
+                    ->disk('public')
+                    ->directory('user-images')
+                    ->visibility('public')
                     ->required(),
                 TextInput::make('university_id')
                     ->required()
@@ -92,6 +95,7 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
+
         return $table
             ->columns([
                 TextColumn::make('id')

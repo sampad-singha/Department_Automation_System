@@ -26,6 +26,7 @@ class EnrollmentController extends Controller
             ->where('semester', $course->semester)
             ->get();
 
+
         // Create enrollments for each matching student
         foreach ($students as $student) {
             Enrollment::create([
@@ -331,7 +332,4 @@ class EnrollmentController extends Controller
             'data' => $enrollments,
         ]);
     }
-
-
-
 }
