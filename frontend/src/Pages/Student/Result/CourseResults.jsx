@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import jsPDF from "jspdf";
-import "jspdf-autotable"; // Plugin for creating tables in PDF
+import { useState } from "react";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable"; // Corrected import
 import api from "../../../api";
 
 const CourseResults = () => {
@@ -9,9 +9,8 @@ const CourseResults = () => {
     const [semester, setSemester] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [cgpa, setCgpa] = useState(null); // State for CGPA
+    const [cgpa, setCgpa] = useState(null);
 
-    // Fetch course results based on year and semester
     const fetchResults = async () => {
         if (!year || !semester) {
             setError("Please enter both Year and Semester.");
@@ -24,9 +23,9 @@ const CourseResults = () => {
         try {
             const response = await api.get(`/result/show-full-result/${year}/${semester}`);
 
-            if (response.data.courses && response.data.courses.length > 0) {
+            if (response.data.courses?.length > 0) {
                 setCourses(response.data.courses);
-                setCgpa(response.data.total_cgpa); // Set CGPA
+                setCgpa(response.data.total_cgpa);
             } else {
                 setError("No results found for the selected year and semester.");
                 setCourses([]);
@@ -42,13 +41,11 @@ const CourseResults = () => {
         }
     };
 
-    // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
         fetchResults();
     };
 
-    // Generate and download PDF
     const downloadPDF = () => {
         if (courses.length === 0) {
             alert("No course results available to generate PDF.");
@@ -57,37 +54,42 @@ const CourseResults = () => {
 
         const doc = new jsPDF();
 
-        // Add title
+        // Title
         doc.setFontSize(18);
         doc.text("Course Results", 14, 22);
 
-        // Add CGPA
+        // CGPA
         doc.setFontSize(12);
         doc.text(`Semester CGPA: ${cgpa?.toFixed(2)}`, 14, 30);
 
-        // Prepare table data
+        // Table data
         const tableData = courses.map((course) => [
             course.course_name,
             course.year,
             course.semester,
-            course.max_final_term_marks,
+            course.total_marks?course.total_marks:0,
             course.grade,
             course.gpa,
             course.remark,
             course.credit_hours,
         ]);
 
-        // Add table
-        doc.autoTable({
+        // Generate table using autoTable function
+        autoTable(doc, {
             startY: 40,
             head: [["Course Name", "Year", "Semester", "Final Marks", "Grade", "GPA", "Remark", "Credit Hours"]],
             body: tableData,
-            theme: "grid", // Add grid lines
-            styles: { fontSize: 10 }, // Set font size
-            headStyles: { fillColor: [41, 128, 185] }, // Header background color
+            theme: "grid",
+            styles: { fontSize: 10 },
+            headStyles: {
+                fillColor: [41, 128, 185],
+                textColor: 255,
+                fontStyle: 'bold'
+            },
+            alternateRowStyles: { fillColor: [245, 245, 245] },
+            margin: { top: 40 },
         });
 
-        // Save the PDF
         doc.save(`course-results-${year}-${semester}.pdf`);
     };
 
@@ -95,7 +97,6 @@ const CourseResults = () => {
         <div className="max-w-4xl p-6 mx-auto bg-white border rounded-lg shadow-lg">
             <h2 className="mb-6 text-2xl font-bold text-center">Course Results</h2>
 
-            {/* Input Form */}
             <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4 mb-6">
                 <div className="flex flex-col w-full gap-4 sm:flex-row sm:w-auto">
                     <input
@@ -126,66 +127,49 @@ const CourseResults = () => {
                 </button>
             </form>
 
-            {/* Error Message */}
             {error && <p className="mb-4 text-center text-red-500">{error}</p>}
-
-            {/* Loading State */}
             {loading && <p className="mb-4 text-center">Loading results...</p>}
 
-            {/* Results Table and PDF Download Button */}
             {courses.length > 0 && (
                 <>
                     <div className="mb-6 overflow-x-auto">
                         <table className="w-full text-center border border-collapse border-gray-300">
                             <thead className="bg-gray-200">
-                                <tr>
-                                    <th className="px-4 py-2 border border-gray-300">Course Name</th>
-                                    <th className="px-4 py-2 border border-gray-300">Year</th>
-                                    <th className="px-4 py-2 border border-gray-300">Semester</th>
-                                    <th className="px-4 py-2 border border-gray-300">Final Marks</th>
-                                    <th className="px-4 py-2 border border-gray-300">Grade</th>
-                                    <th className="px-4 py-2 border border-gray-300">GPA</th>
-                                    <th className="px-4 py-2 border border-gray-300">Remark</th>
-                                    <th className="px-4 py-2 border border-gray-300">Credit Hours</th>
-                                </tr>
+                            <tr>
+                                {["Course Name", "Year", "Semester", "Final Marks", "Grade", "GPA", "Remark", "Credit Hours"].map((header) => (
+                                    <th key={header} className="px-4 py-2 border border-gray-300">
+                                        {header}
+                                    </th>
+                                ))}
+                            </tr>
                             </thead>
                             <tbody>
-                                {courses.map((course) => (
-                                    <tr key={course.course_id} className="hover:bg-gray-50">
-                                        <td className="px-4 py-2 border border-gray-300">{course.course_name}</td>
-                                        <td className="px-4 py-2 border border-gray-300">{course.year}</td>
-                                        <td className="px-4 py-2 border border-gray-300">{course.semester}</td>
-                                        <td className="px-4 py-2 border border-gray-300">{course.max_final_term_marks}</td>
-                                        <td
-                                            className={`px-4 py-2 border border-gray-300 font-bold ${
-                                                course.grade === "F" ? "text-red-600" : "text-green-600"
-                                            }`}
-                                        >
-                                            {course.grade}
-                                        </td>
-                                        <td className="px-4 py-2 border border-gray-300">{course.gpa}</td>
-                                        <td
-                                            className={`px-4 py-2 border border-gray-300 font-semibold ${
-                                                course.remark === "Fail" ? "text-red-500" : "text-green-500"
-                                            }`}
-                                        >
-                                            {course.remark}
-                                        </td>
-                                        <td className="px-4 py-2 border border-gray-300">{course.credit_hours}</td>
-                                    </tr>
-                                ))}
+                            {courses.map((course) => (
+                                <tr key={course.course_id} className="hover:bg-gray-50">
+                                    <td className="px-4 py-2 border border-gray-300">{course.course_name}</td>
+                                    <td className="px-4 py-2 border border-gray-300">{course.year}</td>
+                                    <td className="px-4 py-2 border border-gray-300">{course.semester}</td>
+                                    <td className="px-4 py-2 border border-gray-300">{course.total_marks?course.total_marks:0}</td>
+                                    <td className={`px-4 py-2 border border-gray-300 font-bold ${course.grade === "F" ? "text-red-600" : "text-green-600"}`}>
+                                        {course.grade}
+                                    </td>
+                                    <td className="px-4 py-2 border border-gray-300">{course.gpa}</td>
+                                    <td className={`px-4 py-2 border border-gray-300 font-semibold ${course.remark === "Fail" ? "text-red-500" : "text-green-500"}`}>
+                                        {course.remark}
+                                    </td>
+                                    <td className="px-4 py-2 border border-gray-300">{course.credit_hours}</td>
+                                </tr>
+                            ))}
                             </tbody>
                         </table>
                     </div>
 
-                    {/* Display CGPA */}
                     <div className="mb-4 text-center">
                         <p className="text-lg font-semibold">
                             Semester CGPA: <span className="text-blue-600">{cgpa?.toFixed(2)}</span>
                         </p>
                     </div>
 
-                    {/* PDF Download Button */}
                     <div className="flex justify-center">
                         <button
                             onClick={downloadPDF}
@@ -197,7 +181,6 @@ const CourseResults = () => {
                 </>
             )}
 
-            {/* Show No Data Message */}
             {courses.length === 0 && !loading && !error && (
                 <p className="text-center">No course results available.</p>
             )}

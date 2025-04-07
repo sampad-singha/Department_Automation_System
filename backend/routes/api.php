@@ -1,23 +1,25 @@
 <?php
 
-use App\Http\Controllers\api\EnrollmentController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\CourseController;
+use App\Http\Controllers\api\CourseResourceController;
 use App\Http\Controllers\api\CourseSessionController;
-use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\Api\UserAuthController;
-use App\Http\Controllers\Api\ShowNoticeController;
-use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\api\EnrollmentController;
 use App\Http\Controllers\Api\ForgetPasswordController;
+use App\Http\Controllers\api\IdCardController;
+use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ResultController;
+use App\Http\Controllers\Api\ShowNoticeController;
+use App\Http\Controllers\Api\UserAuthController;
+use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'auth'], function () {
 
     Route::post('/forget-password', [ForgetPasswordController::class, 'resetPassword']);
     Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.reset');
-
     Route::post('/login', [UserAuthController::class, 'login'])
         ->middleware('throttle:userLogin');
+
     Route::post('/logout', [LogoutController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/user', [UserAuthController::class, 'authUser'])->middleware('auth:sanctum');
 
@@ -45,8 +47,19 @@ Route::group(['prefix' => 'courses', 'middleware' => 'auth:sanctum'], function (
 Route::get('show-notice', [ShowNoticeController::class, 'showAll']);
 Route::get('show-notice/{id}', [ShowNoticeController::class, 'show']);
 
-
-Route::prefix('result')->middleware('auth:sanctum')->group(function () {
+Route::group(['prefix' => 'result', 'middleware' => ['auth:sanctum']], function () {
     Route::get('show/{courseId}', [ResultController::class, 'showResult']);
     Route::get('show-full-result/{year}/{semester}', [ResultController::class, 'showFullResult']);
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/course-resources/upload', [CourseResourceController::class, 'upload'])->middleware('role:teacher');
+    Route::get('/course-resources/download/{id}', [CourseResourceController::class, 'download'])->middleware('role:teacher|student');
+    Route::get('/course-resources/{course_session_id}', [CourseResourceController::class, 'index']);
+    Route::put('/course-resources/{id}', [CourseResourceController::class, 'update']);
+    Route::delete('/course-resources/{id}', [CourseResourceController::class, 'destroy']);
+});
+
+Route::get('/id-card', [IdCardController::class, 'generateIdCard'])->middleware('auth:sanctum');
+Route::get('/id-card/verify/{id}', [IdCardController::class, 'verify'])->name('verify');
+
