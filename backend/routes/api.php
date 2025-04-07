@@ -56,6 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/course-resources/upload', [CourseResourceController::class, 'upload'])->middleware('role:teacher');
     Route::get('/course-resources/download/{id}', [CourseResourceController::class, 'download'])->middleware('role:teacher|student');
     Route::get('/course-resources/{course_session_id}', [CourseResourceController::class, 'index']);
+    Route::put('/course-resources/{id}', [CourseResourceController::class, 'update']);
+    Route::delete('/course-resources/{id}', [CourseResourceController::class, 'destroy']);
 });
 
 Route::get('/id-card', [IdCardController::class, 'generateIdCard'])->middleware('auth:sanctum');
