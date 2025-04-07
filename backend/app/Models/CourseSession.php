@@ -32,4 +32,9 @@ class CourseSession extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function courseResources(): HasMany
+    {
+        return $this->hasMany(CourseResource::class);
+    }
 }

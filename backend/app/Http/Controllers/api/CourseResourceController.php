@@ -80,4 +80,64 @@ class CourseResourceController extends Controller
         }
         return Storage::download($resource->file_path, $resource->file_name);
     }
+
+    public function update(Request $request, $id)
+    {
+        $resource = CourseResource::findOrFail($id);
+        $user = Auth::user();
+
+        if ($user->id !== $resource->uploaded_by) {
+            return response()->json(['message' => 'You are not authorized to edit this resource'], 403);
+        }
+
+        $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'file' => 'nullable|file|max:20480', // Max 20MB
+        ]);
+
+        if ($request->hasFile('file')) {
+            // Delete old file
+            Storage::delete($resource->file_path);
+
+            $file = $request->file('file');
+            $filePath = $file->store('course_materials', 'local');
+
+            $resource->file_name = $file->getClientOriginalName();
+            $resource->file_path = $filePath;
+            $resource->file_type = $file->getClientMimeType();
+            $resource->file_size = $file->getSize();
+        }
+
+        if ($request->filled('title')) {
+            $resource->title = $request->title;
+        }
+
+        if ($request->filled('description')) {
+            $resource->description = $request->description;
+        }
+
+        $resource->save();
+
+        return response()->json([
+            'message' => 'Resource updated successfully',
+            'resource' => $resource
+        ]);
+    }
+    public function destroy($id)
+    {
+        $resource = CourseResource::findOrFail($id);
+        $user = Auth::user();
+
+        if ($user->id !== $resource->uploaded_by) {
+            return response()->json(['message' => 'You are not authorized to delete this resource'], 403);
+        }
+
+        // Delete file from storage
+        Storage::delete($resource->file_path);
+
+        $resource->delete();
+
+        return response()->json(['message' => 'Resource deleted successfully']);
+    }
 }
