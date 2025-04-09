@@ -12,13 +12,17 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Components\Tab;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
+use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
 
 class UserResource extends Resource
 {
@@ -28,64 +32,64 @@ class UserResource extends Resource
 
     public static function getSchema(): array
     {
-        return[
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                FileUpload::make('image')
-                    ->image()
-                    ->disk('public')
-                    ->directory('user-images')
-                    ->visibility('public')
-                    ->required(),
-                TextInput::make('university_id')
-                    ->required()
-                    ->numeric(),
-                //make a select using the department relation names
-                Forms\Components\Select::make('department_id')
-                    ->label('Department')
-                    ->options(
-                        Department::all()->pluck('name', 'id')
-                    )
-                    ->required(),
-                TextInput::make('session'),
-                TextInput::make('year')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('semester')
-                    ->numeric()
-                    ->default(null),
-                DatePicker::make('dob')
-                    ->required(),
-                TextInput::make('phone')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
-                Textarea::make('address')
-                    ->required()
-                    ->columnSpanFull(),
-                TextInput::make('city')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('designation')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('publication_count')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                TextInput::make('status')
-                    ->required(),
-                TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('password')
-                    ->password()
-                    ->maxLength(255)
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                    ->dehydrated(fn ($state) => filled($state))
-            ];
+        return [
+            TextInput::make('name')
+                ->required()
+                ->maxLength(255),
+            FileUpload::make('image')
+                ->image()
+                ->disk('public')
+                ->directory('user-images')
+                ->visibility('public')
+                ->required(),
+            TextInput::make('university_id')
+                ->required()
+                ->numeric(),
+            //make a select using the department relation names
+            Forms\Components\Select::make('department_id')
+                ->label('Department')
+                ->options(
+                    Department::all()->pluck('name', 'id')
+                )
+                ->required(),
+            TextInput::make('session'),
+            TextInput::make('year')
+                ->numeric()
+                ->default(null),
+            TextInput::make('semester')
+                ->numeric()
+                ->default(null),
+            DatePicker::make('dob')
+                ->required(),
+            TextInput::make('phone')
+                ->tel()
+                ->required()
+                ->maxLength(255),
+            Textarea::make('address')
+                ->required()
+                ->columnSpanFull(),
+            TextInput::make('city')
+                ->required()
+                ->maxLength(255),
+            TextInput::make('designation')
+                ->required()
+                ->maxLength(255),
+            TextInput::make('publication_count')
+                ->required()
+                ->numeric()
+                ->default(0),
+            TextInput::make('status')
+                ->required(),
+            TextInput::make('email')
+                ->email()
+                ->required()
+                ->maxLength(255),
+            TextInput::make('password')
+                ->password()
+                ->maxLength(255)
+                ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                ->dehydrated(fn($state) => filled($state))
+        ];
     }
 
     public static function form(Form $form): Form
@@ -144,8 +148,79 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // Academic Filters Group
+                SelectFilter::make('department_id')
+                    ->relationship('department', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Department')
+                    ->columnSpan(1),
+                SelectFilter::make('session')
+                    ->options(function () {
+                        $currentYear = Carbon::now()->year;
+                        $years = range(2000, $currentYear + 1);
+                        return array_combine($years, $years);
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->label('Session')
+//                    ->default((string)(Carbon::now()->year + 1)) // Default to next year
+                    ->columnSpan(1),
+                SelectFilter::make('year')
+                    ->options([
+                        '1' => 'Year 1',
+                        '2' => 'Year 2',
+                        '3' => 'Year 3',
+                        '4' => 'Year 4',
+                    ])
+                    ->label('Academic Year')
+                    ->columnSpan(1),
+
+                SelectFilter::make('semester')
+                    ->options([
+                        '1' => 'Semester 1',
+                        '2' => 'Semester 2',
+                    ])
+                    ->label('Semester')
+                    ->columnSpan(1),
+                DateRangeFilter::make('dob'),
+                // Account Status Group
+                SelectFilter::make('status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    ])
+                    ->label('User Status')
+                    ->columnSpan(1),
+
+
+                DateRangeFilter::make('created_at')
+                    ->label('Registration Date')
+                    ->placeholder('Select Date Range')
+                    ->format('Y-m-d')
+                    ->columnSpan(1),
+                NumberFilter::make('publication_count'),
+                Filter::make('email_verified')
+                    ->form([
+                        Forms\Components\Toggle::make('email_verified')
+                            ->label('Verified Emails Only')
+                            ->onColor('success')
+                            ->offColor('danger')
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return $query->when(
+                            isset($data['email_verified']),
+                            fn($q) => $data['email_verified']
+                                ? $q->whereNotNull('email_verified_at')
+                                : $q->whereNull('email_verified_at')
+                        );
+                    })
+                    ->label('Email Verification Status')
+                    ->default(false)
+                    ->columnSpan(1),
             ])
+            ->filtersFormColumns(2) // Set number of columns in filter form
+//            ->filtersLayout(\Filament\Tables\Enums\FiltersLayout::AboveContentCollapsible)
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
