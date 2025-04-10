@@ -8,6 +8,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -52,7 +53,15 @@ class UserResource extends Resource
                     Department::all()->pluck('name', 'id')
                 )
                 ->required(),
-            TextInput::make('session'),
+            //Make in descending order
+            Select::make('session')
+                ->options(function () {
+                    $currentYear = Carbon::now()->year;
+                    $years = range($currentYear + 5, 2000);
+                    return array_combine($years, $years);
+                })
+                ->required()
+                ->searchable(),
             TextInput::make('year')
                 ->numeric()
                 ->default(null),
@@ -164,7 +173,6 @@ class UserResource extends Resource
                     ->searchable()
                     ->preload()
                     ->label('Session')
-//                    ->default((string)(Carbon::now()->year + 1)) // Default to next year
                     ->columnSpan(1),
                 SelectFilter::make('year')
                     ->options([

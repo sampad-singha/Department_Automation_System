@@ -115,7 +115,7 @@ class EnrollmentResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_enrolled')
-                    ->label('Enrollment Status')
+                    ->label('Status')
                     ->searchable()
                     ->sortable()
                     ->boolean(),

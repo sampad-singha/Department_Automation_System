@@ -29,8 +29,7 @@ class PermissionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $perm = Permission::pluck('name')->toArray(); // dd this to get all permissions for seeding
-//        dd($perm);
+        Permission::pluck('name')->toArray();
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
