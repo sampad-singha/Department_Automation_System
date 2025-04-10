@@ -3,8 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\NoticeResource\Pages;
-use App\Filament\Resources\NoticeResource\RelationManagers;
-use App\Http\Controllers\api\NoticeController;
 use App\Models\Notice;
 use App\Models\User;
 use Filament\Forms;
@@ -95,21 +93,6 @@ class NoticeResource extends Resource
                     ->searchable()
                     ->preload()
                     ->label('Filter by Publisher'),
-
-//                Filter::make('published_date')
-//                    ->form([Forms\Components\DatePicker::make('published_from'), Forms\Components\DatePicker::make('published_until')])
-//                    ->query(function (Builder $query, array $data): Builder {
-//                        return $query
-//                            ->when(
-//                                $data['published_from'],
-//                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
-//                            )
-//                            ->when(
-//                                $data['published_until'],
-//                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
-//                            );
-//                    })
-//                    ->label('Published Date Range'),
                 DateRangeFilter::make('published_on')
                     ->label('Published Date Range')
                     ->placeholder('Select a date range'),
