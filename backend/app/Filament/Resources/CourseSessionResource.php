@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -79,7 +80,52 @@ class CourseSessionResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('session')
+                    ->label('Session Year')
+                    ->options(
+                        CourseSession::query()
+                            ->select('session')
+                            ->distinct()
+                            ->orderBy('session', 'desc')
+                            ->pluck('session', 'session')
+                    )
+                    ->searchable()
+                    ->query(function (Builder $query, array $state) {
+                        $query->when($state['value'],
+                            fn($q) => $q->where('session', $state['value'])
+                        );
+                    }),
+                SelectFilter::make('teacher_id')
+                    ->label('Teacher')
+                    ->options(
+                        User::whereHas('roles', function (Builder $query) {
+                            $query->where('name', 'teacher');
+                        })->get()
+                            ->pluck('name', 'id')
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->query(function (Builder $query, array $state) {
+                        $query->when($state['value'],
+                            fn($q) => $q->where('teacher_id', $state['value'])
+                        );
+                    }),
+                SelectFilter::make('course_id')
+                    ->label('Course')
+                    ->options(
+                        Course::query()
+                            ->select('name', 'id')
+                            ->distinct()
+                            ->orderBy('name')
+                            ->pluck('name', 'id')
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->query(function (Builder $query, array $state) {
+                        $query->when($state['value'],
+                            fn($q) => $q->where('course_id', $state['value'])
+                        );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

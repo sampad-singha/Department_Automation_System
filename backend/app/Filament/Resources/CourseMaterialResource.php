@@ -4,10 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CourseMaterialResource\Pages;
 use App\Models\CourseResource;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CourseMaterialResource extends Resource
 {
@@ -54,7 +58,50 @@ class CourseMaterialResource extends Resource
                 ->dateTime()
                 ->sortable(),
         ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('course')
+                    ->relationship('courseSession.course', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Course'),
+
+                SelectFilter::make('uploadedBy')
+                    ->relationship('uploadedBy', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Uploaded By'),
+
+                SelectFilter::make('file_type')
+                    ->options(
+                        CourseResource::query()
+                            ->distinct()
+                            ->pluck('file_type', 'file_type')
+                            ->toArray()
+                    )
+                    ->multiple()
+                    ->searchable()
+                    ->label('File Type'),
+
+                Filter::make('created_at')
+                    ->label('Upload Date')
+                    ->form([
+                        DatePicker::make('created_from')
+                            ->label('From Date'),
+                        DatePicker::make('created_until')
+                            ->label('To Date'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+            ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
             ])

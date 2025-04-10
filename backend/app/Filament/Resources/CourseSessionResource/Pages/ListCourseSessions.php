@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CourseSessionResource\Pages;
 
 use App\Filament\Resources\CourseSessionResource;
+use App\Helpers\SemesterTabHelper;
 use App\Http\Controllers\api\EnrollmentController;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -113,35 +114,12 @@ class ListCourseSessions extends ListRecords
                 }),
         ];
     }
-
     public function getTabs(): array
     {
-        $combinations = DB::table('courses')
-            ->select('year', 'semester')
-            ->distinct()
-            ->orderBy('year')
-            ->orderBy('semester')
-            ->get();
-
-        $tabs = [
-            'all' => Tab::make('All Semesters')
-                ->modifyQueryUsing(fn (Builder $query) => $query),
-        ];
-
-        foreach ($combinations as $combination) {
-            $tabKey = "year_{$combination->year}_semester_$combination->semester";
-            $tabLabel = "Y$combination->year-S$combination->semester";
-
-            $tabs[$tabKey] = Tab::make($tabLabel)
-                ->modifyQueryUsing(function (Builder $query) use ($combination) {
-                    $courseIds = Course::where('year', $combination->year)
-                        ->where('semester', $combination->semester)
-                        ->pluck('id');
-
-                    $query->whereIn('course_id', $courseIds);
-                });
-        }
-
-        return $tabs;
+        return SemesterTabHelper::makeTabs(
+            modelClass: CourseSession::class,
+            relationshipPath: 'course',
+            allLabel: 'All Course Sessions'
+        );
     }
 }
