@@ -206,6 +206,7 @@ class UserResource extends Resource
                             ->label('Verified Emails Only')
                             ->onColor('success')
                             ->offColor('danger')
+                            ->default(true)
                     ])
                     ->query(function (Builder $query, array $data) {
                         return $query->when(
@@ -219,8 +220,7 @@ class UserResource extends Resource
                     ->default(false)
                     ->columnSpan(1),
             ])
-            ->filtersFormColumns(2) // Set number of columns in filter form
-//            ->filtersLayout(\Filament\Tables\Enums\FiltersLayout::AboveContentCollapsible)
+            ->filtersFormColumns(2)
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

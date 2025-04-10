@@ -12,10 +12,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class NoticeResource extends Resource
 {
@@ -67,7 +69,7 @@ class NoticeResource extends Resource
                 Tables\Columns\TextColumn::make('published_at')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('archived_at')
+                Tables\Columns\TextColumn::make('archived_on')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('file')
@@ -82,7 +84,76 @@ class NoticeResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('department')
+                    ->relationship('department', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Filter by Department'),
+
+                SelectFilter::make('publisher')
+                    ->relationship('publisher', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Filter by Publisher'),
+
+//                Filter::make('published_date')
+//                    ->form([Forms\Components\DatePicker::make('published_from'), Forms\Components\DatePicker::make('published_until')])
+//                    ->query(function (Builder $query, array $data): Builder {
+//                        return $query
+//                            ->when(
+//                                $data['published_from'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
+//                            )
+//                            ->when(
+//                                $data['published_until'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
+//                            );
+//                    })
+//                    ->label('Published Date Range'),
+                DateRangeFilter::make('published_on')
+                    ->label('Published Date Range')
+                    ->placeholder('Select a date range'),
+
+                TernaryFilter::make('approved')
+                    ->label('Approval Status')
+                    ->placeholder('All')
+                    ->trueLabel('Approved')
+                    ->falseLabel('Not Approved')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereHas('approvedBy'),
+                        false: fn (Builder $query) => $query->whereDoesntHave('approvedBy'),
+                    ),
+
+                TernaryFilter::make('archived')
+                    ->label('Archived Status')
+                    ->placeholder('All')
+                    ->trueLabel('Archived')
+                    ->falseLabel('Active')
+                    ->attribute('archived_on')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('archived_on'),
+                        false: fn (Builder $query) => $query->whereNull('archived_on'),
+                    ),
+
+                TernaryFilter::make('has_file')
+                    ->label('File Attached')
+                    ->placeholder('All')
+                    ->trueLabel('Yes')
+                    ->falseLabel('No')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('file'),
+                        false: fn (Builder $query) => $query->whereNull('file'),
+                    ),
+
+                Filter::make('archived_date')
+                    ->form([Forms\Components\DatePicker::make('archived_on')])
+                    ->query(fn (Builder $query, array $data): Builder =>
+                    $query->when(
+                        $data['archived_on'],
+                        fn ($query) => $query->whereDate('archived_on', $data['archived_on'])
+                    )
+                    )
+                    ->label('Archived On Date'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
