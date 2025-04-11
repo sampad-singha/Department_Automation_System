@@ -123,60 +123,6 @@ export default function TeacherCourseResources() {
                 </h3>
 
                 {error && <p className="text-red-400 mb-4">{error}</p>}
-
-                {/*<div className="grid gap-4">*/}
-                {/*    <input*/}
-                {/*        type="text"*/}
-                {/*        placeholder="Title"*/}
-                {/*        value={title}*/}
-                {/*        onChange={(e) => setTitle(e.target.value)}*/}
-                {/*        className="p-2 rounded bg-gray-700 text-white border border-gray-600"*/}
-                {/*        required*/}
-                {/*    />*/}
-
-                {/*    <textarea*/}
-                {/*        placeholder="Description (optional)"*/}
-                {/*        value={description}*/}
-                {/*        onChange={(e) => setDescription(e.target.value)}*/}
-                {/*        className="p-2 rounded bg-gray-700 text-white border border-gray-600"*/}
-                {/*    />*/}
-
-                {/*    <input*/}
-                {/*        type="file"*/}
-                {/*        onChange={(e) => setFile(e.target.files[0])}*/}
-                {/*        className="text-white"*/}
-                {/*    />*/}
-
-                {/*    <div className="flex gap-3">*/}
-                {/*        <button*/}
-                {/*            type="submit"*/}
-                {/*            disabled={uploading}*/}
-                {/*            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white"*/}
-                {/*        >*/}
-                {/*            {uploading*/}
-                {/*                ? updatingId*/}
-                {/*                    ? "Updating..."*/}
-                {/*                    : "Uploading..."*/}
-                {/*                : updatingId*/}
-                {/*                    ? "Update Resource"*/}
-                {/*                    : "Upload Resource"}*/}
-                {/*        </button>*/}
-                {/*        {updatingId && (*/}
-                {/*            <button*/}
-                {/*                type="button"*/}
-                {/*                onClick={() => {*/}
-                {/*                    setTitle("");*/}
-                {/*                    setDescription("");*/}
-                {/*                    setFile(null);*/}
-                {/*                    setUpdatingId(null);*/}
-                {/*                }}*/}
-                {/*                className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-md text-white"*/}
-                {/*            >*/}
-                {/*                Cancel*/}
-                {/*            </button>*/}
-                {/*        )}*/}
-                {/*    </div>*/}
-                {/*</div>*/}
                 <div className="grid gap-4">
                     <input
                         type="text"
