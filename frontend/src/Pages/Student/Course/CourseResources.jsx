@@ -85,6 +85,7 @@ export default function CourseResources() {
                         <button
                             onClick={() => handleDownload(resource.id, resource.file_name)}
                             className="mt-4 sm:mt-0 sm:ml-4 inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md"
+                            type="button"
                         >
                             <FaDownload className="mr-2" />
                             Download
