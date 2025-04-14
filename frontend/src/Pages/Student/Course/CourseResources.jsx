@@ -39,7 +39,7 @@ export default function CourseResources() {
             link.click();
             link.remove();
         } catch (err) {
-            alert("Download failed: " + (err.response?.data?.message || err.message));
+            alert(`Download failed: ${err.response?.data?.message || err.message}`);
             console.error(err);
         }
     };
