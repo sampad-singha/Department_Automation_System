@@ -74,7 +74,7 @@ const TeacherCourseDetails = () => {
                     </p>
 
                     {/* Buttons Section */}
-                    <div className="mt-6 flex gap-4">
+                    <div className="mt-6 flex flex-wrap gap-4">
                         <button
                             onClick={fetchPastSessions}
                             className={`px-4 py-2 rounded-md transition-all duration-200 ${
@@ -86,12 +86,19 @@ const TeacherCourseDetails = () => {
                             {showPastSessions ? "Hide Past Sessions" : "View Past Sessions"}
                         </button>
 
-                        {/* Link to Grade Assignments, passing courseSessionId */}
                         <Link
                             to={`/grade-assignments/${courseSessionId}`}
                             className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
                         >
                             Grade Assignments
+                        </Link>
+
+                        {/* New Button: Course Resources */}
+                        <Link
+                            to={`/teacher/courses/my-courses/${courseSessionId}/resources`}
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md"
+                        >
+                            Course Resources
                         </Link>
                     </div>
 

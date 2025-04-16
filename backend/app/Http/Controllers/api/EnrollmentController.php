@@ -146,6 +146,7 @@ class EnrollmentController extends Controller
         }
     }
 
+    // This method is used by course teacher/admin to update marks for a single enrollment
     public function update(Request $request, Enrollment $enrollment)
     {
         $this->authorize('update', $enrollment);
@@ -183,6 +184,7 @@ class EnrollmentController extends Controller
         }
     }
 
+    // This method is used by course teacher to update marks for multiple enrollments
     public function updateMarks(Request $request)
     {
         $user = Auth::user();
@@ -280,36 +282,12 @@ class EnrollmentController extends Controller
                 'message' => 'Only students can view enrollments.',
             ], Response::HTTP_FORBIDDEN);
         }
-
-        // Start building the query
-        $query = Enrollment::where('student_id', $studentId);
-
-        // Apply optional filters
-        if ($request->filled('year')) {
-            $query->whereHas('courseSession.course', function ($q) use ($request) {
-                $q->where('year', $request->input('year'));
-            });
-        }
-
-        if ($request->filled('semester')) {
-            $query->whereHas('courseSession.course', function ($q) use ($request) {
-                $q->where('semester', $request->input('semester'));
-            });
-        }
-
-        if ($request->filled('session')) {
-            $query->whereHas('courseSession', function ($q) use ($request) {
-                $q->where('session', $request->input('session'));
-            });
-        }
-
         // Get enrollments with highest (class_assessment_marks + final_term_marks) per course
         $enrollments = Enrollment::with(['courseSession.course'])
             ->selectRaw('*, (class_assessment_marks + final_term_marks) as total_marks')
             ->where('student_id', $studentId)
             ->orderByDesc('total_marks')
             ->get()
-            ->unique('course_session_id') // Ensure only one per course_session
             ->makeHidden('final_term_marks');
 
         if ($enrollments->isEmpty()) {

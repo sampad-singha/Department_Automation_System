@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -14,57 +13,28 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //add student role to all users when seeding
-        User::factory(5)->create()->each(function ($user) {
-            $user->assignRole('student');
-            $user->update([
-                'year' => 1,
-                'semester' => 1,
-                'session' => '2022',
-            ]);
-        });
+        // Seed students by year, semester, and session
+        $studentData = [
+            ['year' => 1, 'semester' => 1, 'session' => '2022'],
+            ['year' => 2, 'semester' => 1, 'session' => '2021'],
+            ['year' => 2, 'semester' => 2, 'session' => '2020'],
+            ['year' => 3, 'semester' => 2, 'session' => '2019'],
+            ['year' => 4, 'semester' => 2, 'session' => '2018'],
+        ];
 
-        User::factory(5)->create()->each(function ($user) {
-            $user->assignRole('student');
-            $user->update([
-                'year' => 2,
-                'semester' => 1,
-                'session' => '2021',
-            ]);
-        });
+        foreach ($studentData as $data) {
+            User::factory(5)->create()->each(function ($user) use ($data) {
+                $user->assignRole('student');
+                $user->update($data);
+            });
+        }
 
-        User::factory(5)->create()->each(function ($user) {
-            $user->assignRole('student');
-            $user->update([
-                'year' => 2,
-                'semester' => 2,
-                'session' => '2020',
-            ]);
-        });
-
-        User::factory(5)->create()->each(function ($user) {
-            $user->assignRole('student');
-            $user->update([
-                'year' => 3,
-                'semester' => 2,
-                'session' => '2019',
-            ]);
-        });
-
-        User::factory(5)->create()->each(function ($user) {
-            $user->assignRole('student');
-            $user->update([
-                'year' => 4,
-                'semester' => 2,
-                'session' => '2018',
-            ]);
-        });
-
-
+        // Seed teachers
         User::factory(5)->create()->each(function ($user) {
             $user->assignRole('teacher');
         });
 
+        // Admin user
         $adminUser = User::factory()->create([
             'name' => 'Admin User 1',
             'image' => fake()->imageUrl(),
@@ -82,9 +52,9 @@ class UserSeeder extends Seeder
             'university_id' => 123459,
             'publication_count' => 4,
         ]);
-        $admin = Role::findByName('admin');
-        $adminUser->assignRole($admin);
+        $adminUser->assignRole('admin');
 
+        // Super admin user
         $superAdminUser = User::factory()->create([
             'name' => 'Super Admin',
             'image' => fake()->imageUrl(),
@@ -102,7 +72,6 @@ class UserSeeder extends Seeder
             'university_id' => 123456,
             'publication_count' => 4,
         ]);
-        $superAdmin = Role::findByName('super-admin');
-        $superAdminUser->assignRole($superAdmin);
+        $superAdminUser->assignRole('super-admin');
     }
 }
