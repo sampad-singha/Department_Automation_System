@@ -58,6 +58,11 @@ class UserAuthController extends Controller
     {
         $user = Auth::user();
         $user->load('roles', 'department');
+
+        if ($user->image) {
+            $user->image_url = url('storage/' . $user->image);
+        }
+
         return response()->json($user);
     }
 }

@@ -19,10 +19,24 @@ import GradeAssignments from "./Pages/Teacher/Course/GradeAssignments.jsx";
 import CourseResources from "./Pages/Student/Course/CourseResources.jsx";
 import TeacherCourseResources from "./Pages/Teacher/Course/TeacherCourseResources.jsx";
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
     return (
         <Router>
             <AuthProvider>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={true}
+                    newestOnTop={true}
+                    closeOnClick
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                />
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
