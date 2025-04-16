@@ -22,11 +22,6 @@ class Course extends Model
         'department_id',
     ];
 
-    // Define the many-to-many relationship with the User model
-//    public function users(): BelongsToMany
-//    {
-//        return $this->belongsToMany(User::class);
-//    }
     public function courseSessions(): hasMany
     {
         return $this->hasMany(CourseSession::class);
