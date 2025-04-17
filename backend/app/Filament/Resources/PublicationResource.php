@@ -30,7 +30,7 @@ class PublicationResource extends Resource
             ->schema([
                 TextInput::make('doi')
                     ->required()
-                    ->label('DOI')
+                    ->label('DOI/ URL')
                     ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'After entering a DOI, click the fetch icon to automatically retrieve and fill in publication details.')
                     ->suffixAction(
                         Action::make('fetchData')
@@ -65,9 +65,11 @@ class PublicationResource extends Resource
                                     } else {
                                         $publishedDate = null;
                                     }
+                                    $rawAbstract = $publicationData['abstract'] ?? null;
+                                    $cleanAbstract = $rawAbstract ? preg_replace('/<\/?jats:p>/', '', $rawAbstract) : null;
 
                                     $set('title', $publicationData['title'][0] ?? null);
-                                    $set('abstract', $publicationData['abstract'] ?? null);
+                                    $set('abstract', $cleanAbstract);
                                     $set('journal', $publicationData['container-title'][0] ?? null);
                                     $set('volume', $publicationData['volume'] ?? null);
                                     $set('issue', $publicationData['issue'] ?? null);
@@ -114,7 +116,7 @@ class PublicationResource extends Resource
                     ->multiple()
                     ->relationship('users', 'name')
                     ->preload()
-                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} [ID: {$record->university_id}]")
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} [ID: {$record->university_id}]")
             ]);
     }
 
@@ -127,8 +129,13 @@ class PublicationResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->limit(50),
+                TextColumn::make('users.name')
+                    ->label('Authors')
+                    ->listWithLineBreaks()
+                    ->limitList(1)
+                    ->expandableLimitedList(),
                 TextColumn::make('doi')
-                    ->label('DOI')
+                    ->label('DOI/ URL')
                     ->searchable()
                     ->copyable()
                     ->copyMessage('DOI copied')
@@ -141,11 +148,6 @@ class PublicationResource extends Resource
                     ->label('Published Date')
                     ->date()
                     ->sortable(),
-                TextColumn::make('users.name')
-                    ->label('Authors')
-                    ->badge()
-                    ->separator(', ')
-                    ->limit(3),
             ])
             ->filters([
                 //
