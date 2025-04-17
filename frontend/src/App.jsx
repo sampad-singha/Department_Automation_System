@@ -21,6 +21,7 @@ import TeacherCourseResources from "./Pages/Teacher/Course/TeacherCourseResource
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PublicationDetail from "./Pages/AllUser/Publications/Publication.jsx";
 
 function App() {
     return (
@@ -57,6 +58,7 @@ function App() {
                         <Route path="/student/notices" element={<Notices />} />
                         <Route path="/notices/:id" element={<NoticeDetails />} />
                         <Route path="/student/results" element={<CourseResults />} />
+                        <Route path="/publications/:id" element={<PublicationDetail />} />
                     </Route>
 
                 </Routes>

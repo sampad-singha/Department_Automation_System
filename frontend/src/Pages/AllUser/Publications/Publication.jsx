@@ -24,24 +24,20 @@ export default function PublicationDetail() {
         fetchPublication();
     }, [id]);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (loading) return <div className="text-center text-white">Loading...</div>;
+    if (error) return <div className="text-center text-red-500">{error}</div>;
 
-    if (!publication) return <div>Publication not found</div>;
+    if (!publication) return <div className="text-center text-white">Publication not found</div>;
 
     return (
         <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
             <h1 className="text-3xl font-semibold mb-4">{publication.title}</h1>
+
             <div className="flex items-center space-x-2 mb-4">
                 <span className="font-medium">DOI:</span>
-                <a
-                    href={publication.doi}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
-                >
+                <p className="text-gray-400">
                     {publication.doi}
-                </a>
+                </p>
             </div>
 
             <p className="mb-2">Journal: <span className="font-medium">{publication.journal}</span></p>

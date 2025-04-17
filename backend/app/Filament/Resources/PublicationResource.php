@@ -30,7 +30,7 @@ class PublicationResource extends Resource
             ->schema([
                 TextInput::make('doi')
                     ->required()
-                    ->label('DOI/ URL')
+                    ->label('DOI')
                     ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'After entering a DOI, click the fetch icon to automatically retrieve and fill in publication details.')
                     ->suffixAction(
                         Action::make('fetchData')
@@ -135,7 +135,7 @@ class PublicationResource extends Resource
                     ->limitList(1)
                     ->expandableLimitedList(),
                 TextColumn::make('doi')
-                    ->label('DOI/ URL')
+                    ->label('DOI')
                     ->searchable()
                     ->copyable()
                     ->copyMessage('DOI copied')
