@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { PaperClipIcon } from '@heroicons/react/20/solid';
+import CircularProgress from '@mui/material/CircularProgress';
+import { toast } from 'react-toastify';
 import api from '../../../api';
 
 export default function PublicationDetail() {
     const { id } = useParams();
     const [publication, setPublication] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchPublication = async () => {
@@ -15,7 +16,14 @@ export default function PublicationDetail() {
                 const response = await api.get(`/publications/${id}`);
                 setPublication(response.data.publication);
             } catch (err) {
-                setError('Failed to fetch publication details');
+                toast.error(`Download failed: ${err.response?.data?.message || err.message}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             } finally {
                 setLoading(false);
             }
@@ -24,45 +32,69 @@ export default function PublicationDetail() {
         fetchPublication();
     }, [id]);
 
-    if (loading) return <div className="text-center text-white">Loading...</div>;
-    if (error) return <div className="text-center text-red-500">{error}</div>;
+    if (loading) {
+        return (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <CircularProgress size={60} thickness={4} />
+            </div>
+        );
+    }
 
-    if (!publication) return <div className="text-center text-white">Publication not found</div>;
+    if (!publication) {
+        return (
+            <div className="text-center text-white mt-10">
+                Publication not found
+            </div>
+        );
+    }
 
     return (
-        <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
-            <h1 className="text-3xl font-semibold mb-4">{publication.title}</h1>
+        <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-10">
+            <h1 className="text-3xl font-bold mb-6">{publication.title}</h1>
 
-            <div className="flex items-center space-x-2 mb-4">
-                <span className="font-medium">DOI:</span>
-                <p className="text-gray-400">
-                    {publication.doi}
-                </p>
-            </div>
+            <dl className="mb-6 space-y-2">
+                <div className="flex">
+                    <dt className="w-40 font-medium">DOI:</dt>
+                    <dd className="text-gray-400">
+                        <a href={publication.doi} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                            {publication.doi}
+                        </a>
+                    </dd>
+                </div>
+                <div className="flex">
+                    <dt className="w-40 font-medium">Journal:</dt>
+                    <dd className="text-gray-400">{publication.journal}</dd>
+                </div>
+                <div className="flex">
+                    <dt className="w-40 font-medium">Volume:</dt>
+                    <dd className="text-gray-400">{publication.volume}</dd>
+                </div>
+                <div className="flex">
+                    <dt className="w-40 font-medium">Pages:</dt>
+                    <dd className="text-gray-400">{publication.pages}</dd>
+                </div>
+                <div className="flex">
+                    <dt className="w-40 font-medium">Published Date:</dt>
+                    <dd className="text-gray-400">{publication.published_date}</dd>
+                </div>
+            </dl>
 
-            <p className="mb-2">Journal: <span className="font-medium">{publication.journal}</span></p>
-            <p className="mb-2">Volume: <span className="font-medium">{publication.volume}</span></p>
-            <p className="mb-2">Pages: <span className="font-medium">{publication.pages}</span></p>
-            <p className="mb-2">Published Date: <span className="font-medium">{publication.published_date}</span></p>
-
-            <div className="my-4">
+            <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">Abstract</h2>
-                <p>{publication.abstract}</p>
+                <p className="text-gray-300">{publication.abstract}</p>
             </div>
 
-            <div className="mt-4">
-                {publication.url && (
-                    <a
-                        href={publication.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center text-blue-400 hover:underline"
-                    >
-                        <PaperClipIcon className="h-5 w-5 mr-2" />
-                        View Publication
-                    </a>
-                )}
-            </div>
+            {publication.url && (
+                <a
+                    href={publication.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                    <PaperClipIcon className="h-5 w-5 mr-2" />
+                    View Publication
+                </a>
+            )}
         </div>
     );
 }
