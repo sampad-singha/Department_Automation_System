@@ -99,6 +99,11 @@ class User extends Authenticatable implements CanResetPasswordContract
         return $this->hasMany(Enrollment::class, 'student_id');
     }
 
+    public function publications(): BelongsToMany
+    {
+        return $this->belongsToMany(Publication::class)->withTimestamps();
+    }
+
     public function approvedNotices(): belongsToMany
     {
         return $this->belongsToMany(Notice::class, 'notice_user', 'user_id', 'notice_id')
