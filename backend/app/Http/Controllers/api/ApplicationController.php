@@ -59,7 +59,7 @@ class ApplicationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to submit application.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -166,6 +166,7 @@ class ApplicationController extends Controller
             ], 500);
         }
     }
+    //For students
     public function getMyApplications(): JsonResponse
     {
         try {
@@ -186,6 +187,30 @@ class ApplicationController extends Controller
             ], 500);
         }
     }
+
+    //For Teachers
+    public function authorizedApplications(): JsonResponse
+    {
+        try {
+            $applications = Application::with(['applicationTemplate', 'user'])
+                ->where('authorized_by', auth()->id())
+                ->whereIn('status', ['approved', 'rejected'])
+                ->orderByDesc('created_at')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $applications,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch authorized applications.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
 
 }

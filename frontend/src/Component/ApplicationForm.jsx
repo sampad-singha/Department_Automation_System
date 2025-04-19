@@ -10,7 +10,8 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
-        setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        setValues((prev) => ({ ...prev, [name]: value }));
     };
 
     useEffect(() => {
@@ -32,7 +33,11 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('application_template_id', templateId);
-        formData.append('placeholders', JSON.stringify(values));
+
+        Object.entries(values).forEach(([key, value]) => {
+            formData.append('placeholders[]', JSON.stringify({ key, value }));
+        });
+
         if (file) {
             formData.append('attachment', file);
         }
@@ -57,7 +62,7 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 {placeholders.map((ph) => (
                     <div key={ph} className="flex flex-col">
-                        <label className="mb-1 capitalize text-gray-300">{ph.replace(/_/g, ' ')}:</label>
+                        <label className="mb-1 capitalize text-gray-300">{ph.replace(/_/g, ' ')}</label>
                         <input
                             type="text"
                             name={ph}
@@ -81,9 +86,17 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
             <button
                 type="submit"
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-md font-semibold text-white transition-all"
+                className={`px-5 py-2 rounded-md font-semibold transition-all flex items-center justify-center 
+                    ${loading ? 'bg-gray-300 text-gray-900' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
             >
-                {loading ? <CircularProgress size={24} className="text-white" /> : 'Submit Application'}
+                {loading ? (
+                    <>
+                        <CircularProgress size={22} sx={{ color: '#4B5563' }} className="mr-2" />
+                        <span>Submitting</span>
+                    </>
+                ) : (
+                    'Submit Application'
+                )}
             </button>
         </form>
     );
