@@ -25,14 +25,24 @@ class ApplicationTemplateController extends Controller
             ], 500);
         }
     }
-    public function showTemplate($id): JsonResponse
+    public function showTemplate($id)
     {
         try {
             $template = ApplicationTemplate::findOrFail($id);
 
+            // Extract placeholders like %name% using regex
+            preg_match_all('/%(\w+)%/', $template->body, $matches);
+            $placeholders = $matches[1]; // only the variable names, not the % symbols
+
             return response()->json([
                 'status' => 'success',
-                'data' => $template,
+                'data' => [
+                    'id' => $template->id,
+                    'type' => $template->type,
+                    'title' => $template->title,
+                    'body' => $template->body,
+                    'placeholders' => $placeholders,
+                ],
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
@@ -47,6 +57,7 @@ class ApplicationTemplateController extends Controller
             ], 500);
         }
     }
+
 
 
 

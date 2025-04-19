@@ -7,6 +7,7 @@ use App\Models\Application;
 use App\Models\ApplicationTemplate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Mpdf\Mpdf;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -156,7 +157,11 @@ class ApplicationController extends Controller
                 ], 403);
             }
 
-            $filePath = storage_path('app/' . $application->authorized_copy);
+//            $filePath = storage_path('app/' . $application->authorized_copy);
+            $filePath = Storage::disk('local')->path($application->authorized_copy);
+
+
+//            dd($filePath);
 
             if (!file_exists($filePath)) {
                 return response()->json([
