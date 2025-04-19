@@ -55,6 +55,7 @@ const Sidebar = ({ onLogout }) => {
                         <SidebarLink to="/student/results" icon={ChartBarIcon} text="Results" active={location.pathname.startsWith("/student/results")} />
                         <SidebarLink to="/student/payments" icon={CreditCardIcon} text="Payments" active={location.pathname.startsWith("/student/payments")} />
                         <SidebarLink to="/student/notices" icon={BellIcon} text="Notices" active={location.pathname.startsWith("/student/notices")} />
+                        <SidebarLink to="/student/application" icon={ClipboardDocumentIcon} text="Application" active={location.pathname.startsWith("/student/application")} />
                     </>
                 )}
 
