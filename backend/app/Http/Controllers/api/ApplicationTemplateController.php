@@ -25,7 +25,7 @@ class ApplicationTemplateController extends Controller
             ], 500);
         }
     }
-    public function showTemplate($id)
+    public function showTemplate($id): JsonResponse
     {
         try {
             $template = ApplicationTemplate::findOrFail($id);

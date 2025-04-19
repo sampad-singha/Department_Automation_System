@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\Application\ApplicationNotApprovedException;
+use App\Exceptions\Application\AuthorizedCopyNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\ApplicationTemplate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Mpdf\Mpdf;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Mpdf\Mpdf;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ApplicationController extends Controller
 {
@@ -66,7 +68,8 @@ class ApplicationController extends Controller
     public function authorizeApplication(Request $request, $id): JsonResponse
     {
         try {
-            $application = Application::where('id', $id)
+            $application = Application::with(['applicationTemplate', 'user', 'authorizedBy.department'])
+                ->where('id', $id)
                 ->where('authorized_by', auth()->id())
                 ->where('status', 'pending')
                 ->firstOrFail();
@@ -84,11 +87,11 @@ class ApplicationController extends Controller
                 ]);
             }
 
-            // Approve and generate PDF
+            // Generate PDF using Blade view
+            $html = view('application.application', ['application' => $application])->render();
+
             $mpdf = new Mpdf();
-            $mpdf->WriteHTML('<h3>Authorized Application</h3>');
-            $mpdf->WriteHTML('<p>' . nl2br(e($application->body)) . '</p>');
-            $mpdf->WriteHTML('<br><p>Authorized By: ' . $application->authorizedBy->name . '</p>');
+            $mpdf->WriteHTML($html);
 
             $filename = 'authorized_applications/' . Str::uuid() . '.pdf';
             Storage::disk('local')->put($filename, $mpdf->Output('', 'S'));
@@ -113,6 +116,7 @@ class ApplicationController extends Controller
         }
     }
 
+
     public function getPendingApplications(): JsonResponse
     {
         try {
@@ -135,39 +139,21 @@ class ApplicationController extends Controller
         }
     }
 
-    public function downloadAuthorizedCopy($id)
+    public function downloadAuthorizedCopy($id): BinaryFileResponse|JsonResponse
     {
         try {
             $application = Application::findOrFail($id);
-
-            $user = auth()->user();
-            $isAuthorized = $user->id === $application->user_id || $user->id === $application->authorized_by;
-
-            if (!$isAuthorized) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Unauthorized access.',
-                ], 403);
-            }
+            // authorize the user though the policy
+            $this->authorize('canDownloadApplication', $application);
 
             if ($application->status !== 'approved' || !$application->authorized_copy) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Application is not yet approved or missing file.',
-                ], 403);
+                throw new ApplicationNotApprovedException('Application is not yet approved or missing file.');
             }
 
-//            $filePath = storage_path('app/' . $application->authorized_copy);
             $filePath = Storage::disk('local')->path($application->authorized_copy);
 
-
-//            dd($filePath);
-
             if (!file_exists($filePath)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Authorized copy not found on server.',
-                ], 404);
+                throw new AuthorizedCopyNotFoundException('Authorized copy not found on server.');
             }
 
             return response()->download($filePath);
