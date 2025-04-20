@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\api\ApplicationController;
+use App\Http\Controllers\api\ApplicationTemplateController;
 use App\Http\Controllers\api\CourseController;
 use App\Http\Controllers\api\CourseResourceController;
 use App\Http\Controllers\api\CourseSessionController;
@@ -72,3 +74,17 @@ Route::get('/id-card/verify/{id}', [IdCardController::class, 'verify'])->name('v
 // Publication routes
 Route::get('/publications', [PublicationController::class, 'showAll'])->middleware('auth:sanctum');
 Route::get('/publications/{id}', [PublicationController::class, 'show'])->middleware('auth:sanctum');
+
+// Application Routes (requires auth)
+Route::group(['prefix' => 'applications', 'middleware' => 'auth:sanctum'], function () {
+    Route::get('/templates', [ApplicationTemplateController::class, 'getTemplates']);
+    Route::get('/templates/{id}', [ApplicationTemplateController::class, 'showTemplate']);
+    Route::post('/submit', [ApplicationController::class, 'submitApplication']);
+    Route::get('/my-applications', [ApplicationController::class, 'getMyApplications']);
+    Route::get('/pending', [ApplicationController::class, 'getPendingApplications']);
+    Route::get('/authorized', [ApplicationController::class, 'authorizedApplications']);
+    Route::post('/{id}/authorize', [ApplicationController::class, 'authorizeApplication']);
+    Route::get('/{id}/download', [ApplicationController::class, 'downloadAuthorizedCopy']);
+    Route::get('/{application}/attachment', [ApplicationController::class, 'downloadAttachment']);
+
+});

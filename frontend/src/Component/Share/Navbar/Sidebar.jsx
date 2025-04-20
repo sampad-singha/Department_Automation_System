@@ -10,6 +10,7 @@ import {
     ArrowRightStartOnRectangleIcon,
     ChevronDownIcon,
     ChevronUpIcon,
+    DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useAuth } from "../../../Contexts/AuthContext.jsx";
@@ -55,6 +56,7 @@ const Sidebar = ({ onLogout }) => {
                         <SidebarLink to="/student/results" icon={ChartBarIcon} text="Results" active={location.pathname.startsWith("/student/results")} />
                         <SidebarLink to="/student/payments" icon={CreditCardIcon} text="Payments" active={location.pathname.startsWith("/student/payments")} />
                         <SidebarLink to="/student/notices" icon={BellIcon} text="Notices" active={location.pathname.startsWith("/student/notices")} />
+                        <SidebarLink to="/student/application" icon={ClipboardDocumentIcon} text="Application" active={location.pathname.startsWith("/student/application")} />
                     </>
                 )}
 
@@ -63,6 +65,8 @@ const Sidebar = ({ onLogout }) => {
                         <SidebarLink to="/teacher/dashboard" icon={HomeIcon} text="Dashboard" active={location.pathname.startsWith("/teacher/dashboard")} />
                         <SidebarLink to="/teacher/manage-students" icon={UserGroupIcon} text="Manage Students" active={location.pathname.startsWith("/teacher/manage-students")} />
                         <SidebarLink to="/teacher/grade-assignments" icon={ClipboardDocumentIcon} text="Grade Assignments" active={location.pathname.startsWith("/teacher/grade-assignments")} />
+                        <SidebarLink to="/teacher/applications" icon={DocumentDuplicateIcon} text="Applications" active={location.pathname.startsWith("/teacher/applications")}/>
+
 
                         {/* Teacher Courses with Sub-Options */}
                         <button
