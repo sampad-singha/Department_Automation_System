@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../../Contexts/AuthContext.jsx";
 import {
     UserIcon,
@@ -8,72 +8,101 @@ import {
     AcademicCapIcon,
     BuildingLibraryIcon,
     IdentificationIcon,
-    BuildingOfficeIcon,
-    ArrowRightStartOnRectangleIcon
 } from "@heroicons/react/24/outline";
+import Dashboard from "../../../Component/Dashboard.jsx";
+import CollapsibleSection from "../../../Component/CollapsibleSection.jsx";
+import api from "../../../api.jsx";
+import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
 
 export default function TeacherDashboard() {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
+    const [publications, setPublications] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchPublications = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const response = await api.get("/publications");
+                setPublications(response.data.publications);
+            } catch (err) {
+                setError("Failed to fetch publications.");
+                console.error(err);
+                toast.error(`Error: ${err.response?.data?.message || err.message}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPublications();
+    }, []);
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white px-4">
-            <div className="bg-gray-800 shadow-lg rounded-lg p-6 w-full max-w-2xl border border-gray-700">
+        <div className="flex justify-center items-center min-h-screen bg-gray-900">
+            <div className="shadow-lg rounded-lg w-full max-w-4xl p-6">
+                <Dashboard user={user}>
+                    <CollapsibleSection title="Profile Information">
+                        <DetailItem icon={EnvelopeIcon} label="Email" value={user?.email} />
+                        <DetailItem icon={CalendarIcon} label="Date of Birth" value={user?.dob} />
+                        <DetailItem icon={PhoneIcon} label="Phone" value={user?.phone} />
+                        <DetailItem icon={IdentificationIcon} label="University ID" value={user?.university_id} />
+                    </CollapsibleSection>
 
-                {/* Profile Section */}
-                <div className="flex items-center space-x-4 border-b border-gray-700 pb-4">
-                    <img
-                        src={user?.image || "https://via.placeholder.com/150"}
-                        alt="Profile"
-                        className="w-20 h-20 rounded-full border border-gray-600"
-                    />
-                    <div>
-                        <h2 className="text-2xl font-semibold text-white flex items-center gap-2">
-                            <UserIcon className="h-6 w-6 text-gray-400" />
-                            {user?.name}
-                        </h2>
-                        <p className="text-gray-400 flex items-center gap-2">
-                            <AcademicCapIcon className="h-5 w-5 text-gray-400" />
-                            {user?.designation}
-                        </p>
-                    </div>
-                </div>
+                    <CollapsibleSection title="Academic Information">
+                        <DetailItem icon={AcademicCapIcon} label="Designation" value={user?.designation} />
+                    </CollapsibleSection>
 
-                {/* Details Section */}
-                <div className="mt-4 space-y-3">
-                    <DetailItem icon={EnvelopeIcon} label="Email" value={user?.email} />
-                    <DetailItem icon={CalendarIcon} label="Date of Birth" value={user?.dob} />
-                    <DetailItem icon={PhoneIcon} label="Phone" value={user?.phone} />
-                    <DetailItem icon={IdentificationIcon} label="University ID" value={user?.university_id} />
+                    <CollapsibleSection title="Publications" defaultOpen={true}>
+                        {loading ? (
+                            <div className="flex justify-center items-center">
+                                <CircularProgress size={60} thickness={4} />
+                            </div>
+                        ) : error ? (
+                            <div className="text-center text-red-500 mt-4">{error}</div>
+                        ) : publications.length > 0 ? (
+                            publications.map((pub) => (
+                                <div key={pub.id} className="bg-gray-800 p-3 rounded mb-2 flex justify-between items-center">
+                                    <div className="mr-4">
+                                        <p className="text-white font-semibold">{pub.title}</p>
+                                        <p className="text-gray-400 text-sm">{pub.journal}</p>
+                                    </div>
+                                    <button
+                                        className="text-blue-400 hover:text-blue-600 whitespace-nowrap"
+                                        onClick={() => navigate(`/publications/${pub.id}`)}
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-400">No publications found.</p>
+                        )}
+                    </CollapsibleSection>
 
-                    {/* Department Section */}
-                    <div className="mt-6 border-t border-gray-700 pt-4">
-                        <h3 className="text-xl font-semibold flex items-center gap-2 text-white">
-                            <BuildingOfficeIcon className="h-6 w-6 text-gray-400" />
-                            Department Information
-                        </h3>
+                    <CollapsibleSection title="Department Information">
                         <DetailItem icon={BuildingLibraryIcon} label="Department" value={user?.department?.name} />
                         <DetailItem icon={UserIcon} label="Faculty" value={user?.department?.faculty} />
                         <DetailItem icon={IdentificationIcon} label="Short Name" value={user?.department?.short_name} />
-                    </div>
-                </div>
+                    </CollapsibleSection>
 
-                {/* Logout Button */}
-                <div className="mt-6 flex justify-center">
-                    <button
-                        type="button"
-                        onClick={logout}
-                        className="px-5 py-2 flex items-center gap-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition"
-                    >
-                        <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
-                        Logout
-                    </button>
-                </div>
+                </Dashboard>
             </div>
         </div>
     );
 }
 
-// Component for displaying details with an icon
 const DetailItem = ({ icon: Icon, label, value }) => (
     <div className="flex items-center space-x-3 text-gray-300">
         <Icon className="h-5 w-5 text-gray-400" />

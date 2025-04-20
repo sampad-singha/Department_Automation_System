@@ -12,7 +12,7 @@ use Mpdf\Mpdf;
 
 class IdCardController extends Controller
 {
-    #[NoReturn] public function generateIdCard()
+    public function generateIdCard()
     {
         try {
             $user = Auth::user();
@@ -41,10 +41,12 @@ class IdCardController extends Controller
             // Write HTML to mPDF
             $mpdf->WriteHTML($html);
 
-            // Output the PDF as a download
-            $mpdf->Output("ID_Card_{$user->id}.pdf", "D"); // "D" forces download
+            $pdfContent = $mpdf->Output('', 'S'); // 'S' returns as string
 
-            exit; // Stop further Laravel processing
+            return response($pdfContent, 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="ID_Card_'.$user->id.'.pdf"')
+                ->header('Access-Control-Expose-Headers', 'Content-Disposition');
         } catch (\Throwable $e) {
             // Handle exceptions (e.g., log the error, return a response)
             return response()->json(['error' => 'Failed to generate ID card.'], 500);
