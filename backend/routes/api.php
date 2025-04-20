@@ -85,4 +85,6 @@ Route::group(['prefix' => 'applications', 'middleware' => 'auth:sanctum'], funct
     Route::get('/authorized', [ApplicationController::class, 'authorizedApplications']);
     Route::post('/{id}/authorize', [ApplicationController::class, 'authorizeApplication']);
     Route::get('/{id}/download', [ApplicationController::class, 'downloadAuthorizedCopy']);
+    Route::get('/{application}/attachment', [ApplicationController::class, 'downloadAttachment']);
+
 });

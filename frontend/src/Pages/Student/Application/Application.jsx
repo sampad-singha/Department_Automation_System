@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import api from '../../../api.jsx'; // Ensure that api.jsx includes bearer token logic
 import ApplicationForm from '../../../Component/ApplicationForm.jsx';
-import { CircularProgress } from '@mui/material';
-import { toast } from 'react-toastify';
+import {CircularProgress} from '@mui/material';
+import {toast} from 'react-toastify';
+import {ArrowDownTrayIcon, PaperClipIcon} from '@heroicons/react/24/outline';
 
 const Application = () => {
     const [templates, setTemplates] = useState([]);
@@ -47,6 +48,28 @@ const Application = () => {
         }
     };
 
+    const downloadAttachment = async (appId) => {
+        setLoading(true);
+        try {
+            const res = await api.get(`/applications/${appId}/attachment`, {
+                responseType: 'blob',
+            });
+
+            const blob = new Blob([res.data]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `attachment_${appId}.pdf`; // Adjust extension if needed
+            a.click();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to download attachment.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     // Fetch user's applications
     const fetchMyApplications = async () => {
         setLoading(true);
@@ -90,12 +113,34 @@ const Application = () => {
         return updatedTemplate;
     };
 
+    const downloadApplication = async (appId) => {
+        setLoading(true);
+        try {
+            const res = await api.get(`/applications/${appId}/download`, {
+                responseType: 'blob',
+            });
+
+            const blob = new Blob([res.data]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `application_${appId}.pdf`; // Change extension if not PDF
+            a.click();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to download approved application.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     return (
         <div className="p-6 min-h-screen bg-gray-900 text-white relative">
             {/* Loading Overlay */}
             {loading && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <CircularProgress size={60} thickness={4} />
+                    <CircularProgress size={60} thickness={4}/>
                 </div>
             )}
 
@@ -117,16 +162,36 @@ const Application = () => {
                             <td className="px-4 py-3">{app.application_template.title}</td>
                             <td className="px-4 py-3">{new Date(app.created_at).toLocaleDateString()}</td>
                             <td className="px-4 py-3 capitalize">{app.status}</td>
-                            <td className="px-4 py-3">
-                                {app.status === 'approved' && (
-                                    <a
-                                        onClick={(e) => handleDownload(e, app.id)} // Use the function to handle the download
-                                        className="text-blue-400 hover:underline cursor-pointer"
+                            <td className="px-4 py-3 flex items-center gap-3">
+                                {/* Application Download (conditionally rendered or placeholder) */}
+                                {app.status === 'approved' && app.authorized_copy ? (
+                                    <button
+                                        onClick={() => downloadApplication(app.id)}
+                                        className="flex items-center text-blue-400 hover:text-blue-300 mr-4"
+                                        title="Download Approved Copy"
                                     >
-                                        Download
-                                    </a>
+                                        <ArrowDownTrayIcon className="w-5 h-5 mr-1"/>
+                                        Application
+                                    </button>
+                                ) : (
+                                    // Invisible placeholder to keep attachment aligned
+                                    <div className="w-[130px]"></div> // Adjust width if needed
+                                )}
+
+                                {/* Attachment Download (always shown) */}
+                                {app.attachment && (
+                                    <button
+                                        onClick={() => downloadAttachment(app.id)}
+                                        className="flex items-center text-green-400 hover:text-green-300"
+                                        title="Download Attachment"
+                                    >
+                                        <PaperClipIcon className="w-5 h-5 mr-1"/>
+                                        Attachment
+                                    </button>
                                 )}
                             </td>
+
+
                         </tr>
                     ))}
                     </tbody>
@@ -156,7 +221,7 @@ const Application = () => {
                     <h4 className="text-lg font-semibold mb-2">Template Preview: {selectedTemplate.title}</h4>
                     <div
                         className="bg-gray-900 p-4 rounded text-sm text-gray-300 mb-6 whitespace-pre-wrap overflow-auto"
-                        dangerouslySetInnerHTML={{ __html: renderTemplatePreview(selectedTemplate.body) }} // Render the template with red placeholders
+                        dangerouslySetInnerHTML={{__html: renderTemplatePreview(selectedTemplate.body)}} // Render the template with red placeholders
                     />
                     <ApplicationForm
                         templateId={selectedTemplate.id}

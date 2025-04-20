@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { CircularProgress } from '@mui/material';
-import { toast } from 'react-toastify';
+import {useState, useEffect} from 'react';
+import {CircularProgress} from '@mui/material';
+import {toast} from 'react-toastify';
 import api from '../api.jsx';
 
-const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
+const ApplicationForm = ({templateId, placeholders, onSubmitSuccess}) => {
     const [values, setValues] = useState({});
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setValues((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setValues((prev) => ({...prev, [name]: value}));
     };
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
         formData.append('application_template_id', templateId);
 
         Object.entries(values).forEach(([key, value]) => {
-            formData.append('placeholders[]', JSON.stringify({ key, value }));
+            formData.append('placeholders[]', JSON.stringify({key, value}));
         });
 
         if (file) {
@@ -45,7 +45,7 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
         setLoading(true);
         try {
             await api.post('/applications/submit', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: {'Content-Type': 'multipart/form-data'},
             });
             onSubmitSuccess();
         } catch (err) {
@@ -60,8 +60,7 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
             <h4 className="text-lg font-semibold mb-4">Fill in the application fields</h4>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                {placeholders.map((ph) => (
-                    <div key={ph} className="flex flex-col">
+                {placeholders.map((ph) => (<div key={ph} className="flex flex-col">
                         <label className="mb-1 capitalize text-gray-300">{ph.replace(/_/g, ' ')}</label>
                         <input
                             type="text"
@@ -71,8 +70,7 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
                             required
                             className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                    </div>
-                ))}
+                    </div>))}
                 <div className="md:col-span-2 flex flex-col">
                     <label className="mb-1 text-gray-300">Attachment (optional):</label>
                     <input
@@ -82,24 +80,30 @@ const ApplicationForm = ({ templateId, placeholders, onSubmitSuccess }) => {
                     />
                 </div>
             </div>
+            <div className="flex gap-4 justify-end mt-6">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className={`px-5 py-2 rounded-md font-semibold transition-all flex items-center justify-center 
+            ${loading ? 'bg-gray-300 text-gray-900' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                >
+                    {loading ? (<>
+                            <CircularProgress size={22} sx={{color: '#4B5563'}} className="mr-2"/>
+                            <span>Submitting</span>
+                        </>) : ('Submit Application')}
+                </button>
 
-            <button
-                type="submit"
-                disabled={loading}
-                className={`px-5 py-2 rounded-md font-semibold transition-all flex items-center justify-center 
-                    ${loading ? 'bg-gray-300 text-gray-900' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
-            >
-                {loading ? (
-                    <>
-                        <CircularProgress size={22} sx={{ color: '#4B5563' }} className="mr-2" />
-                        <span>Submitting</span>
-                    </>
-                ) : (
-                    'Submit Application'
-                )}
-            </button>
-        </form>
-    );
+                <button
+                    type="button"
+                    disabled={loading}
+                    onClick={onSubmitSuccess}
+                    className="px-5 py-2 rounded-md font-semibold transition-all bg-red-600 hover:bg-red-500 text-white"
+                >
+                    Cancel
+                </button>
+            </div>
+
+        </form>);
 };
 
 export default ApplicationForm;

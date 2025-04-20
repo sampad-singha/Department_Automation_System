@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Exceptions\Application\ApplicationNotApprovedException;
+use App\Exceptions\Application\AttachmentNotFoundException;
 use App\Exceptions\Application\AuthorizedCopyNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
@@ -11,8 +12,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Mpdf\Container\NotFoundException;
 use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ApplicationController extends Controller
 {
@@ -166,6 +169,31 @@ class ApplicationController extends Controller
             ], 500);
         }
     }
+    public function downloadAttachment($id): BinaryFileResponse|JsonResponse
+    {
+        try {
+            $application = Application::findOrFail($id);
+
+            // Authorize using policy (e.g., user can download their own application)
+            $this->authorize('canDownloadAttachment', $application);
+
+            if (!$application->attachment || !Storage::exists($application->attachment)) {
+                throw new AttachmentNotFoundException('Attachment not found.');
+            }
+
+            $filePath = Storage::disk('local')->path($application->attachment);
+
+            return response()->download($filePath);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to download attachment.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     //For students
     public function getMyApplications(): JsonResponse
     {
