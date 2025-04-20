@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import api from "../../../api.jsx";
 import { CircularProgress } from "@mui/material";
 import { FaDownload, FaFileAlt } from "react-icons/fa";
+import {toast} from "react-toastify";
 
 export default function CourseResources() {
     const { courseSessionId } = useParams();
@@ -39,8 +40,15 @@ export default function CourseResources() {
             link.click();
             link.remove();
         } catch (err) {
-            alert(`Download failed: ${err.response?.data?.message || err.message}`);
             console.error(err);
+            toast.error(`Download failed: ${err.response?.data?.message || err.message}`, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+        });
         }
     };
 

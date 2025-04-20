@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../../api.jsx";
 import { CircularProgress } from "@mui/material";
 import { FaBook, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import {toast} from "react-toastify";
 
 export default function Courses() {
     const [enrollments, setEnrollments] = useState([]);
@@ -12,6 +13,24 @@ export default function Courses() {
 
     const TOTAL_YEARS = 4;
     const TOTAL_SEMESTERS = 2;
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "colored"
+            });
+
+            // Optional: clear the error after showing toast
+            setError(null);
+        }
+    }, [error]);
+
 
     useEffect(() => {
         const fetchEnrollments = async () => {
@@ -95,9 +114,6 @@ export default function Courses() {
                 </div>
             )}
 
-            {/* Error Message */}
-            {error && <p className="text-red-500 text-center my-4">{error}</p>}
-
             {/* Semester Tabs */}
             <div className="flex space-x-4 border-b pb-2">
                 {allSemesters.map((semester) => (
@@ -119,46 +135,6 @@ export default function Courses() {
             <div className="mt-6 space-y-4">
                 {groupedBySemester[activeSemester]?.length > 0 ? (
                     groupedBySemester[activeSemester].map((enrollment) => (
-                        // <div
-                        //     key={enrollment.id}
-                        //     className="bg-gray-900 text-white p-6 rounded-xl shadow-lg border border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between"
-                        // >
-                        //     <div className="flex-1">
-                        //         <h3 className="text-lg font-semibold flex items-center space-x-2">
-                        //             <FaBook className="text-yellow-400" />
-                        //             <span>{enrollment.course_session.course.name} ({enrollment.course_session.course.code})</span>
-                        //         </h3>
-                        //
-                        //         <div className="mt-2 text-gray-400 text-sm">
-                        //             <p className="flex items-center space-x-2">
-                        //                 {enrollment.is_enrolled ? (
-                        //                     <FaCheckCircle className="text-green-400" />
-                        //                 ) : (
-                        //                     <FaTimesCircle className="text-red-400" />
-                        //                 )}
-                        //                 <span>{enrollment.is_enrolled ? "Enrolled" : "Not Enrolled"}</span>
-                        //             </p>
-                        //
-                        //             <p className="mt-2 text-sm text-gray-300">
-                        //                 <strong>Session: </strong>{enrollment.course_session.session}
-                        //             </p>
-                        //
-                        //             <p className="text-lg font-semibold mt-2">
-                        //                 Class Assessment Marks: <span className="text-yellow-300">{enrollment.class_assessment_marks}</span>
-                        //             </p>
-                        //         </div>
-                        //     </div>
-                        //
-                        //     {/* Re-Enroll Button */}
-                        //     {enrollment.canReEnroll && (
-                        //         <button
-                        //             onClick={() => handleReEnroll(enrollment.course_session.course.id)}
-                        //             className="mt-4 sm:mt-0 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"
-                        //         >
-                        //             Re-Enroll
-                        //         </button>
-                        //     )}
-                        // </div>
                         <div
                             key={enrollment.id}
                             className="bg-gray-900 text-white p-6 rounded-xl shadow-lg border border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between"

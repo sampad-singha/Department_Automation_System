@@ -19,10 +19,27 @@ import GradeAssignments from "./Pages/Teacher/Course/GradeAssignments.jsx";
 import CourseResources from "./Pages/Student/Course/CourseResources.jsx";
 import TeacherCourseResources from "./Pages/Teacher/Course/TeacherCourseResources.jsx";
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import PublicationDetail from "./Pages/AllUser/Publications/Publication.jsx";
+import Application from "./Pages/Student/Application/Application.jsx";
+import ApplicationTeacher from "./Pages/Teacher/Application/ApplicationTeacher.jsx";
+
 function App() {
     return (
         <Router>
             <AuthProvider>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={true}
+                    newestOnTop={true}
+                    closeOnClick
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                />
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
@@ -43,6 +60,9 @@ function App() {
                         <Route path="/student/notices" element={<Notices />} />
                         <Route path="/notices/:id" element={<NoticeDetails />} />
                         <Route path="/student/results" element={<CourseResults />} />
+                        <Route path="/publications/:id" element={<PublicationDetail />} />
+                        <Route path="/student/application" element={<Application />} />
+                        <Route path="/teacher/applications" element={<ApplicationTeacher />} />
                     </Route>
 
                 </Routes>
