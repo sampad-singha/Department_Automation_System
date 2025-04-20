@@ -12,16 +12,17 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Mpdf\Container\NotFoundException;
 use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ApplicationController extends Controller
 {
     public function submitApplication(Request $request): JsonResponse
     {
         try {
+            $request->merge([
+                'placeholders' => json_decode($request->input('placeholders'), true),
+            ]);
             $validated = $request->validate([
                 'application_template_id' => 'required|exists:application_templates,id',
                 'placeholders' => 'required|array',
@@ -30,9 +31,15 @@ class ApplicationController extends Controller
 
             $template = ApplicationTemplate::findOrFail($validated['application_template_id']);
 
+            // Normalize placeholder keys: lowercase and trim
+            $placeholders = collect($validated['placeholders'])
+                ->mapWithKeys(fn($value, $key) => [strtolower(trim($key)) => $value])
+                ->toArray();
+
+            // Replace placeholders in template body
             $body = str_replace(
-                array_map(fn($k) => "%$k%", array_keys($validated['placeholders'])),
-                array_values($validated['placeholders']),
+                array_map(fn($k) => "%$k%", array_keys($placeholders)),
+                array_values($placeholders),
                 $template->body
             );
 
@@ -44,7 +51,6 @@ class ApplicationController extends Controller
                     ['disk' => 'local']        // use the local disk
                 );
             }
-
 
             $application = Application::create([
                 'user_id' => auth()->id(),
@@ -67,6 +73,7 @@ class ApplicationController extends Controller
             ], 500);
         }
     }
+
 
     public function authorizeApplication(Request $request, $id): JsonResponse
     {

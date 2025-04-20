@@ -34,9 +34,8 @@ const ApplicationForm = ({templateId, placeholders, onSubmitSuccess}) => {
         const formData = new FormData();
         formData.append('application_template_id', templateId);
 
-        Object.entries(values).forEach(([key, value]) => {
-            formData.append('placeholders[]', JSON.stringify({key, value}));
-        });
+        // Correct way: send as JSON object string
+        formData.append('placeholders', JSON.stringify(values));
 
         if (file) {
             formData.append('attachment', file);
@@ -45,7 +44,9 @@ const ApplicationForm = ({templateId, placeholders, onSubmitSuccess}) => {
         setLoading(true);
         try {
             await api.post('/applications/submit', formData, {
-                headers: {'Content-Type': 'multipart/form-data'},
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
             onSubmitSuccess();
         } catch (err) {
@@ -54,6 +55,7 @@ const ApplicationForm = ({templateId, placeholders, onSubmitSuccess}) => {
             setLoading(false);
         }
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="bg-gray-900 p-6 rounded-lg border border-gray-700 w-full text-white">
