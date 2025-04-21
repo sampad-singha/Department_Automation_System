@@ -33,16 +33,9 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: testing_db
-          MYSQL_ROOT_HOST: '%'  # Allow root access from any host
-          MYSQL_DEFAULT_AUTHENTICATION_PLUGIN: mysql_native_password  # Legacy auth
         ports:
           - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -uroot -proot"
-          --health-interval=5s
-          --health-timeout=3s
-          --health-retries=5
-
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v3
 
@@ -62,7 +55,6 @@ jobs:
         run: |
           cp .env.example .env
           cp .env.example .env.testing
-          echo "APP_ENV=testing" >> .env.testing
           echo "DB_CONNECTION=mysql" >> .env.testing
           echo "DB_HOST=mysql" >> .env.testing
           echo "DB_PORT=3306" >> .env.testing
@@ -70,28 +62,15 @@ jobs:
           echo "DB_USERNAME=root" >> .env.testing
           echo "DB_PASSWORD=root" >> .env.testing
 
-      - name: Generate application keys
-        run: |
-          php artisan key:generate
-          php artisan key:generate --env=testing
+      - name: Generate application key
+        run: php artisan key:generate
 
       - name: Wait for MySQL to be ready
-        timeout-minutes: 5
+        timeout-minutes: 3
         run: |
-          for i in {1..30}; do
-            if mysqladmin ping -h"mysql" -u"root" -p"root" --silent 2>/dev/null; then
-              echo "✅ MySQL is ready!"
-              exit 0
-            fi
-            echo "⏳ Waiting for MySQL (attempt $i/30)..."
-            sleep 5
+          while ! mysqladmin ping -h"mysql" -u"root" -p"root" --silent; do
+              sleep 1
           done
-          echo "❌ MySQL failed to start!"
-          exit 1
-
-      - name: Show MySQL logs
-        if: failure()
-        run: docker logs ${{ job.services.mysql.id }}
 
       - name: Run migrations
         run: php artisan migrate --env=testing
