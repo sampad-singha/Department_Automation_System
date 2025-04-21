@@ -50,9 +50,14 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
+      - name: Create .env file
+        run: cp .env.example .env
+
+      - name: Generate application key
+        run: php artisan key:generate
+
       - name: Run tests and generate coverage report
         run: |
-          php artisan key:generate
           php artisan migrate --env=testing
           php artisan test --coverage-clover=coverage.xml
 
