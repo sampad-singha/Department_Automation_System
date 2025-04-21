@@ -27,17 +27,17 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testing_db
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup MySQL
+        uses: mysql/mysqlgithub/setup-mysql@v1
+        with:
+          mysql version: '8.0'
+          mysql database: 'testing_db'
+          mysql user: 'root'
+          mysql password: 'root'
+          mysql root password: 'root'
 
       - name: Set up PHP with Xdebug
         uses: shivammathur/setup-php@v2
@@ -56,7 +56,7 @@ jobs:
           cp .env.example .env
           cp .env.example .env.testing
           echo "DB_CONNECTION=mysql" >> .env.testing
-          echo "DB_HOST=mysql" >> .env.testing
+          echo "DB_HOST=127.0.0.1" >> .env.testing
           echo "DB_PORT=3306" >> .env.testing
           echo "DB_DATABASE=testing_db" >> .env.testing
           echo "DB_USERNAME=root" >> .env.testing
@@ -65,17 +65,10 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
-      - name: Wait for MySQL to be ready
-        timeout-minutes: 3
-        run: |
-          while ! mysqladmin ping -h"mysql" -u"root" -p"root" --silent; do
-              sleep 1
-          done
-
       - name: Run migrations
         run: php artisan migrate --env=testing
         env:
-          DB_HOST: mysql
+          DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: testing_db
           DB_USERNAME: root
