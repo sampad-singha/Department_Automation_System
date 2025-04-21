@@ -22,68 +22,17 @@ on:
       - 'backend/**'
 
 jobs:
-  backend-analysis:
+  sonarqube-analysis:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
-
-      - name: Setup MySQL
-        uses: actions/setup-mysql@v3
-        with:
-          mysql version: '8.0'
-          database port: 3306
-          database name: testing_db
-          database user: root
-          database password: root
-          root password: root
-
-      - name: Set up PHP with Xdebug
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, xml, bcmath, curl, mysql, xdebug
-          tools: composer
-        env:
-          XDEBUG_MODE: coverage
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Create environment files
-        run: |
-          cp .env.example .env
-          cp .env.example .env.testing
-          echo "DB_CONNECTION=mysql" >> .env.testing
-          echo "DB_HOST=127.0.0.1" >> .env.testing
-          echo "DB_PORT=3306" >> .env.testing
-          echo "DB_DATABASE=testing_db" >> .env.testing
-          echo "DB_USERNAME=root" >> .env.testing
-          echo "DB_PASSWORD=root" >> .env.testing
-
-      - name: Generate application key
-        run: php artisan key:generate
-
-      - name: Run migrations
-        run: php artisan migrate --env=testing
-        env:
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: testing_db
-          DB_USERNAME: root
-          DB_PASSWORD: root
-
-      - name: Run tests and generate coverage report
-        run: php artisan test --coverage-clover=coverage.xml
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarqube-scan-action@v4
         with:
           projectBaseDir: ./backend
           extraProperties: |
-            sonar.php.coverage.reportPaths=coverage.xml
+            sonar.php.coverage.reportPaths=backend/coverage.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
