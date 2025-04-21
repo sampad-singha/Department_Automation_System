@@ -51,15 +51,19 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Create .env file
-        run: cp .env.example .env
+        run: cp .env.testing .env
 
       - name: Generate application key
         run: php artisan key:generate
 
+      - name: Wait for MySQL to be ready
+        run: sleep 20
+
+      - name: Run migrations
+        run: php artisan migrate --env=testing
+
       - name: Run tests and generate coverage report
-        run: |
-          php artisan migrate --env=testing
-          php artisan test --coverage-clover=coverage.xml
+        run: php artisan test --coverage-clover=coverage.xml
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarqube-scan-action@v4
