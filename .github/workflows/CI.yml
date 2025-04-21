@@ -43,7 +43,7 @@ jobs:
           projectBaseDir: ./backend
           args: >
             -Dsonar.organization=learnathon-by-geeky-solutions
-            -Dsonar.projectKey=learnathon-by-geeky-solutions
+            -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_artisan-forces
             -Dsonar.php.coverage.reportPaths=coverage.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
