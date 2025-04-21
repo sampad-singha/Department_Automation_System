@@ -1,0 +1,66 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+      - development
+      - 'feat/**'
+      - 'sprint/**'
+      - 'bug/**'
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches:
+      - main
+      - development
+      - 'feat/**'
+      - 'sprint/**'
+      - 'bug/**'
+    paths:
+      - 'backend/**'
+
+jobs:
+  backend-analysis:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing_db
+        ports:
+          - 3306:3306
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up PHP with Xdebug
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, xml, bcmath, curl, mysql, xdebug
+          tools: composer
+        env:
+          XDEBUG_MODE: coverage
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run tests and generate coverage report
+        run: |
+          php artisan key:generate
+          php artisan migrate --env=testing
+          php artisan test --coverage-clover=coverage.xml
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        with:
+          projectBaseDir: ./backend
+          extraProperties: |
+            sonar.php.coverage.reportPaths=coverage.xml
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
