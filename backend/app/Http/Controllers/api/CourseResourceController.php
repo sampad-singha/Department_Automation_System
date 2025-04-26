@@ -16,7 +16,7 @@ class CourseResourceController extends Controller
             'course_session_id' => 'required|exists:course_sessions,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'required|file|max:2048', // Max 20MB
+            'file' => 'required|file|max:2048', // Max 2MB
         ]);
 
         $user = Auth::user();
@@ -93,7 +93,7 @@ class CourseResourceController extends Controller
         $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|max:2048', // Max 20MB
+            'file' => 'nullable|file|max:2048', // Max 2MB
         ]);
 
         if ($request->hasFile('file')) {

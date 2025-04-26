@@ -157,13 +157,13 @@ class ApplicationController extends Controller
             $this->authorize('canDownloadApplication', $application);
 
             if ($application->status !== 'approved' || !$application->authorized_copy) {
-                throw new ApplicationNotApprovedException('Application is not yet approved or missing file.');
+                throw new ApplicationNotApprovedException('Application is not yet approved or missing file.',403);
             }
 
             $filePath = Storage::disk('local')->path($application->authorized_copy);
 
             if (!file_exists($filePath)) {
-                throw new AuthorizedCopyNotFoundException('Authorized copy not found on server.');
+                throw new AuthorizedCopyNotFoundException('Authorized copy not found on server.',404);
             }
 
             return response()->download($filePath);
@@ -173,7 +173,7 @@ class ApplicationController extends Controller
                 'status' => 'error',
                 'message' => 'Failed to download file.',
                 'error' => $e->getMessage(),
-            ], 500);
+            ], $e->getCode()?:500);
         }
     }
     public function downloadAttachment($id): BinaryFileResponse|JsonResponse
@@ -185,7 +185,7 @@ class ApplicationController extends Controller
             $this->authorize('canDownloadAttachment', $application);
 
             if (!$application->attachment || !Storage::exists($application->attachment)) {
-                throw new AttachmentNotFoundException('Attachment not found.');
+                throw new AttachmentNotFoundException('Attachment not found.',404);
             }
 
             $filePath = Storage::disk('local')->path($application->attachment);
@@ -197,7 +197,7 @@ class ApplicationController extends Controller
                 'status' => 'error',
                 'message' => 'Failed to download attachment.',
                 'error' => $e->getMessage(),
-            ], 500);
+            ], $e->getCode()?:500);
         }
     }
 

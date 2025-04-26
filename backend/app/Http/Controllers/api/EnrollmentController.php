@@ -55,12 +55,12 @@ class EnrollmentController extends Controller
 
             // Check if the user is a student
             if (!$user->hasRole('student')) {
-                throw new NotAStudentException();
+                throw new NotAStudentException('Only students can enroll in courses.', 403);
             }
 
             // Check if the student can enroll in the course session
             if (!$this->canRetake($user->id, $courseSessionId)) {
-                throw new NotEligibleForRetakeException();
+                throw new NotEligibleForRetakeException('You are not eligible to retake this course.', 403);
             }
 
             // Create a new enrollment record
@@ -197,12 +197,12 @@ class EnrollmentController extends Controller
                 $enrollment = Enrollment::find($data['id']);
 
                 if (!$enrollment) {
-                    throw new EnrollmentNotFoundException();
+                    throw new EnrollmentNotFoundException('Enrollment not found.', 404);
                 }
 
                 // Check if the user is authorized to update this enrollment
                 if (!$user->can('update', $enrollment)) {
-                    throw new UnauthorizedAccessException();
+                    throw new UnauthorizedAccessException('You do not have permission to update some enrollments.',403);
                 }
 
                 // Update the enrollment

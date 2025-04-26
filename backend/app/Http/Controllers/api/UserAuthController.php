@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\Auth\NotAuthorizedException;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,12 @@ class UserAuthController extends Controller
             Log::info('Starting user login.');
             $user = User::with(['roles', 'department'])->where('email', $request['email'])->first();
 
-            if (!$user || !Hash::check($request['password'], $user->password)) {
+            if ($user->hasRole(['admin', 'super-admin'])){
+                Log::warning('Unauthorized access attempt by admin or super-admin.', ['email' => $request['email']]);
+                throw new NotAuthorizedException('Admins cannot log in here', 403);
+            }
+
+            if (!Hash::check($request['password'], $user->password)) {
                 Log::warning('Invalid login attempt.', ['email' => $request['email']]);
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
@@ -45,7 +51,7 @@ class UserAuthController extends Controller
             ], 200);
         } catch (\Throwable $e) {
             Log::error('Login error.', ['error' => $e->getMessage()]);
-            return response()->json(['message' => 'An error occurred during login'], 500);
+            return response()->json(['message' => $e->getMessage()?: 'An error occurred during login'], $e->getCode()?: 500);
         }
     }
 
