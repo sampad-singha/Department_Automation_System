@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -21,11 +22,6 @@ class UserAuthController extends Controller
             if (!$user || !Hash::check($request['password'], $user->password)) {
                 Log::warning('Invalid login attempt.', ['email' => $request['email']]);
                 return response()->json(['message' => 'Invalid credentials'], 401);
-            }
-
-            if ($user->hasRole(['admin', 'super-admin'])) {
-                Log::warning('Admin or Super Admin cannot log in.', ['email' => $request['email']]);
-                return response()->json(['message' => 'Admins cannot log in here'], 403);
             }
 
             $tokenName = 'auth_token';
@@ -54,7 +50,7 @@ class UserAuthController extends Controller
     }
 
 
-    public function authUser()
+    public function authUser(): JsonResponse
     {
         $user = Auth::user();
         $user->load('roles', 'department');

@@ -268,7 +268,7 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function showForStudent(Request $request): JsonResponse
+    public function showForStudent(): JsonResponse
     {
         $student = Auth::user();
         $studentId = $student->id;

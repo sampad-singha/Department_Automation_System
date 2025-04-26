@@ -7,6 +7,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+const FORGET_PASSWORD_URL = '/api/auth/forget-password';
+
 // Successful password reset request
 test('sends password reset link for valid email', function () {
     $user = User::factory()->create();
@@ -15,7 +17,7 @@ test('sends password reset link for valid email', function () {
         ->once()
         ->andReturn(Password::RESET_LINK_SENT);
 
-    $response = postJson('/api/auth/forget-password', [
+    $response = postJson(FORGET_PASSWORD_URL, [
         'email' => $user->email,
     ]);
 
@@ -25,7 +27,7 @@ test('sends password reset link for valid email', function () {
 
 // Validation tests
 test('returns validation errors for invalid requests', function (array $data) {
-    $response = postJson('/api/auth/forget-password', $data);
+    $response = postJson(FORGET_PASSWORD_URL, $data);
     $response->assertStatus(422);
 })->with([
     'missing email' => [[]],
@@ -41,7 +43,7 @@ test('handles password service errors correctly', function (string $status) {
         ->once()
         ->andReturn($status);
 
-    $response = postJson('/api/auth/forget-password', [
+    $response = postJson(FORGET_PASSWORD_URL, [
         'email' => $user->email,
     ]);
 
@@ -60,7 +62,7 @@ test('returns 500 for unexpected errors', function () {
         ->once()
         ->andThrow(new \RuntimeException('Mail server error'));
 
-    $response = postJson('/api/auth/forget-password', [
+    $response = postJson(FORGET_PASSWORD_URL, [
         'email' => $user->email,
     ]);
 
