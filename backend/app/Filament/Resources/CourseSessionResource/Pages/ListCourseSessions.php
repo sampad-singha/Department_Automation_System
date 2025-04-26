@@ -106,7 +106,7 @@ class ListCourseSessions extends ListRecords
                                 'session' => $data['session'],
                                 'teacher_id' => $assignment['teacher_id'],
                             ]);
-                            app(EnrollmentController::class)->store_all($newSession);
+                            app(EnrollmentController::class)->storeAll($newSession);
                         } else {
                             $existingSession->update(['teacher_id' => $assignment['teacher_id']]);
                         }
