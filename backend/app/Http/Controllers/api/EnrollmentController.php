@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\Enrollment\EnrollmentNotFoundException;
+use App\Exceptions\Enrollment\NotAStudentException;
+use App\Exceptions\Enrollment\NotEligibleForRetakeException;
+use App\Exceptions\Enrollment\UnauthorizedAccessException;
 use App\Http\Controllers\Controller;
 use App\Models\CourseSession;
 use App\Models\Enrollment;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnrollmentController extends Controller
 {
-    public function store_all($courseSession): void
+    public function storeAll($courseSession): void
     {
         $this->authorize('create', Enrollment::class);
         $course = $courseSession->course;
@@ -37,35 +42,27 @@ class EnrollmentController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'course_id' => 'required|exists:courses,id',
-        ]);
-
-        $user = Auth::user();
-        $courseSessionId = CourseSession::where('course_id', $validatedData['course_id'])
-            ->max('id');
-
-
-        // Check if the user is a student
-        if (!$user->hasRole('student')) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Only students can enroll in courses.',
-            ], Response::HTTP_FORBIDDEN);
-        }
-
-        // Check if the student can enroll in the course session
-        if (!$this->canRetake($user->id, $courseSessionId)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'You are not eligible to retake this course.',
-            ], Response::HTTP_FORBIDDEN);
-        }
-
         try {
+            // Validate the incoming request data
+            $validatedData = $request->validate([
+                'course_id' => 'required|exists:courses,id',
+            ]);
+
+            $user = Auth::user();
+            $courseSessionId = CourseSession::where('course_id', $validatedData['course_id'])->max('id');
+
+            // Check if the user is a student
+            if (!$user->hasRole('student')) {
+                throw new NotAStudentException('Only students can enroll in courses.', 403);
+            }
+
+            // Check if the student can enroll in the course session
+            if (!$this->canRetake($user->id, $courseSessionId)) {
+                throw new NotEligibleForRetakeException('You are not eligible to retake this course.', 403);
+            }
+
             // Create a new enrollment record
             Enrollment::create([
                 'courseSession_id' => $courseSessionId,
@@ -77,23 +74,20 @@ class EnrollmentController extends Controller
                 'status' => 'success',
                 'message' => 'Enrollment created successfully.',
             ], Response::HTTP_CREATED);
+
         } catch (ValidationException $e) {
-            // Handle validation exceptions
             return response()->json([
                 'status' => 'error',
                 'message' => 'Validation failed. Check your data.',
                 'errors' => $e->errors(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-        catch (\Exception $e) {
-            // Log the exception
+        } catch (\Exception $e) {
             Log::error('Enrollment creation failed: ' . $e->getMessage());
 
-            // Handle other exceptions
             return response()->json([
                 'status' => 'error',
-                'message' => 'An unexpected error occurred.',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'message' => $e->getMessage()? : 'An unexpected error occurred.',
+            ], $e->getCode()?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -147,7 +141,7 @@ class EnrollmentController extends Controller
     }
 
     // This method is used by course teacher/admin to update marks for a single enrollment
-    public function update(Request $request, Enrollment $enrollment)
+    public function update(Request $request, Enrollment $enrollment): JsonResponse
     {
         $this->authorize('update', $enrollment);
         try {
@@ -185,7 +179,7 @@ class EnrollmentController extends Controller
     }
 
     // This method is used by course teacher to update marks for multiple enrollments
-    public function updateMarks(Request $request)
+    public function updateMarks(Request $request): JsonResponse
     {
         $user = Auth::user();
 
@@ -200,14 +194,15 @@ class EnrollmentController extends Controller
             ]);
 
             foreach ($validatedData['enrollments'] as $data) {
-                $enrollment = Enrollment::findOrFail($data['id']);
+                $enrollment = Enrollment::find($data['id']);
+
+                if (!$enrollment) {
+                    throw new EnrollmentNotFoundException('Enrollment not found.', 404);
+                }
 
                 // Check if the user is authorized to update this enrollment
                 if (!$user->can('update', $enrollment)) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'You do not have permission to update some enrollments.',
-                    ], 403);
+                    throw new UnauthorizedAccessException('You do not have permission to update some enrollments.',403);
                 }
 
                 // Update the enrollment
@@ -220,24 +215,26 @@ class EnrollmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Enrollments updated successfully.',
-            ], 200);
+            ], Response::HTTP_OK);
+
         } catch (ValidationException $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Validation failed.',
                 'errors' => $e->errors(),
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+
         } catch (\Exception $e) {
             Log::error('Enrollment update failed: ' . $e->getMessage());
 
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to update enrollments.',
-            ], 500);
+                'message' => $e->getMessage()?: 'Failed to update enrollments.',
+            ], $e->getCode()?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function showForTeacher($courseSessionId)
+    public function showForTeacher($courseSessionId): JsonResponse
     {
         // Retrieve the authenticated teacher's ID
         $teacher = Auth::user();
@@ -271,7 +268,7 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function showForStudent(Request $request)
+    public function showForStudent(): JsonResponse
     {
         $student = Auth::user();
         $studentId = $student->id;
