@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\CourseSession;
+use App\Models\Enrollment;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Enrollment>
+ * @extends Factory<Enrollment>
  */
 class EnrollmentFactory extends Factory
 {
@@ -17,7 +20,11 @@ class EnrollmentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'student_id' => User::factory(),
+            'courseSession_id' => CourseSession::factory(),
+            'is_enrolled' => true,
+            'class_assessment_marks' => 0,
+            'final_term_marks' => 0
         ];
     }
 }

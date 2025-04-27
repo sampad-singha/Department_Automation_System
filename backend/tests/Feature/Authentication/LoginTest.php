@@ -3,23 +3,24 @@
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use function Pest\Laravel\{postJson};
+use function Pest\Laravel\postJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-// Apply RefreshDatabase trait to all tests in this file
 uses(RefreshDatabase::class);
 
+const TEST_USER_EMAIL = 'user@example.com';
+const LOGIN_API_ENDPOINT = '/api/auth/login';
+
 beforeEach(function () {
-    // Set up common test data or state here
     $this->user = User::factory()->create([
-        'email' => 'user@example.com',
+        'email' => TEST_USER_EMAIL,
         'password' => Hash::make('password123'),
     ]);
 });
 
 it('allows a regular user to log in successfully', function () {
-    $response = postJson('/api/auth/login', [
-        'email' => 'user@example.com',
+    $response = postJson(LOGIN_API_ENDPOINT, [
+        'email' => TEST_USER_EMAIL,
         'password' => 'password123',
     ]);
 
@@ -47,8 +48,8 @@ it('allows a regular user to log in successfully', function () {
 });
 
 it('denies login with invalid credentials', function () {
-    $response = postJson('/api/auth/login', [
-        'email' => 'user@example.com',
+    $response = postJson(LOGIN_API_ENDPOINT, [
+        'email' => TEST_USER_EMAIL,
         'password' => 'wrongpassword',
     ]);
 
@@ -59,13 +60,11 @@ it('denies login with invalid credentials', function () {
 });
 
 it('denies login for admin users', function () {
-    // Create the 'admin' role
     $adminRole = Role::create(['name' => 'admin']);
-    // Assign the 'admin' role to the user
     $this->user->assignRole($adminRole);
 
-    $response = postJson('/api/auth/login', [
-        'email' => 'user@example.com',
+    $response = postJson(LOGIN_API_ENDPOINT, [
+        'email' => TEST_USER_EMAIL,
         'password' => 'password123',
     ]);
 

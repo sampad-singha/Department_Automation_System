@@ -5,7 +5,7 @@ import StudentDashboard from '../src/Pages/Student/StudentDashBoard/StudentDashb
 import TeacherDashboard from '../src/Pages/Teacher/TeacherDashBoard/TeacherDashboard.jsx';
 import PrivateRoute from '../src/Component/PrivateRoute.jsx';
 import { AuthProvider } from './Contexts/AuthContext.jsx';
-import MainLayout from './layouts/MainLayout.jsx';
+import MainLayout from './Layouts/MainLayout.jsx';
 import Notices from './Pages/Student/Notice/Notices .jsx';
 import NoticeDetails from './Pages/Student/Notice/NoticeDetails.jsx';
 import CourseResults from './Pages/Student/Result/CourseResults.jsx';
