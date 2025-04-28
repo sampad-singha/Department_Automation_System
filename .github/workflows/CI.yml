@@ -42,8 +42,7 @@ jobs:
             -Dsonar.organization=learnathon-by-geeky-solutions
             -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_artisan-forces
             -Dsonar.php.coverage.reportPaths=coverage.xml
-            -Dsonar.exclusions=database/migrations/2025_02_15_113608_create_permission_tables.php
-            -Dsonar.exclusions=\ **/tests/**,\ **/public/**,\ **/config/**,\ **/bootstrap/**,\ **/app/Policies/**
+            -Dsonar.exclusions=\database/migrations/2025_02_15_113608_create_permission_tables.php, \ **/tests/**,\ **/public/**,\ **/config/**,\ **/bootstrap/**,\ **/app/Policies/**
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
