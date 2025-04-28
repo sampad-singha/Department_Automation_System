@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use id;
 use App\Models\User;
 use App\Models\Notice;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -13,7 +14,7 @@ use App\Notifications\NoticeNotification;
 
 class NoticeController extends Controller
 {
-    public function sendNoticeForApproval($record)
+    public function sendNoticeForApproval($record): array
     {
         try {
 
@@ -42,7 +43,7 @@ class NoticeController extends Controller
     }
 
 
-    public function approveNotice($noticeId)
+    public function approveNotice($noticeId): JsonResponse
     {
 
         $notice = Notice::find($noticeId);

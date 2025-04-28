@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\NoticeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Notice extends Model
 {
-    /** @use HasFactory<\Database\Factories\NoticeFactory> */
+    /** @use HasFactory<NoticeFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -40,5 +41,5 @@ class Notice extends Model
             ->withTimestamps();
     }
 
-  
+
 }
