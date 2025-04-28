@@ -20,12 +20,12 @@ class PublicationFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(6),
-            'doi' => '10.'.rand(1000,9999).'/'.$this->faker->bothify('?????-#####'),
+            'doi' => $this->faker->unique()->word(),
             'abstract' => $this->faker->paragraph(3),
             'journal' => $this->faker->company.' Journal',
-            'volume' => rand(1, 100),
-            'issue' => rand(1, 12),
-            'pages' => rand(1, 300).'-'.rand(301, 500),
+            'volume' => $this->faker->numberBetween(1, 100),
+            'issue' => $this->faker->numberBetween(1, 12),
+            'pages' => $this->faker->numberBetween(1, 300).'-'.$this->faker->numberBetween(301, 500),
             'published_date' => $this->faker->dateTimeBetween('-10 years')->format('Y-m-d'),
             'url' => $this->faker->url(),
             'pdf_link' => $this->faker->url().'.pdf',
