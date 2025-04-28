@@ -84,7 +84,7 @@ class User extends Authenticatable implements CanResetPasswordContract
     // Define the one-to-many relationship with the Notice model
     public function notices(): HasMany
     {
-        return $this->HasMany(Notice::class);
+        return $this->HasMany(Notice::class, 'published_by');
     }
 
     // Define the one-to-many relationship with the Course Session model
