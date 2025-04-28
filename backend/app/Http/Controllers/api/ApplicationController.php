@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -65,12 +66,18 @@ class ApplicationController extends Controller
                 'message' => 'Application submitted successfully.',
                 'data' => $application,
             ], 201);
+        } catch( ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed.',
+                'errors' => $e->errors(),
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
-            ], 500);
+            ], $e->getCode()?: 500);
         }
     }
 
@@ -125,7 +132,6 @@ class ApplicationController extends Controller
             ], 500);
         }
     }
-
 
     public function getPendingApplications(): JsonResponse
     {
@@ -245,7 +251,5 @@ class ApplicationController extends Controller
             ], 500);
         }
     }
-
-
 
 }

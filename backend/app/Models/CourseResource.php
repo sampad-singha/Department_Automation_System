@@ -19,6 +19,10 @@ class CourseResource extends Model
         'file_size',
     ];
 
+    protected $casts = [
+        'file_size' => 'integer',
+    ];
+
     /**
      * Get the course session this resource belongs to.
      */

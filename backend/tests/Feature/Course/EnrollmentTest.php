@@ -56,7 +56,6 @@ beforeEach(function () {
 });
 
 
-// Prevent Non-Student Enrollment
 it('prevents non-students from enrolling', function () {
     $regularUser = User::factory()->create();
 
@@ -72,7 +71,6 @@ it('prevents non-students from enrolling', function () {
         ]);
 });
 
-// Prevent Duplicate Enrollment
 it('prevents duplicate enrollments in same session', function () {
     Enrollment::factory()->create([
         'student_id' => $this->student->id,
@@ -91,7 +89,6 @@ it('prevents duplicate enrollments in same session', function () {
         ]);
 });
 
-// 4. Teacher Marks Update
 it('allows authorized teacher to update marks', function () {
     $enrollment = Enrollment::factory()->create([
         'courseSession_id' => $this->courseSession->id,
@@ -114,7 +111,6 @@ it('allows authorized teacher to update marks', function () {
         ->assertJson(['message' => 'Enrollments updated successfully.']);
 });
 
-// 5. Prevent Unauthorized Marks Update
 it('prevents unauthorized mark updates', function () {
     $otherTeacher = User::factory()->create()->assignRole('teacher');
     $otherSession = CourseSession::factory()->create(['teacher_id' => $otherTeacher->id]);
@@ -135,7 +131,6 @@ it('prevents unauthorized mark updates', function () {
     $response->assertStatus(403);
 });
 
-// 8. Marks Validation
 it('validates mark input ranges', function () {
     $enrollment = Enrollment::factory()->create([
         'courseSession_id' => $this->courseSession->id
@@ -160,21 +155,6 @@ it('validates mark input ranges', function () {
         ]);
 });
 
-//// 9. Server Error Handling
-//it('handles server errors during enrollment', function () {
-//    \Illuminate\Support\Facades\DB::shouldReceive('beginTransaction')
-//        ->andThrow(new \RuntimeException('Database error'));
-//
-//    $response = $this->actingAs($this->student)
-//        ->postJson(ENROLLMENT_ENDPOINT, [
-//            'course_id' => $this->course->id
-//        ]);
-//
-//    $response->assertStatus(500)
-//        ->assertJsonStructure(['error']);
-//});
-
-// 10. Academic Year Validation
 it('prevents enrollment for mismatched academic year', function () {
     $wrongStudent = User::factory()->create([
         'department_id' => $this->department->id,
@@ -190,7 +170,6 @@ it('prevents enrollment for mismatched academic year', function () {
     $response->assertStatus(403);
 });
 
-// 11. Semester Validation
 it('prevents enrollment for mismatched semester', function () {
     $wrongStudent = User::factory()->create([
         'department_id' => $this->department->id,
