@@ -40,17 +40,6 @@ A backend API built with Laravel for managing student, teacher, courses, session
 
 ---
 
--  Role & permission management
--  Course & session tracking
--  Student enrollment, grading & result
--  Generate & download ID card
--  Dynamic application templates (leave, transcript, etc.)
--  Secure file uploads/downloads for course materials
--  PDF generation with mPDF
--  Authenticated API for students, teachers, and admins
-
----
-
 ### Student
 
 - View registered courses and grades
