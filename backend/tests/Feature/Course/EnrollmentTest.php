@@ -5,6 +5,7 @@ use App\Models\Course;
 use App\Models\Department;
 use App\Models\Enrollment;
 use App\Models\CourseSession;
+use Laravel\Sanctum\Sanctum;
 use Spatie\Permission\Models\Role;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\getJson;
@@ -44,15 +45,20 @@ beforeEach(function () {
     $this->student = User::factory()->create([
         'department_id' => $this->department->id,
         'year' => $this->course->year,
-        'semester' => $this->course->semester
+        'semester' => $this->course->semester,
+        'session' => '2015'
     ])->assignRole('student');
+
+    Sanctum::actingAs($this->teacher);
+    Sanctum::actingAs($this->student);
 
     // Create current session
     $this->courseSession = CourseSession::factory()->create([
         'teacher_id' => $this->teacher->id,
         'course_id' => $this->course->id,
-        'session' => (string) now()->year
+        'session' => '2015'
     ]);
+
 });
 
 
@@ -184,3 +190,117 @@ it('prevents enrollment for mismatched semester', function () {
 
     $response->assertStatus(403);
 });
+
+it('allows eligible student to enroll successfully', function () {
+    Sanctum::actingAs($this->student);
+
+    // Create a course session for the student to enroll in
+    $pastCourseSession = CourseSession::factory()->create([
+        'course_id' => $this->course->id,
+        'teacher_id' => $this->teacher->id,
+        'session' => '2014'
+    ]);
+    Enrollment::factory()->create([
+        'courseSession_id' => $pastCourseSession->id,
+        'student_id' => $this->student->id,
+        'class_assessment_marks' => 10,
+        'final_term_marks' => 10
+    ]);
+//    dd($this->course->courseSessions->last()->enrollments->first()->student_id);
+
+//    dd($this->courseSession->id);
+
+    $response = $this->postJson(ENROLLMENT_ENDPOINT, [
+        'course_id' => $this->course->id,
+    ]);
+
+
+    $response->assertStatus(201)
+        ->assertJson([
+            'status' => 'success',
+            'message' => 'Enrollment created successfully.',
+        ]);
+
+    $this->assertDatabaseHas('enrollments', [
+        'student_id' => $this->student->id,
+        'courseSession_id' => $this->courseSession->id,
+    ]);
+});
+
+it('returns validation error for non-existent course_id', function () {
+    $response = $this->actingAs($this->student)
+        ->postJson(ENROLLMENT_ENDPOINT, [
+            'course_id' => 9999, // Assuming this ID does not exist
+        ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['course_id']);
+});
+
+it('prevents unauthorized user from updating enrollment', function () {
+    $enrollment = Enrollment::factory()->create([
+        'courseSession_id' => $this->courseSession->id,
+        'student_id' => $this->student->id,
+    ]);
+
+    $unauthorizedUser = User::factory()->create()->assignRole('student');
+
+    $response = $this->actingAs($unauthorizedUser)
+        ->postJson("/api/courses/active/enrollments/{$enrollment->id}", [
+            'class_assessment_marks' => 20,
+            'final_term_marks' => 50,
+        ]);
+
+    $response->assertStatus(403);
+});
+
+it('allows teacher to view enrollments for their course session', function () {
+    Enrollment::factory()->create([
+        'courseSession_id' => $this->courseSession->id,
+        'student_id' => $this->student->id,
+    ]);
+
+    $response = $this->actingAs($this->teacher)
+        ->getJson("/api/courses/active/enrollments/{$this->courseSession->id}");
+
+    $response->assertStatus(200)
+        ->assertJson([
+            'status' => 'success',
+        ])
+        ->assertJsonStructure([
+            'status',
+            'data' => [
+                '*' => ['id', 'student_id', 'courseSession_id', /* other fields */],
+            ],
+        ]);
+});
+
+it('allows student to view their enrollments', function () {
+    Enrollment::factory()->create([
+        'courseSession_id' => $this->courseSession->id,
+        'student_id' => $this->student->id,
+    ]);
+
+    $response = $this->actingAs($this->student)
+        ->getJson('/api/courses/active/enrollments');
+
+    $response->assertStatus(200)
+        ->assertJson([
+            'status' => 'success',
+        ])
+        ->assertJsonStructure([
+            'status',
+            'data' => [
+                '*' => ['id', 'courseSession_id', 'canReEnroll', /* other fields */],
+            ],
+        ]);
+});
+
+it('returns validation errors when required fields are missing', function () {
+    $response = $this->actingAs($this->student)
+        ->postJson(ENROLLMENT_ENDPOINT, []);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['course_id']);
+});
+

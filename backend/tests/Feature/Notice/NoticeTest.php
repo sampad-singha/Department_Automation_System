@@ -26,7 +26,7 @@ beforeEach(function () {
     $this->publisher = User::factory()->create()->assignRole('teacher');
 
     // Create department
-    $this->department = Department::factory()->create(['name' => 'Computer Science']);
+    $this->department = Department::factory()->create();
 
     // Create notice with approvedBy
     $this->notice = Notice::factory()->create([
