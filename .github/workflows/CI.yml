@@ -37,7 +37,7 @@ jobs:
       - name: SonarCloud Scan
         uses: sonarsource/sonarqube-scan-action@v4
         with:
-          projectBaseDir: ./backend/app
+          projectBaseDir: ./backend
           args: >
             -Dsonar.organization=learnathon-by-geeky-solutions
             -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_artisan-forces
