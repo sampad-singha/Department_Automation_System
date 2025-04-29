@@ -51,7 +51,9 @@ A backend API built with Laravel for managing student, teacher, courses, session
 - Re enroll to courses (if applicable)
 - Download university ID card (PDF)
 
-## ⚙️ Tech Stack
+---
+
+## Tech Stack
 
 - **PHP 8.2**, **Laravel 11** (Backend)
 - **MySQL** (Database)
@@ -81,6 +83,7 @@ cd frontend
 npm install
 npm run dev
 ```
+---
 
 ## Requirements
 - PHP v8.2+ with all the extensions
