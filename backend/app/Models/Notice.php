@@ -18,11 +18,10 @@ class Notice extends Model
         'content',
         'department_id',
         'published_by',
-        'published_at',
-        'archived_at',
+        'published_on',
+        'archived_on',
         'file',
     ];
-
 
     public function department(): BelongsTo
     {

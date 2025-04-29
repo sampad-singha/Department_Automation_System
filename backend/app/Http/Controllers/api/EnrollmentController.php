@@ -51,7 +51,8 @@ class EnrollmentController extends Controller
             ]);
 
             $user = Auth::user();
-            $courseSessionId = CourseSession::where('course_id', $validatedData['course_id'])->max('id');
+            $courseSessionId = CourseSession::where('course_id', $validatedData['course_id'])->orderByDesc('session')->value('id');
+
 
             // Check if the user is a student
             if (!$user->hasRole('student')) {

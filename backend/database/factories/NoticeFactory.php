@@ -18,16 +18,12 @@ class NoticeFactory extends Factory
      */
     public function definition(): array
     {
-        // Get a random user and department for the foreign keys
-        $user = User::inRandomOrder()->first();
-        $departments = Department::all();
-        $department = $departments->random();
 
         return [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->paragraph(),
-            'published_by' => $user->id,           // ID of user who published the notice
-            'department_id' => $department->id, // Assigning the random department ID
+            'published_by' => User::factory(),           // ID of user who published the notice
+            'department_id' => Department::factory(), // Assigning the random department ID
             'published_on' => $this->faker->date(), // Optional: set published time
             'archived_on' => $this->faker->optional()->date(), // Optional: set archived time
             'file' => $this->faker->optional()->url(), // Optional: set file name (random)

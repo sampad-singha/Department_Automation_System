@@ -19,6 +19,10 @@ class Enrollment extends Model
         'final_term_marks',
     ];
 
+    protected $casts = [
+        'is_enrolled'            => 'boolean',
+    ];
+
     public function courseSession(): BelongsTo
     {
         return $this->belongsTo(CourseSession::class, 'courseSession_id');
