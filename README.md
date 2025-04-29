@@ -7,16 +7,16 @@
 ## Mentor
 - shadman-ahmed-bs23
 
-# 🎓 Department Automation System 
+# Department Automation System 
 ### One stop solution for student, teacher & staff.
 
 A backend API built with Laravel for managing student, teacher, courses, sessions, enrollments, grading, result, publication, student applications (like leave or transcript), and real-time notifications. Designed for use in university-level academic portals with role-based access control.
 
 ---
 
-## 🚀 Features
+## Features
 
-### 👨‍💼 Admin
+### Admin
 
 - Manage users, roles, and permissions
 - Import users using excel sheet
@@ -29,7 +29,7 @@ A backend API built with Laravel for managing student, teacher, courses, session
   
 ---
 
-### 👨‍🏫 Teacher
+### Teacher
 
 - View assigned courses and enrolled students
 - Assign and update student marks (CA + Final)
@@ -51,7 +51,7 @@ A backend API built with Laravel for managing student, teacher, courses, session
 
 ---
 
-### 👨‍🎓 Student
+### Student
 
 - View registered courses and grades
 - See and download semester results
@@ -72,7 +72,7 @@ A backend API built with Laravel for managing student, teacher, courses, session
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 git clone https://github.com/Learnathon-By-Geeky-Solutions/artisan-forces
@@ -85,7 +85,7 @@ php artisan storage:link
 php artisan serve
 ```
 
-## 📦 Frontend
+## Frontend
 
 ```bash
 cd frontend
@@ -96,6 +96,8 @@ npm run dev
 ## Requirements
 - PHP v8.2+ with all the extensions
 - node v20 or higher (use nvm before installing the packages)
+- Composer 2.8+
+- MySQL 5.7+
 - Laravel v11 or higher
 - Mail client (Mailhog or Mailtrap for local development)
 - MySQL server (XAMPP or similar)
