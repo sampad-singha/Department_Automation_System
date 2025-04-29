@@ -65,6 +65,8 @@ A backend API built with Laravel for managing student, teacher, courses, session
 
 ## Installation
 
+### Backend
+
 ```bash
 git clone https://github.com/Learnathon-By-Geeky-Solutions/artisan-forces
 cd artisan_forces
@@ -76,7 +78,7 @@ php artisan storage:link
 php artisan serve
 ```
 
-## Frontend
+### Frontend
 
 ```bash
 cd frontend
