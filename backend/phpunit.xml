@@ -24,7 +24,7 @@
             <directory>app/Imports</directory>
             <directory>app/Http/Requests</directory>
             <directory>app/Exceptions</directory>
-            <directory>app/Filament</directory>
+<!--            <directory>app/Filament</directory>-->
         </exclude>
     </source>
     <php>
