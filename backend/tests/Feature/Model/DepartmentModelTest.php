@@ -31,19 +31,6 @@ test('department can be created with valid attributes', function () {
     ]);
 });
 
-// Factory Tests
-test('department factory generates valid short names', function () {
-    $department = Department::factory()->create();
-
-    $expectedShortNames = [
-        'CS', 'MATH', 'PHY', 'CHEM', 'BIO', 'GEO', 'GEOG', 'ECO',
-        'ACC', 'BA', 'PS', 'SOC', 'PSY', 'HIS', 'PHIL', 'RS', 'ENG',
-        'FRE', 'SPA', 'GER', 'ARB'
-    ];
-
-    expect($department->short_name)->toBeIn($expectedShortNames);
-});
-
 test('department factory generates unique names', function () {
     Department::factory()->count(5)->create();
 

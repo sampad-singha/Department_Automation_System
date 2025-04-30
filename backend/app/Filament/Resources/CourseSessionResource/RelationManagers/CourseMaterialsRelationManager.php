@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CourseSessionResource\RelationManagers;
 
+use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -10,6 +11,7 @@ class CourseMaterialsRelationManager extends RelationManager
     protected static string $relationship = 'courseResources'; // relationship name on the model
 
     protected static ?string $title = 'Course Materials';
+
 
     public function table(Tables\Table $table): Tables\Table
     {
