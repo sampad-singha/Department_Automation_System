@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="623fb4af-feb7-4fc1-9c13-b5fb9cb8ad59" name="Changes" comment="Initial Commit">
-      <change beforePath="$PROJECT_DIR$/.idea/artisan-forces.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artisan-forces.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/api/CourseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/api/CourseController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/api/ShowNoticeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/api/ShowNoticeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -285,7 +280,7 @@
       <workItem from="1742281192284" duration="1513000" />
       <workItem from="1746014231556" duration="130000" />
       <workItem from="1746014421202" duration="18000" />
-      <workItem from="1746014451934" duration="2789000" />
+      <workItem from="1746014451934" duration="3970000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
