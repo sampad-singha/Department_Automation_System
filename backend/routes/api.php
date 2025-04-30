@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\ApplicationController;
 use App\Http\Controllers\api\ApplicationTemplateController;
+use App\Http\Controllers\api\ChangePasswordController;
 use App\Http\Controllers\api\CourseController;
 use App\Http\Controllers\api\CourseResourceController;
 use App\Http\Controllers\api\CourseSessionController;
@@ -26,6 +27,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function(){
         Route::post('/logout', [LogoutController::class, 'logout']);
         Route::get('/user', [UserAuthController::class, 'authUser']);
+        Route::post('/change-password', [ChangePasswordController::class, 'changePassword']);
     });
 
 });
