@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CourseSessionResource\Pages;
-use App\Filament\Resources\CourseSessionResource\RelationManagers;
 use App\Filament\Resources\CourseSessionResource\RelationManagers\CourseMaterialsRelationManager;
 use App\Models\Course;
 use App\Models\CourseSession;

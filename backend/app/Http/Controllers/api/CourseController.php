@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
 {
-    public function showAll()
+    public function showAll(): \Illuminate\Http\JsonResponse
     {
         try {
             $courses = Course::all();
@@ -29,7 +29,7 @@ class CourseController extends Controller
         }
     }
 
-    public function show($course_id)
+    public function show($course_id): \Illuminate\Http\JsonResponse
     {
         try {
             $course = Course::find($course_id);
