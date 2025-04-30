@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from '../src/Pages/AllUser/HomePage/Home.jsx';
 import Login from '../src/Pages/AllUser/Login/Login.jsx';
 import StudentDashboard from '../src/Pages/Student/StudentDashBoard/StudentDashboard.jsx';
 import TeacherDashboard from '../src/Pages/Teacher/TeacherDashBoard/TeacherDashboard.jsx';
@@ -41,7 +40,7 @@ function App() {
                     theme="dark"
                 />
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Login/>} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
