@@ -44,10 +44,16 @@ class DepartmentFactory extends Factory
         $keys = array_keys($departments);
 
         // Select a random department ensuring uniqueness
-        $name = $this->faker->unique()->randomElement($keys);
+//        $name = $this->faker->unique()->randomElement($keys);
+        $name = $this->faker->unique()->name;
+        //3 length uppercase string unique short name, faker
+        $shortName = $this->faker->unique()->lexify('???');
+        //make short name uppercase
+        $shortName = strtoupper($shortName);
+
 
         // Get the corresponding short name (code)
-        $shortName = $departments[$name];
+//        $shortName = $departments[$name];
         return [
             'name' => $name,
             'faculty' => $this->faker->name,

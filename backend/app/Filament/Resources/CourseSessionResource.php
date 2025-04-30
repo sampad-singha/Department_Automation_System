@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CourseSessionResource\Pages;
 use App\Filament\Resources\CourseSessionResource\RelationManagers;
+use App\Filament\Resources\CourseSessionResource\RelationManagers\CourseMaterialsRelationManager;
 use App\Models\Course;
 use App\Models\CourseSession;
 use App\Models\User;
@@ -142,7 +143,8 @@ class CourseSessionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\CourseMaterialsRelationManager::make(),
+            // Change from ::make() to ::class
+            CourseMaterialsRelationManager::class,
         ];
     }
 
