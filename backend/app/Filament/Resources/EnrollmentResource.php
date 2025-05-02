@@ -23,7 +23,12 @@ class EnrollmentResource extends Resource
 {
     protected static ?string $model = Enrollment::class;
     protected static ?string $navigationGroup = 'Course Management';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
+    public static function getActiveNavigationIcon(): string
+    {
+        return 'heroicon-s-user-plus'; // Icon when active
+    }
+    protected static ?int $navigationSort = 3;
     // Use Filament's built-in pill tabs with active state styling
     protected static string $tabsStyle = 'pill';
 

@@ -30,7 +30,11 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
+    public static function getActiveNavigationIcon(): string
+    {
+        return 'heroicon-s-user'; // Icon when active
+    }
 
     public static function getSchema(): array
     {

@@ -5,29 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="623fb4af-feb7-4fc1-9c13-b5fb9cb8ad59" name="Changes" comment="Initial Commit">
-      <change afterPath="$PROJECT_DIR$/backend/tests/Feature/Filament/ApplicationResourceTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/tests/Feature/Filament/ApplicationTemplateResourceTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/tests/Feature/Filament/EnrollmentResourceTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artisan-forces.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artisan-forces.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/PermissionResource.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/PermissionResource/Pages/CreatePermission.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/PermissionResource/Pages/EditPermission.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/PermissionResource/Pages/ListPermissions.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/PermissionResource/Pages/ViewPermission.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/RoleResource.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/RoleResource/Pages/CreateRole.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/RoleResource/Pages/EditRole.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/RoleResource/Pages/ListRoles.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/RoleResource/Pages/ViewRole.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/RoleResource/RelationManagers/PermissionsRelationManager.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/RoleResource/RelationManagers/UsersRelationManager.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/ApplicationResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/ApplicationResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/ApplicationTemplateResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/ApplicationTemplateResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseMaterialResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseMaterialResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseSessionResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/CourseSessionResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/DepartmentResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/DepartmentResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/EnrollmentResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/EnrollmentResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/NoticeResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/NoticeResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/PublicationResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/PublicationResource.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app/Filament/Resources/UserResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Filament/Resources/UserResource.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app/Providers/Filament/AdminPanelProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Providers/Filament/AdminPanelProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/coverage.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/coverage.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,24 +233,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;test/pest&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Final/artisan-forces&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "development",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/Final/artisan-forces",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "actions.on.save",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Pest.Main">
     <configuration name="Main" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <TestRunner configuration_file="$PROJECT_DIR$/backend/phpunit.xml" scope="XML" use_alternative_configuration_file="true" />

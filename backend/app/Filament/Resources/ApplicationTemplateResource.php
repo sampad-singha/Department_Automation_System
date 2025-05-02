@@ -16,7 +16,14 @@ class ApplicationTemplateResource extends Resource
 {
     protected static ?string $model = ApplicationTemplate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-duplicate';
+    public static function getActiveNavigationIcon(): string
+    {
+        return 'heroicon-s-document-duplicate'; // Icon when active
+    }
+    protected static ?string $navigationGroup = 'Notices & Applications';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

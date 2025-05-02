@@ -19,7 +19,14 @@ class ApplicationResource extends Resource
 {
     protected static ?string $model = Application::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document';
+    public static function getActiveNavigationIcon(): string
+    {
+        return 'heroicon-s-document'; // Icon when active
+    }
+    protected static ?string $navigationGroup = 'Notices & Applications';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

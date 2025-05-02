@@ -18,7 +18,12 @@ class CourseMaterialResource extends Resource
     protected static ?string $model = CourseResource::class;
     protected static ?string $label = 'Course Resources';
     protected static ?string $navigationGroup = 'Course Management';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    public static function getActiveNavigationIcon(): string
+    {
+        return 'heroicon-s-book-open'; // Icon when active
+    }
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
