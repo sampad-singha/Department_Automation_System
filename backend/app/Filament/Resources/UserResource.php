@@ -63,6 +63,7 @@ class UserResource extends Resource
                 })
                 ->required()
                 ->searchable(),
+            Select::make('roles')->multiple()->relationship('roles', 'name'),
             TextInput::make('year')
                 ->numeric()
                 ->default(null),

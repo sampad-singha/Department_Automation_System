@@ -2,18 +2,19 @@
 
 use App\Http\Controllers\api\ApplicationController;
 use App\Http\Controllers\api\ApplicationTemplateController;
+use App\Http\Controllers\api\ChangePasswordController;
 use App\Http\Controllers\api\CourseController;
 use App\Http\Controllers\api\CourseResourceController;
 use App\Http\Controllers\api\CourseSessionController;
 use App\Http\Controllers\api\EnrollmentController;
-use App\Http\Controllers\Api\ForgetPasswordController;
+use App\Http\Controllers\api\ForgetPasswordController;
 use App\Http\Controllers\api\IdCardController;
-use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\api\LogoutController;
+use App\Http\Controllers\api\PasswordResetController;
 use App\Http\Controllers\api\PublicationController;
-use App\Http\Controllers\Api\ResultController;
-use App\Http\Controllers\Api\ShowNoticeController;
-use App\Http\Controllers\Api\UserAuthController;
+use App\Http\Controllers\api\ResultController;
+use App\Http\Controllers\api\ShowNoticeController;
+use App\Http\Controllers\api\UserAuthController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication routes
@@ -26,6 +27,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function(){
         Route::post('/logout', [LogoutController::class, 'logout']);
         Route::get('/user', [UserAuthController::class, 'authUser']);
+        Route::post('/change-password', [ChangePasswordController::class, 'changePassword']);
     });
 
 });

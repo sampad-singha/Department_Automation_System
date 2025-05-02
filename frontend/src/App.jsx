@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from '../src/Pages/AllUser/HomePage/Home.jsx';
 import Login from '../src/Pages/AllUser/Login/Login.jsx';
 import StudentDashboard from '../src/Pages/Student/StudentDashBoard/StudentDashboard.jsx';
 import TeacherDashboard from '../src/Pages/Teacher/TeacherDashBoard/TeacherDashboard.jsx';
@@ -24,6 +23,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import PublicationDetail from "./Pages/AllUser/Publications/Publication.jsx";
 import Application from "./Pages/Student/Application/Application.jsx";
 import ApplicationTeacher from "./Pages/Teacher/Application/ApplicationTeacher.jsx";
+import ChangePassword from './Pages/AllUser/Login/ChangePassword.jsx';
 
 function App() {
     return (
@@ -41,7 +41,7 @@ function App() {
                     theme="dark"
                 />
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Login/>} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
@@ -63,6 +63,8 @@ function App() {
                         <Route path="/publications/:id" element={<PublicationDetail />} />
                         <Route path="/student/application" element={<Application />} />
                         <Route path="/teacher/applications" element={<ApplicationTeacher />} />
+                        <Route path="/change-password" element={<ChangePassword />} />
+                        
                     </Route>
 
                 </Routes>

@@ -1,5 +1,4 @@
 # artisan-forces
-Saiful Islam sohan
 ## Team Members
 - sampad-singha (Team Leader)
 - Saiful-islam-Sohan
@@ -8,21 +7,92 @@ Saiful Islam sohan
 ## Mentor
 - shadman-ahmed-bs23
 
-## Project Description
-Add your project description here.
+# Department Automation System 
+### One stop solution for student, teacher & staff.
 
-## Getting Started
-1. Clone the repository
-2. Install dependencies
-3. Start development
+A backend API built with Laravel for managing student, teacher, courses, sessions, enrollments, grading, result, publication, student applications (like leave or transcript), and real-time notifications. Designed for use in university-level academic portals with role-based access control.
 
-## Development Guidelines
-1. Create feature branches
-2. Make small, focused commits
-3. Write descriptive commit messages
-4. Create pull requests for review
+---
 
-## Resources
-- [Project Documentation](docs/)
-- [Development Setup](docs/setup.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
+## Features
+
+### Admin
+
+- Manage users, roles, and permissions
+- Import users using excel sheet
+- Create and manage courses and sessions
+- Assign teachers to courses
+- Review and send student applications for authorization
+- Crete notices and send for approval
+- Auto generate publication to students and teachers using DOI
+- View system-wide statistics and data exports
+  
+---
+
+### Teacher
+
+- View assigned courses and enrolled students
+- Assign and update student marks (CA + Final)
+- Access and manage course materials (upload, update, delete)
+- Approve or decline student applications (if assigned as authorizer)
+- Generate & download ID card
+- View noticeboard and administrative messages
+
+---
+
+### Student
+
+- View registered courses and grades
+- See and download semester results
+- Submit applications (leave, transcript, etc.) using dynamic forms
+- Download approved application PDFs
+- View enrolled and all courses
+- View uploaded course materials
+- Re enroll to courses (if applicable)
+- Download university ID card (PDF)
+
+---
+
+## Tech Stack
+
+- **PHP 8.2**, **Laravel 11** (Backend)
+- **MySQL** (Database)
+- **React** (Frontend)
+- **mPDF** (PDF generation)
+- **Filament** (Admin Panel)
+
+---
+
+## Installation
+
+### Backend
+
+```bash
+git clone https://github.com/Learnathon-By-Geeky-Solutions/artisan-forces
+cd artisan_forces
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan storage:link
+php artisan serve
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+---
+
+## Requirements
+- PHP v8.2+ with all the extensions
+- node v20 or higher (use nvm before installing the packages)
+- Composer 2.8+
+- MySQL 5.7+
+- Laravel v11 or higher
+- Mail client (Mailhog or Mailtrap for local development)
+- MySQL server (XAMPP or similar)
+
