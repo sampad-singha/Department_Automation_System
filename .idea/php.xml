@@ -196,6 +196,7 @@
       <path value="$PROJECT_DIR$/backend/vendor/maennchen/zipstream-php" />
       <path value="$PROJECT_DIR$/backend/vendor/paragonie/random_compat" />
       <path value="$PROJECT_DIR$/backend/vendor/phpoffice/phpspreadsheet" />
+      <path value="$PROJECT_DIR$/backend/vendor/althinect/filament-spatie-roles-permissions" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
