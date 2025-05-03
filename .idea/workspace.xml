@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="623fb4af-feb7-4fc1-9c13-b5fb9cb8ad59" name="Changes" comment="Initial Commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Providers/Filament/AdminPanelProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Providers/Filament/AdminPanelProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Component/Share/Navbar/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Component/Share/Navbar/Sidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Pages/AllUser/Login/ForgotPassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Pages/AllUser/Login/ForgotPassword.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Pages/AllUser/Login/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Pages/AllUser/Login/Login.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -287,7 +290,7 @@
       <workItem from="1746014451934" duration="5476000" />
       <workItem from="1746182920488" duration="1472000" />
       <workItem from="1746262371995" duration="4946000" />
-      <workItem from="1746292204002" duration="462000" />
+      <workItem from="1746292204002" duration="2161000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />

@@ -13,7 +13,7 @@ import {
     DocumentDuplicateIcon,
     KeyIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../../Contexts/AuthContext.jsx";
 
 const Sidebar = ({ onLogout }) => {
@@ -26,7 +26,10 @@ const Sidebar = ({ onLogout }) => {
 
     return (
         <div className="fixed top-0 left-0 flex flex-col w-64 h-screen p-5 text-white bg-gray-900">
-            <h2 className="mb-6 text-2xl font-bold">Portal</h2>
+            {/*<h2 className="mb-6 text-2xl font-bold">Portal</h2>*/}
+            <div className="flex justify-center mb-6">
+                <img src="/logo_dark.svg" alt="Brand Logo" className="h-10" />
+            </div>
 
             <nav className="flex-1 space-y-3">
                 {role === "student" && (
