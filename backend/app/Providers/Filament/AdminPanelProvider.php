@@ -42,9 +42,10 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->icons([
-                'heroicon-o-squares-2x2' => 'Home'
-            ])
+            ->brandLogo(asset('logo/logo_light.svg'))
+            ->darkModeBrandLogo(asset('logo/logo_dark.svg'))
+            ->brandLogoHeight('2.4rem')
+            ->favicon(asset('logo/icon_dark.svg'))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
