@@ -3,6 +3,10 @@
 namespace App\Providers\Filament;
 
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use App\Filament\Widgets\AdvancedStatsOverviewWidget;
+use App\Filament\Widgets\CourseChartWidget;
+use App\Filament\Widgets\PendingApplicationWidget;
+use App\Filament\Widgets\TeacherCourseChartWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -49,7 +53,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                PendingApplicationWidget::class,
+                AdvancedStatsOverviewWidget::class,
+                CourseChartWidget::class,
+                TeacherCourseChartWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
