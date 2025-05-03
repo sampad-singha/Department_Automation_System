@@ -181,6 +181,7 @@
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/simplesoftwareio/simple-qrcode" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/webbingbrasil/filament-advancedfilter" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/althinect/filament-spatie-roles-permissions" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/eightynine/filament-advanced-widgets" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

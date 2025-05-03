@@ -197,6 +197,7 @@
       <path value="$PROJECT_DIR$/backend/vendor/paragonie/random_compat" />
       <path value="$PROJECT_DIR$/backend/vendor/phpoffice/phpspreadsheet" />
       <path value="$PROJECT_DIR$/backend/vendor/althinect/filament-spatie-roles-permissions" />
+      <path value="$PROJECT_DIR$/backend/vendor/eightynine/filament-advanced-widgets" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
