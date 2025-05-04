@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\NoticeNotification;
 
@@ -31,7 +32,11 @@ class NoticeController extends Controller
 
             $users = User::whereIn('id', $userIds)->get();
             foreach ($users as $user) {
-                $user->notify(new NoticeNotification($noticeId, $title, $content, $file));
+                try {
+                    $user->notify(new NoticeNotification($noticeId, $title, $content, $file));
+                } catch (\Exception $e) {
+                    Log::error('Notification failed: '.$e->getMessage());
+                }
             }
 
             return ['success' => true, 'message' => 'Notice sent for approval successfully.'];

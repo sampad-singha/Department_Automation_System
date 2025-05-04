@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NoticeNotification extends Notification
+class NoticeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -37,7 +37,7 @@ class NoticeNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $approveUrl = url("/notice/approve/{$this->recordId}");
-        $imageUrl = url("storage/{$this->file}");
+        $imageUrl = null;
 
         if ($this->file == null) {
             return (new MailMessage)
@@ -46,8 +46,10 @@ class NoticeNotification extends Notification
                     'title' => $this->title,
                     'content' => $this->content,
                     'approveUrl' => $approveUrl,
+                    'imageUrl' => $imageUrl,
                 ]);
         } else {
+            $imageUrl = url("storage/{$this->file}");
             return (new MailMessage)
                 ->subject('New Notice for Approval')
                 ->view('emails.notice_approval', [
