@@ -30,7 +30,11 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
+    public static function getActiveNavigationIcon(): string
+    {
+        return 'heroicon-s-user'; // Icon when active
+    }
 
     public static function getSchema(): array
     {
@@ -63,6 +67,7 @@ class UserResource extends Resource
                 })
                 ->required()
                 ->searchable(),
+            Select::make('roles')->multiple()->relationship('roles', 'name'),
             TextInput::make('year')
                 ->numeric()
                 ->default(null),

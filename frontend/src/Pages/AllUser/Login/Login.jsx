@@ -56,7 +56,10 @@ export default function Login() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
             <div className="w-full max-w-md bg-gray-800 backdrop-blur-lg shadow-xl rounded-2xl p-8">
-                <h2 className="text-center text-3xl font-bold text-gray-200">Sign in to your account</h2>
+                <div className="flex justify-center mb-6">
+                    <img src="/logo_dark.svg" alt="Brand Logo" className="h-12" />
+                </div>
+                <h2 className="text-center text-2xl font-bold text-gray-200">Sign in to your account</h2>
                 <p className="text-center text-sm text-gray-400 mt-2">
                     Welcome back! Please enter your details.
                 </p>
@@ -145,14 +148,6 @@ export default function Login() {
                         )}
                     </button>
                 </form>
-
-                {/* Sign Up Link */}
-                <p className="text-center text-sm text-gray-400 mt-5">
-                    Don't have an account?{" "}
-                    <a href="#" className="text-indigo-600 hover:underline">
-                        Sign up
-                    </a>
-                </p>
             </div>
         </div>
     );

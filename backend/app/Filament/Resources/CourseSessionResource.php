@@ -21,7 +21,12 @@ class CourseSessionResource extends Resource
 
     protected static ?string $navigationGroup = 'Course Management';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    public static function getActiveNavigationIcon(): string
+    {
+        return 'heroicon-s-clock'; // Icon when active
+    }
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

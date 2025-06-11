@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import api from "../../../api.jsx"; // Make sure this points to your Axios instance
 import { Link } from "react-router-dom"; // If you need a link for navigation (e.g., back to login)
 
@@ -27,6 +27,9 @@ export default function ForgotPassword() {
     return (
         <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center px-6">
             <div className="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+                <div className="flex justify-center mb-6">
+                    <img src="/logo_dark.svg" alt="Brand Logo" className="h-12" />
+                </div>
                 <h2 className="text-2xl font-bold text-center mb-4">Forgot Password</h2>
                 <p className="text-center text-sm text-gray-400 mb-4">
                     Please enter your email address to reset your password.

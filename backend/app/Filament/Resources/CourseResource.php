@@ -17,7 +17,12 @@ class CourseResource extends Resource
 
     protected static ?string $navigationGroup = 'Course Management';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    public static function getActiveNavigationIcon(): string
+    {
+        return 'heroicon-s-academic-cap'; // Icon when active
+    }
+    protected static ?int $navigationSort = 1;
 
     public static function getSchema():array
     {
