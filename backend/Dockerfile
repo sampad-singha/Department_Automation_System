@@ -1,9 +1,12 @@
 FROM php:8.2-fpm
 
-# Install system dependencies
+# Install system dependencies REQUIRED for mbstring + postgres
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libonig-dev \
+    pkg-config \
+    autoconf \
+    make \
     git \
     unzip \
     zip \
@@ -18,10 +21,10 @@ WORKDIR /var/www
 # Copy ONLY backend code
 COPY backend/ .
 
-# Install Laravel dependencies
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose port Render expects
+# Expose port for Render
 EXPOSE 8000
 
 # Start Laravel
