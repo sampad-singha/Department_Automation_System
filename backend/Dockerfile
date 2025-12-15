@@ -1,18 +1,21 @@
 FROM php:8.2-fpm
 
-# Install system dependencies
+# Install system dependencies for required PHP extensions
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libonig-dev \
     libzip-dev \
     libicu-dev \
     libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     pkg-config \
     autoconf \
     make \
     git \
     unzip \
     zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
         pdo_pgsql \
         pgsql \
