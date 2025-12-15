@@ -19,10 +19,10 @@
         "mpdf/mpdf": "^8.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.14",
-        "webbingbrasil/filament-advancedfilter": "3.0"
+        "webbingbrasil/filament-advancedfilter": "3.0",
+        "fakerphp/faker": "^1.23"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
