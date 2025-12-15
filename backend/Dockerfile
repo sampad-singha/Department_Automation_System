@@ -1,29 +1,28 @@
-# ===== Build from official PHP image with CLI
 FROM php:8.2-fpm
 
-# ===== Install system tools & PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-        libpq-dev \
-        git \
-        unzip \
-        zip \
-    && docker-php-ext-install pdo_pgsql pgsql \
-    && docker-php-ext-install bcmath mbstring
+    libpq-dev \
+    libonig-dev \
+    git \
+    unzip \
+    zip \
+    && docker-php-ext-install pdo_pgsql pgsql mbstring bcmath
 
-# ===== Install Composer
+# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# ===== Set working directory
+# Set working directory
 WORKDIR /var/www
 
-# ===== Copy backend code
-COPY . .
+# Copy ONLY backend code
+COPY backend/ .
 
-# ===== Install Laravel dependencies
+# Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# ===== Expose port 8000
+# Expose port Render expects
 EXPOSE 8000
 
-# ===== Run Laravel
+# Start Laravel
 CMD php artisan serve --host=0.0.0.0 --port=8000
