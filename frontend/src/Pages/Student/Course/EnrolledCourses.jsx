@@ -115,7 +115,7 @@ export default function Courses() {
             )}
 
             {/* Semester Tabs */}
-            <div className="flex space-x-4 border-b pb-2">
+            <div className="sticky top-0 z-10 bg-gray-800 flex space-x-4 border-b pb-2">
                 {allSemesters.map((semester) => (
                     <button
                         key={semester}
